@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: 9 10 14;
+  --surface: 16 18 25;
+  --surface-2: 22 24 33;
+  --border: 36 40 52;
+  --fg: 232 234 240;
+  --fg-muted: 150 156 170;
+  --accent: 120 180 255;
+  --accent-2: 170 140 255;
+  --danger: 247 110 110;
+  --warn: 236 196 92;
+  --ok: 120 220 160;
+}
+
+html,
+body {
+  background: rgb(var(--bg));
+  color: rgb(var(--fg));
+  min-height: 100%;
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  border-color: rgb(var(--border));
+}
+
+::selection {
+  background: rgb(var(--accent) / 0.3);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: rgb(var(--bg)); }
+::-webkit-scrollbar-thumb { background: rgb(var(--surface-2)); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgb(var(--border)); }
+
+/* Glass card helper */
+.glass {
+  background: linear-gradient(180deg, rgb(var(--surface) / 0.92), rgb(var(--surface-2) / 0.92));
+  border: 1px solid rgb(var(--border));
+  backdrop-filter: blur(12px);
+}
+
+/* Subtle grid background */
+.bg-grid {
+  background-image:
+    radial-gradient(circle at 1px 1px, rgb(var(--border)) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+/* Print */
+@media print {
+  html, body { background: white !important; color: black !important; }
+  nav, .no-print { display: none !important; }
+  .glass { background: white !important; border-color: #ccc !important; }
+  .chart-print-hide { display: none !important; }
+  .page-break { page-break-after: always; }
+}
