@@ -21,16 +21,14 @@ export type ClinicalSignificance = "P" | "LP" | "P/LP";
 
 export type ClinVarEntry = {
   rs: string;
-  chr: string;
-  pos: number;
-  ref: Base;
-  alt: Base;
   gene: string;
+  condition: string;
   sig: ClinicalSignificance;
-  cond: string;
+  ref: string; // allows SNVs and indels
+  alt: string;
   rev: number; // review status stars 0-4
-  cv: number; // clinvar variation ID
-  ref_url?: string;
+  href?: string;
+  note?: string;
 };
 
 export type ClinVarFinding = {

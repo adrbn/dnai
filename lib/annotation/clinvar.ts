@@ -1,4 +1,4 @@
-import { matchAllele } from "../genotype";
+import { isBase, matchAllele } from "../genotype";
 import { ClinVarEntry, ClinVarFinding, GenotypeMap, Zygosity } from "../types";
 
 export type ClinVarAnnotateOptions = {
@@ -25,6 +25,7 @@ export function annotateClinVar(
   const findings: ClinVarFinding[] = [];
   for (const entry of db) {
     if (entry.rev < minReview) continue;
+    if (!isBase(entry.ref) || !isBase(entry.alt)) continue;
     const g = genotypes.get(entry.rs);
     if (!g) continue;
     const z = matchAllele(g, entry.ref, entry.alt, { tryReverseStrand });

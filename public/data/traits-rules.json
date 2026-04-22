@@ -1,0 +1,263 @@
+[
+  {
+    "id": "lactose",
+    "title": "Tolérance au lactose",
+    "gene": "MCM6 (cis-regulator of LCT)",
+    "rsids": ["rs4988235"],
+    "call_rules": [
+      { "when": { "rs4988235": "AA" }, "result": { "label": "Persistance de la lactase", "detail": "Capacité à digérer le lactose à l'âge adulte (variant européen)." } },
+      { "when": { "rs4988235": "AG" }, "result": { "label": "Persistance partielle", "detail": "Digestion du lactose probablement possible, symptômes rares." } },
+      { "when": { "rs4988235": "GG" }, "result": { "label": "Non-persistance de la lactase", "detail": "Intolérance au lactose probable à l'âge adulte — phénotype ancestral mondial." } }
+    ],
+    "confidence": "high",
+    "sources": ["SNPedia rs4988235", "Enattah et al. 2002"]
+  },
+  {
+    "id": "alcohol_flush",
+    "title": "Flush à l'alcool (ALDH2)",
+    "gene": "ALDH2",
+    "rsids": ["rs671"],
+    "call_rules": [
+      { "when": { "rs671": "GG" }, "result": { "label": "Métabolisme normal", "detail": "Aucun déficit ALDH2; tolérance usuelle à l'alcool." } },
+      { "when": { "rs671": "AG" }, "result": { "label": "Déficit partiel", "detail": "Accumulation d'acétaldéhyde — flush, tachycardie; risque accru de cancer œsophagien si consommation régulière." } },
+      { "when": { "rs671": "AA" }, "result": { "label": "Déficit sévère", "detail": "Alcool très mal toléré; risque cancer œsophage ×50 si consommation forte." } }
+    ],
+    "confidence": "high",
+    "sources": ["Brooks et al. 2009", "PharmGKB ALDH2"]
+  },
+  {
+    "id": "caffeine",
+    "title": "Métabolisme de la caféine",
+    "gene": "CYP1A2",
+    "rsids": ["rs762551"],
+    "call_rules": [
+      { "when": { "rs762551": "AA" }, "result": { "label": "Métaboliseur rapide", "detail": "Caféine éliminée rapidement — tolérance souvent plus grande." } },
+      { "when": { "rs762551": "AC" }, "result": { "label": "Métaboliseur intermédiaire", "detail": "Demi-vie standard (~4–5 h)." } },
+      { "when": { "rs762551": "CC" }, "result": { "label": "Métaboliseur lent", "detail": "Caféine éliminée lentement — éviter après 14h; risque cardiovasculaire accru à forte consommation." } }
+    ],
+    "confidence": "high",
+    "sources": ["Cornelis et al. 2006"]
+  },
+  {
+    "id": "muscle_fiber_actn3",
+    "title": "Fibres musculaires (ACTN3)",
+    "gene": "ACTN3",
+    "rsids": ["rs1815739"],
+    "call_rules": [
+      { "when": { "rs1815739": "CC" }, "result": { "label": "Profil explosif (R/R)", "detail": "α-actinin-3 fonctionnelle dans les fibres rapides — sprint/force favorisés." } },
+      { "when": { "rs1815739": "CT" }, "result": { "label": "Profil mixte (R/X)", "detail": "Les deux types de performance accessibles." } },
+      { "when": { "rs1815739": "TT" }, "result": { "label": "Profil endurance (X/X)", "detail": "Perte d'α-actinin-3 — potentiel d'endurance favorisé." } }
+    ],
+    "confidence": "medium",
+    "sources": ["Yang et al. 2003"]
+  },
+  {
+    "id": "bitter_taste",
+    "title": "Sensibilité à l'amertume (PTC)",
+    "gene": "TAS2R38",
+    "rsids": ["rs713598", "rs1726866", "rs10246939"],
+    "call_rules": [
+      { "when": { "rs713598": "GG", "rs1726866": "AA", "rs10246939": "CC" }, "result": { "label": "Goûteur intense (PAV/PAV)", "detail": "Très sensible au PTC/PROP — chou, brocoli, café noir souvent amers." } },
+      { "when": { "rs713598": "CC", "rs1726866": "GG", "rs10246939": "TT" }, "result": { "label": "Non-goûteur (AVI/AVI)", "detail": "Peu ou pas de perception de l'amertume PTC." } }
+    ],
+    "confidence": "medium",
+    "sources": ["Kim et al. 2003"]
+  },
+  {
+    "id": "eye_color",
+    "title": "Couleur des yeux",
+    "gene": "HERC2 / OCA2",
+    "rsids": ["rs12913832"],
+    "call_rules": [
+      { "when": { "rs12913832": "AA" }, "result": { "label": "Yeux bruns probables", "detail": "Expression OCA2 maintenue." } },
+      { "when": { "rs12913832": "AG" }, "result": { "label": "Yeux intermédiaires", "detail": "Noisette / vert possibles — fort effet des autres gènes (OCA2, SLC24A4)." } },
+      { "when": { "rs12913832": "GG" }, "result": { "label": "Yeux bleus probables", "detail": "Downregulation d'OCA2 dans l'iris — phénotype européen classique." } }
+    ],
+    "confidence": "high",
+    "sources": ["Sturm et al. 2008"]
+  },
+  {
+    "id": "hair_red",
+    "title": "Cheveux roux (MC1R)",
+    "gene": "MC1R",
+    "rsids": ["rs1805007"],
+    "call_rules": [
+      { "when": { "rs1805007": "CC" }, "result": { "label": "Pas de variant R151C", "detail": "Un variant parmi d'autres; phénotype roux complexe." } },
+      { "when": { "rs1805007": "CT" }, "result": { "label": "Porteur R151C", "detail": "Contribue à la phéomelanine — peau claire, risque de rousseur si autre variant MC1R associé." } },
+      { "when": { "rs1805007": "TT" }, "result": { "label": "R151C/R151C", "detail": "Forte probabilité de cheveux roux et peau très claire." } }
+    ],
+    "confidence": "medium",
+    "sources": ["Valverde et al. 1995"]
+  },
+  {
+    "id": "earwax_type",
+    "title": "Type de cérumen",
+    "gene": "ABCC11",
+    "rsids": ["rs17822931"],
+    "call_rules": [
+      { "when": { "rs17822931": "CC" }, "result": { "label": "Cérumen humide", "detail": "Type 'wet' — phénotype majoritaire en Europe et Afrique." } },
+      { "when": { "rs17822931": "CT" }, "result": { "label": "Cérumen humide (porteur)", "detail": "Phénotype humide mais porteur du variant 'sec'." } },
+      { "when": { "rs17822931": "TT" }, "result": { "label": "Cérumen sec", "detail": "Type 'dry' — phénotype majoritaire en Asie de l'Est; associé à moindre transpiration axillaire." } }
+    ],
+    "confidence": "high",
+    "sources": ["Yoshiura et al. 2006"]
+  },
+  {
+    "id": "asparagus_anosmia",
+    "title": "Odeur d'asperge dans l'urine",
+    "gene": "OR2M7",
+    "rsids": ["rs4481887"],
+    "call_rules": [
+      { "when": { "rs4481887": "GG" }, "result": { "label": "Perçoit l'odeur", "detail": "Capable de détecter les méthanethiols après asperges." } },
+      { "when": { "rs4481887": "AG" }, "result": { "label": "Détection partielle", "detail": "Perception intermédiaire." } },
+      { "when": { "rs4481887": "AA" }, "result": { "label": "Anosmie sélective", "detail": "Incapacité à sentir l'odeur — variante OR2M7." } }
+    ],
+    "confidence": "medium",
+    "sources": ["Eriksson et al. 2010"]
+  },
+  {
+    "id": "cilantro_soap",
+    "title": "Coriandre goût savonneux",
+    "gene": "OR6A2",
+    "rsids": ["rs72921001"],
+    "call_rules": [
+      { "when": { "rs72921001": "CC" }, "result": { "label": "Goût normal", "detail": "Coriandre perçue normalement." } },
+      { "when": { "rs72921001": "AC" }, "result": { "label": "Sensibilité intermédiaire", "detail": "Peut percevoir un arrière-goût." } },
+      { "when": { "rs72921001": "AA" }, "result": { "label": "Goût savonneux", "detail": "Perception désagréable (savon/punaise) de la coriandre fraîche." } }
+    ],
+    "confidence": "medium",
+    "sources": ["Eriksson et al. 2012 (23andMe)"]
+  },
+  {
+    "id": "sleep_chronotype",
+    "title": "Chronotype (matinal/soir)",
+    "gene": "PER3",
+    "rsids": ["rs228697"],
+    "call_rules": [
+      { "when": { "rs228697": "CC" }, "result": { "label": "Plutôt soir", "detail": "Tendance à une préférence vespérale." } },
+      { "when": { "rs228697": "CG" }, "result": { "label": "Intermédiaire", "detail": "Chronotype neutre." } },
+      { "when": { "rs228697": "GG" }, "result": { "label": "Plutôt matinal", "detail": "Variant associé à un chronotype matinal." } }
+    ],
+    "confidence": "low",
+    "sources": ["Hu et al. 2016 (23andMe)"]
+  },
+  {
+    "id": "sleep_short",
+    "title": "Besoin de sommeil court (ADRB1)",
+    "gene": "ADRB1",
+    "rsids": ["rs33999489"],
+    "call_rules": [
+      { "when": { "rs33999489": "AA" }, "result": { "label": "Besoin standard", "detail": "Pas de variant 'short-sleep'." } },
+      { "when": { "rs33999489": "AG" }, "result": { "label": "Possible petit dormeur", "detail": "Porteur variant ADRB1 A187V — nuits courtes mieux tolérées." } }
+    ],
+    "confidence": "low",
+    "sources": ["Shi et al. 2019"]
+  },
+  {
+    "id": "alcohol_metab_adh1b",
+    "title": "Métabolisme rapide éthanol (ADH1B)",
+    "gene": "ADH1B",
+    "rsids": ["rs1229984"],
+    "call_rules": [
+      { "when": { "rs1229984": "GG" }, "result": { "label": "Métabolisme standard (ADH1B*1/*1)", "detail": "Pas de variant rapide." } },
+      { "when": { "rs1229984": "AG" }, "result": { "label": "Métabolisme accéléré", "detail": "Acétaldéhyde produit plus vite — consommation réduite souvent." } },
+      { "when": { "rs1229984": "AA" }, "result": { "label": "Métabolisme très rapide", "detail": "Forte conversion éthanol→acétaldéhyde; effets désagréables à faible dose." } }
+    ],
+    "confidence": "high",
+    "sources": ["Edenberg 2007"]
+  },
+  {
+    "id": "nicotine_dependence",
+    "title": "Vulnérabilité nicotine (CHRNA5)",
+    "gene": "CHRNA5",
+    "rsids": ["rs16969968"],
+    "call_rules": [
+      { "when": { "rs16969968": "GG" }, "result": { "label": "Risque de base", "detail": "Pas de variant de risque." } },
+      { "when": { "rs16969968": "AG" }, "result": { "label": "Risque intermédiaire", "detail": "Variant associé à une dépendance nicotinique et risque cancer poumon accrus." } },
+      { "when": { "rs16969968": "AA" }, "result": { "label": "Risque élevé", "detail": "Dépendance nicotinique et risque cancer bronchique marqués chez fumeurs." } }
+    ],
+    "confidence": "high",
+    "sources": ["Thorgeirsson et al. 2008"]
+  },
+  {
+    "id": "apoe",
+    "title": "Génotype APOE",
+    "gene": "APOE",
+    "rsids": ["rs429358", "rs7412"],
+    "call_rules": [
+      { "when": { "rs429358": "TT", "rs7412": "CC" }, "result": { "label": "ε3/ε3", "detail": "Génotype le plus courant — risque Alzheimer et cardiovasculaire de référence." } },
+      { "when": { "rs429358": "TT", "rs7412": "CT" }, "result": { "label": "ε2/ε3", "detail": "Légère protection Alzheimer, risque hyperlipidémie III rare." } },
+      { "when": { "rs429358": "TT", "rs7412": "TT" }, "result": { "label": "ε2/ε2", "detail": "Protection Alzheimer marquée, risque de dyslipidémie type III." } },
+      { "when": { "rs429358": "CT", "rs7412": "CC" }, "result": { "label": "ε3/ε4", "detail": "Risque Alzheimer ×2–3 (à la tranche d'âge avancée)." } },
+      { "when": { "rs429358": "CT", "rs7412": "CT" }, "result": { "label": "ε2/ε4", "detail": "Profils mixtes — discuter avec un médecin." } },
+      { "when": { "rs429358": "CC", "rs7412": "CC" }, "result": { "label": "ε4/ε4", "detail": "Risque Alzheimer ×8–12; prévention cardiovasculaire renforcée recommandée." } }
+    ],
+    "confidence": "high",
+    "sources": ["Corder et al. 1993", "Farrer et al. 1997"]
+  },
+  {
+    "id": "hemochromatosis",
+    "title": "Hémochromatose (HFE C282Y)",
+    "gene": "HFE",
+    "rsids": ["rs1800562"],
+    "call_rules": [
+      { "when": { "rs1800562": "GG" }, "result": { "label": "Pas de variant C282Y", "detail": "Absence du variant principal d'hémochromatose." } },
+      { "when": { "rs1800562": "AG" }, "result": { "label": "Porteur C282Y", "detail": "Hétérozygote — rarement symptomatique, peut contribuer à une surcharge ferrique modérée." } },
+      { "when": { "rs1800562": "AA" }, "result": { "label": "C282Y homozygote", "detail": "Risque d'hémochromatose héréditaire — surveillance ferritine/TS recommandée." } }
+    ],
+    "confidence": "high",
+    "sources": ["Feder et al. 1996"]
+  },
+  {
+    "id": "celiac_hla_proxy",
+    "title": "Maladie cœliaque (proxy HLA-DQ)",
+    "gene": "HLA-DQ",
+    "rsids": ["rs2187668"],
+    "call_rules": [
+      { "when": { "rs2187668": "GG" }, "result": { "label": "Pas de HLA-DQ2.5 (proxy)", "detail": "Risque de maladie cœliaque très faible." } },
+      { "when": { "rs2187668": "AG" }, "result": { "label": "Porteur HLA-DQ2.5 (proxy)", "detail": "Susceptibilité accrue — ne diagnostique pas la maladie, typage HLA requis pour confirmer." } },
+      { "when": { "rs2187668": "AA" }, "result": { "label": "HLA-DQ2.5 homozygote (proxy)", "detail": "Susceptibilité la plus élevée; confirmer par test HLA." } }
+    ],
+    "confidence": "medium",
+    "sources": ["Monsuur et al. 2008"]
+  },
+  {
+    "id": "warfarin_sensitivity",
+    "title": "Sensibilité à la warfarine (VKORC1)",
+    "gene": "VKORC1",
+    "rsids": ["rs9923231"],
+    "call_rules": [
+      { "when": { "rs9923231": "GG" }, "result": { "label": "Sensibilité standard", "detail": "Haplotype B — dose d'entretien habituelle." } },
+      { "when": { "rs9923231": "AG" }, "result": { "label": "Sensibilité intermédiaire", "detail": "Dose d'entretien réduite modérément." } },
+      { "when": { "rs9923231": "AA" }, "result": { "label": "Haute sensibilité", "detail": "Haplotype A — dose d'entretien nettement plus basse; INR à surveiller étroitement." } }
+    ],
+    "confidence": "high",
+    "sources": ["Rieder et al. 2005"]
+  },
+  {
+    "id": "male_pattern_baldness_proxy",
+    "title": "Calvitie masculine (AR proxy)",
+    "gene": "AR",
+    "rsids": ["rs6152"],
+    "call_rules": [
+      { "when": { "rs6152": "GG" }, "result": { "label": "Risque réduit (proxy)", "detail": "Allèle associé à moindre risque d'alopécie androgénique." } },
+      { "when": { "rs6152": "AG" }, "result": { "label": "Risque intermédiaire", "detail": "Porteur — risque modéré (hommes)." } },
+      { "when": { "rs6152": "AA" }, "result": { "label": "Risque élevé (proxy)", "detail": "Hémizygote/homozygote pour l'allèle à risque (chromosome X)." } }
+    ],
+    "confidence": "low",
+    "sources": ["Hillmer et al. 2005"]
+  },
+  {
+    "id": "freckles",
+    "title": "Taches de rousseur (IRF4)",
+    "gene": "IRF4",
+    "rsids": ["rs12203592"],
+    "call_rules": [
+      { "when": { "rs12203592": "CC" }, "result": { "label": "Peu de taches", "detail": "Phénotype commun." } },
+      { "when": { "rs12203592": "CT" }, "result": { "label": "Taches fréquentes", "detail": "Contribution IRF4 à la pigmentation." } },
+      { "when": { "rs12203592": "TT" }, "result": { "label": "Taches abondantes", "detail": "Fort phénotype 'freckles' — associé à peau/cheveux clairs." } }
+    ],
+    "confidence": "medium",
+    "sources": ["Han et al. 2008"]
+  }
+]

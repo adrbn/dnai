@@ -4,54 +4,10 @@ import { ClinVarEntry, NOCALL } from "../types";
 import { normalize } from "../genotype";
 
 const mockDB: ClinVarEntry[] = [
-  {
-    rs: "rs1",
-    chr: "17",
-    pos: 1000,
-    ref: "G",
-    alt: "A",
-    gene: "BRCA1",
-    sig: "P",
-    cond: "Hereditary cancer",
-    rev: 3,
-    cv: 1,
-  },
-  {
-    rs: "rs2",
-    chr: "13",
-    pos: 2000,
-    ref: "C",
-    alt: "T",
-    gene: "BRCA2",
-    sig: "LP",
-    cond: "Hereditary cancer",
-    rev: 2,
-    cv: 2,
-  },
-  {
-    rs: "rs3",
-    chr: "19",
-    pos: 3000,
-    ref: "T",
-    alt: "C",
-    gene: "APOE",
-    sig: "P/LP",
-    cond: "Alzheimer risk",
-    rev: 4,
-    cv: 3,
-  },
-  {
-    rs: "rs4",
-    chr: "1",
-    pos: 4000,
-    ref: "A",
-    alt: "G",
-    gene: "X1",
-    sig: "P",
-    cond: "Disease",
-    rev: 1,
-    cv: 4,
-  },
+  { rs: "rs1", gene: "BRCA1", condition: "Hereditary cancer", sig: "P", ref: "G", alt: "A", rev: 3 },
+  { rs: "rs2", gene: "BRCA2", condition: "Hereditary cancer", sig: "LP", ref: "C", alt: "T", rev: 2 },
+  { rs: "rs3", gene: "APOE", condition: "Alzheimer risk", sig: "P/LP", ref: "T", alt: "C", rev: 4 },
+  { rs: "rs4", gene: "X1", condition: "Disease", sig: "P", ref: "A", alt: "G", rev: 1 },
 ];
 
 describe("annotateClinVar", () => {
