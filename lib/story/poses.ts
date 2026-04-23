@@ -87,8 +87,8 @@ export type StoryFrame = {
 export function frameForAct(act: Act): StoryFrame {
   return {
     pose: poseForAct(act),
-    highlights: [],
-    focusChromosome: undefined,
+    highlights: highlightsForAct(act),
+    focusChromosome: focusChromosomeForAct(act),
     mode: "helix",
   };
 }

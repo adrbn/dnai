@@ -4,7 +4,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Stars } from "@react-three/drei";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
-import { layoutGenome, locusToWorld, type ChromosomeLayout } from "@/lib/story/chromosomes";
+import { locusToHelix } from "@/lib/story/chromosomes";
 
 export interface CameraPose {
   position: [number, number, number];
@@ -28,7 +28,13 @@ interface Genome3DProps {
   reducedMotion?: boolean;
 }
 
-function Helix({ reducedMotion }: { reducedMotion?: boolean }) {
+function Helix({
+  reducedMotion,
+  highlights,
+}: {
+  reducedMotion?: boolean;
+  highlights: HighlightPoint[];
+}) {
   const group = useRef<THREE.Group>(null);
   useFrame((_, dt) => {
     if (group.current && !reducedMotion) {
@@ -78,7 +84,54 @@ function Helix({ reducedMotion }: { reducedMotion?: boolean }) {
           <BasePair a={p.p1} b={p.p2} />
         </group>
       ))}
+      <HelixHighlights points={highlights} />
     </group>
+  );
+}
+
+function HelixHighlights({ points }: { points: HighlightPoint[] }) {
+  const refs = useRef<(THREE.Mesh | null)[]>([]);
+  useFrame((state) => {
+    const t = state.clock.elapsedTime;
+    points.forEach((p, i) => {
+      const m = refs.current[i];
+      if (!m) return;
+      const pulse = 0.7 + 0.3 * Math.sin(t * 2.2 + i * 0.8);
+      (m.material as THREE.MeshStandardMaterial).emissiveIntensity = p.intensity * pulse * 2.2;
+      m.scale.setScalar(1 + 0.25 * pulse);
+    });
+  });
+
+  return (
+    <>
+      {points.map((p, i) => {
+        const world = locusToHelix(p.chr, p.pos);
+        if (!world) return null;
+        return (
+          <group key={p.id}>
+            <mesh
+              position={world}
+              ref={(el) => {
+                refs.current[i] = el;
+              }}
+            >
+              <sphereGeometry args={[0.22, 16, 16]} />
+              <meshStandardMaterial
+                color={p.color}
+                emissive={p.color}
+                emissiveIntensity={p.intensity * 1.8}
+                toneMapped={false}
+              />
+            </mesh>
+            {/* halo glow */}
+            <mesh position={world}>
+              <sphereGeometry args={[0.55, 16, 16]} />
+              <meshBasicMaterial color={p.color} transparent opacity={0.18} depthWrite={false} />
+            </mesh>
+          </group>
+        );
+      })}
+    </>
   );
 }
 
@@ -108,92 +161,6 @@ function BasePair({ a, b }: { a: [number, number, number]; b: [number, number, n
   );
 }
 
-function Chromosome({
-  layout,
-  focused,
-  mode,
-}: {
-  layout: ChromosomeLayout;
-  focused: boolean;
-  mode: "helix" | "genome";
-}) {
-  const { info, center, direction, length } = layout;
-  const [dx, dy, dz] = direction;
-  const up = useMemo(() => new THREE.Vector3(0, 1, 0), []);
-  const dir = useMemo(() => new THREE.Vector3(dx, dy, dz).normalize(), [dx, dy, dz]);
-  const q = useMemo(() => new THREE.Quaternion().setFromUnitVectors(up, dir), [up, dir]);
-  const centromereFrac = info.centromereMb / info.lengthMb - 0.5;
-
-  const matOpacity = mode === "helix" ? 0 : focused ? 1 : 0.55;
-  const color = focused ? "#8ba8ff" : "#3f4a66";
-  const emissive = focused ? "#4f7dff" : "#1a2237";
-
-  return (
-    <group position={center} quaternion={q}>
-      <mesh>
-        <capsuleGeometry args={[0.18, length, 6, 12]} />
-        <meshStandardMaterial
-          color={color}
-          emissive={emissive}
-          emissiveIntensity={focused ? 0.8 : 0.25}
-          roughness={0.4}
-          transparent
-          opacity={matOpacity}
-        />
-      </mesh>
-      <mesh position={[0, centromereFrac * length, 0]}>
-        <sphereGeometry args={[0.13, 10, 10]} />
-        <meshStandardMaterial
-          color="#0b0b10"
-          emissive="#0b0b10"
-          transparent
-          opacity={matOpacity}
-        />
-      </mesh>
-    </group>
-  );
-}
-
-function Highlights({ points }: { points: HighlightPoint[] }) {
-  const refs = useRef<(THREE.Mesh | null)[]>([]);
-  useFrame((state) => {
-    const t = state.clock.elapsedTime;
-    points.forEach((p, i) => {
-      const m = refs.current[i];
-      if (!m) return;
-      const pulse = 0.7 + 0.3 * Math.sin(t * 2 + i);
-      (m.material as THREE.MeshStandardMaterial).emissiveIntensity = p.intensity * pulse * 1.8;
-      m.scale.setScalar(0.9 + 0.15 * pulse);
-    });
-  });
-
-  return (
-    <>
-      {points.map((p, i) => {
-        const world = locusToWorld(p.chr, p.pos);
-        if (!world) return null;
-        return (
-          <mesh
-            key={p.id}
-            position={world}
-            ref={(el) => {
-              refs.current[i] = el;
-            }}
-          >
-            <sphereGeometry args={[0.28, 14, 14]} />
-            <meshStandardMaterial
-              color={p.color}
-              emissive={p.color}
-              emissiveIntensity={p.intensity * 1.5}
-              toneMapped={false}
-            />
-          </mesh>
-        );
-      })}
-    </>
-  );
-}
-
 function CameraRig({ pose }: { pose: CameraPose }) {
   const { camera } = useThree();
   const target = useRef(new THREE.Vector3(...pose.target));
@@ -219,8 +186,7 @@ function CameraRig({ pose }: { pose: CameraPose }) {
   return null;
 }
 
-function Scene({ pose, highlights, focusChromosome, mode, reducedMotion }: Genome3DProps) {
-  const layout = useMemo(() => layoutGenome(), []);
+function Scene({ pose, highlights, reducedMotion }: Genome3DProps) {
   return (
     <>
       <CameraRig pose={pose} />
@@ -228,21 +194,7 @@ function Scene({ pose, highlights, focusChromosome, mode, reducedMotion }: Genom
       <directionalLight position={[8, 10, 5]} intensity={0.9} color="#eef2ff" />
       <directionalLight position={[-6, -4, -4]} intensity={0.3} color="#a0b4ff" />
       <Stars radius={60} depth={40} count={900} factor={2.6} saturation={0} fade speed={0.4} />
-      {mode === "helix" ? (
-        <Helix reducedMotion={reducedMotion} />
-      ) : (
-        <>
-          {layout.map((l) => (
-            <Chromosome
-              key={l.info.name}
-              layout={l}
-              focused={focusChromosome === l.info.name}
-              mode={mode}
-            />
-          ))}
-          <Highlights points={highlights} />
-        </>
-      )}
+      <Helix reducedMotion={reducedMotion} highlights={highlights} />
       <fog attach="fog" args={["#05060c", 18, 48]} />
     </>
   );

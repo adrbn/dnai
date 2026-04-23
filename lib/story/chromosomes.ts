@@ -71,3 +71,24 @@ export function locusToWorld(chr: string, posBp: number): [number, number, numbe
   const [cx, cy, cz] = c.center;
   return [cx + dx * c.length * frac, cy + dy * c.length * frac, cz + dz * c.length * frac];
 }
+
+// Helix geometry must match the one rendered in components/story/Genome3D.tsx
+const HELIX_Y_HALF = 6; // y spans [-6, +6] (total 12)
+const HELIX_TURNS = 3; // theta = t * PI * 6
+const HELIX_RADIUS = 1.55; // slightly outside the strand radius (1.2)
+
+const TOTAL_GENOME_MB = CHROMOSOMES.reduce((s, c) => s + c.lengthMb, 0);
+
+// Map a (chromosome, basepair) locus onto the helix surface. The whole genome
+// is laid out linearly along the helix y axis — chromosome 1 at the top, Y at
+// the bottom — so each variant gets a stable point on the helix.
+export function locusToHelix(chr: string, posBp: number): [number, number, number] | null {
+  const idx = CHROMOSOMES.findIndex((c) => c.name === chr);
+  if (idx === -1) return null;
+  const before = CHROMOSOMES.slice(0, idx).reduce((s, c) => s + c.lengthMb, 0);
+  const posMb = Math.min(CHROMOSOMES[idx].lengthMb, Math.max(0, posBp / 1_000_000));
+  const t = (before + posMb) / TOTAL_GENOME_MB; // 0..1
+  const y = (0.5 - t) * 2 * HELIX_Y_HALF; // top = chr1, bottom = Y
+  const theta = t * Math.PI * 2 * HELIX_TURNS;
+  return [Math.cos(theta) * HELIX_RADIUS, y, Math.sin(theta) * HELIX_RADIUS];
+}
