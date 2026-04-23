@@ -180,6 +180,71 @@ export type ROHResult = {
   autosomalBp: number;
 };
 
+export type NeanderthalResult = {
+  matchedSnps: number;
+  totalSnps: number;
+  archaicDosage: number; // sum of archaic allele copies
+  maxDosage: number; // 2 * matchedSnps
+  percent: number; // estimated % Neanderthal-like in genome (0..4)
+  topHits: { rsid: string; gene: string; dosage: number; note: string }[];
+};
+
+export type AncestryComponent = {
+  region: "AFR" | "EUR" | "EAS" | "SAS" | "AMR";
+  label: string;
+  percent: number;
+};
+
+export type AncestryResult = {
+  components: AncestryComponent[];
+  topRegion: AncestryComponent;
+  coverage: number; // fraction of AIMs matched
+  matched: number;
+  total: number;
+};
+
+export type HaplogroupBranch = {
+  id: string; // e.g. "R1b-M269"
+  depth: number;
+  rsid: string;
+  derived: string;
+};
+
+export type HaplogroupResult = {
+  available: boolean; // false if no Y/mt data
+  assigned: string; // deepest assigned haplogroup
+  path: HaplogroupBranch[];
+  description: string;
+  migration: string;
+};
+
+export type CarrierFinding = {
+  condition: string;
+  gene: string;
+  rsid: string;
+  zygosity: Zygosity;
+  status: "carrier" | "affected" | "clear";
+  inheritance: "AR" | "XLR";
+  note: string;
+};
+
+export type ActionableFinding = {
+  id: string;
+  gene: string;
+  name: string;
+  call: string; // e.g., "ε3/ε4", "heterozygote"
+  risk: "high" | "moderate" | "low" | "neutral";
+  note: string;
+  rsids: string[];
+  genotypes: Record<string, string | null>;
+};
+
+export type FunResult = {
+  music: { notes: number[]; tempo: number; key: string }; // MIDI notes 0..87
+  art: { seed: string; palette: string[]; shapes: string }; // svg path string
+  twins: { name: string; similarity: number; era: string; note: string }[];
+};
+
 export type AnalysisResult = {
   meta: AnalysisMeta;
   density: DensityMap;
@@ -188,6 +253,13 @@ export type AnalysisResult = {
   traits: TraitFinding[];
   prs: PRSFinding[];
   roh: ROHResult;
+  neanderthal?: NeanderthalResult;
+  ancestry?: AncestryResult;
+  yHaplogroup?: HaplogroupResult;
+  mtHaplogroup?: HaplogroupResult;
+  carriers?: CarrierFinding[];
+  actionable?: ActionableFinding[];
+  fun?: FunResult;
 };
 
 export type AnalysisData = {

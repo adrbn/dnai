@@ -16,10 +16,22 @@ export function poseForAct(act: Act): CameraPose {
   switch (act.kind) {
     case "intro":
       return HELIX_FAR;
+    case "ancestry":
+      return HELIX_TOP;
+    case "haplogroup-y":
+      return HELIX_SIDE;
+    case "haplogroup-mt":
+      return HELIX_ORBIT_L;
+    case "neanderthal":
+      return HELIX_CLOSE;
     case "health-intro":
       return HELIX_CLOSE;
     case "clinvar":
       return HELIX_SIDE;
+    case "actionable":
+      return HELIX_CLOSE;
+    case "carriers":
+      return HELIX_TOP;
     case "pharma-intro":
       return HELIX_TOP;
     case "pharma":
@@ -31,6 +43,8 @@ export function poseForAct(act: Act): CameraPose {
       return HELIX_CLOSE;
     case "roh":
       return HELIX_SIDE;
+    case "fun":
+      return HELIX_FAR;
     case "outro":
       return HELIX_OUTRO;
   }

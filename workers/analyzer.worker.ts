@@ -7,6 +7,12 @@ import { annotatePharma } from "../lib/annotation/pharma";
 import { annotateTraits } from "../lib/annotation/traits";
 import { annotatePRS } from "../lib/annotation/prs";
 import { computeROH } from "../lib/annotation/roh";
+import { computeNeanderthal } from "../lib/annotation/neanderthal";
+import { computeAncestry } from "../lib/annotation/ancestry";
+import { computeYHaplogroup, computeMtHaplogroup } from "../lib/annotation/haplogroups";
+import { computeActionable } from "../lib/annotation/actionable";
+import { computeCarriers } from "../lib/annotation/carriers";
+import { computeFun } from "../lib/annotation/fun";
 import type {
   AnalysisResult,
   ClinVarEntry,
@@ -159,6 +165,15 @@ async function runAnalysis(msg: AnalyzeInput) {
   const prs = annotatePRS(parsed.genotypes, prsRules);
   post({ type: "progress", phase: "annotate", percent: 0.85 });
   const roh = computeROH(parsed.genotypes, parsed.positions);
+  post({ type: "progress", phase: "annotate", percent: 0.9, message: "Ancêtres, Néandertal, haplogroupes…" });
+
+  const neanderthal = computeNeanderthal(parsed.genotypes);
+  const ancestry = computeAncestry(parsed.genotypes);
+  const yHaplogroup = computeYHaplogroup(parsed.genotypes);
+  const mtHaplogroup = computeMtHaplogroup(parsed.genotypes);
+  const actionable = computeActionable(parsed.genotypes);
+  const carriers = computeCarriers(parsed.genotypes);
+  const fun = computeFun(fileHash);
   post({ type: "progress", phase: "annotate", percent: 1 });
 
   const result: AnalysisResult = {
@@ -177,6 +192,13 @@ async function runAnalysis(msg: AnalyzeInput) {
     traits,
     prs,
     roh,
+    neanderthal,
+    ancestry,
+    yHaplogroup,
+    mtHaplogroup,
+    actionable,
+    carriers,
+    fun,
   };
   return { result, genotypes: parsed.genotypes, positions: parsed.positions };
 }

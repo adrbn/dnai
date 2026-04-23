@@ -1,6 +1,12 @@
 import type {
+  ActionableFinding,
   AnalysisResult,
+  AncestryResult,
+  CarrierFinding,
   ClinVarFinding,
+  FunResult,
+  HaplogroupResult,
+  NeanderthalResult,
   PRSFinding,
   PharmaByDrug,
   PositionIndex,
@@ -9,14 +15,21 @@ import type {
 
 export type ActKind =
   | "intro"
+  | "ancestry"
+  | "haplogroup-y"
+  | "haplogroup-mt"
+  | "neanderthal"
   | "health-intro"
   | "clinvar"
+  | "actionable"
+  | "carriers"
   | "pharma-intro"
   | "pharma"
   | "prs-intro"
   | "prs"
   | "traits"
   | "roh"
+  | "fun"
   | "outro";
 
 export interface BaseAct {
@@ -89,16 +102,58 @@ export interface OutroAct extends BaseAct {
   traitsTotal: number;
 }
 
+export interface AncestryAct extends BaseAct {
+  kind: "ancestry";
+  ancestry: AncestryResult;
+}
+
+export interface HaplogroupYAct extends BaseAct {
+  kind: "haplogroup-y";
+  hap: HaplogroupResult;
+}
+
+export interface HaplogroupMtAct extends BaseAct {
+  kind: "haplogroup-mt";
+  hap: HaplogroupResult;
+}
+
+export interface NeanderthalAct extends BaseAct {
+  kind: "neanderthal";
+  neanderthal: NeanderthalResult;
+}
+
+export interface ActionableAct extends BaseAct {
+  kind: "actionable";
+  findings: ActionableFinding[];
+}
+
+export interface CarriersAct extends BaseAct {
+  kind: "carriers";
+  findings: CarrierFinding[];
+}
+
+export interface FunAct extends BaseAct {
+  kind: "fun";
+  fun: FunResult;
+}
+
 export type Act =
   | IntroAct
+  | AncestryAct
+  | HaplogroupYAct
+  | HaplogroupMtAct
+  | NeanderthalAct
   | HealthIntroAct
   | ClinVarAct
+  | ActionableAct
+  | CarriersAct
   | PharmaIntroAct
   | PharmaAct
   | PRSIntroAct
   | PRSAct
   | TraitsAct
   | ROHAct
+  | FunAct
   | OutroAct;
 
 function rankClinVar(a: ClinVarFinding, b: ClinVarFinding): number {
@@ -156,6 +211,42 @@ export function buildStory(
     primer: sourcePrimer(result.meta.source, result.meta.totalSNPs),
   });
 
+  if (result.ancestry && result.ancestry.matched > 0) {
+    acts.push({
+      id: "ancestry",
+      kind: "ancestry",
+      title: "Origines",
+      ancestry: result.ancestry,
+    });
+  }
+
+  if (result.yHaplogroup?.available && result.yHaplogroup.path.length > 0) {
+    acts.push({
+      id: "haplogroup-y",
+      kind: "haplogroup-y",
+      title: `Lignée paternelle ${result.yHaplogroup.assigned}`,
+      hap: result.yHaplogroup,
+    });
+  }
+
+  if (result.mtHaplogroup?.available && result.mtHaplogroup.path.length > 0) {
+    acts.push({
+      id: "haplogroup-mt",
+      kind: "haplogroup-mt",
+      title: `Lignée maternelle ${result.mtHaplogroup.assigned}`,
+      hap: result.mtHaplogroup,
+    });
+  }
+
+  if (result.neanderthal && result.neanderthal.matchedSnps > 0) {
+    acts.push({
+      id: "neanderthal",
+      kind: "neanderthal",
+      title: "Néandertal",
+      neanderthal: result.neanderthal,
+    });
+  }
+
   const clinvar = [...result.clinvar].sort(rankClinVar).slice(0, 3);
   if (clinvar.length > 0) {
     acts.push({
@@ -175,6 +266,27 @@ export function buildStory(
         rank: i + 1,
         totalRanked: clinvar.length,
       });
+    });
+  }
+
+  if (result.actionable && result.actionable.length > 0) {
+    const interesting = result.actionable.filter((a) => a.risk !== "neutral");
+    if (interesting.length > 0) {
+      acts.push({
+        id: "actionable",
+        kind: "actionable",
+        title: "Variants actionnables",
+        findings: interesting,
+      });
+    }
+  }
+
+  if (result.carriers && result.carriers.length > 0) {
+    acts.push({
+      id: "carriers",
+      kind: "carriers",
+      title: "Dépistage de porteurs",
+      findings: result.carriers,
     });
   }
 
@@ -248,6 +360,15 @@ export function buildStory(
       fRoh: result.roh.fRoh,
       segments: result.roh.totalSegments,
       interpretation: interpretFRoh(result.roh.fRoh),
+    });
+  }
+
+  if (result.fun) {
+    acts.push({
+      id: "fun",
+      kind: "fun",
+      title: "Votre ADN créatif",
+      fun: result.fun,
     });
   }
 
