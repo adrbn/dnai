@@ -134,13 +134,13 @@ export function PharmaSection({ byDrug }: PharmaSectionProps) {
       <Card className="md:col-span-12">
         <CardHeader title="Tous les médicaments" subtitle={`${byDrug.length} au total`} />
         <div className="max-h-[420px] overflow-y-auto">
-          <table className="w-full text-sm">
+          <table className="w-full table-fixed text-sm">
             <thead className="sticky top-0 bg-surface text-xs uppercase tracking-wider text-fg-muted">
               <tr>
-                <th className="py-2 text-left">Médicament</th>
-                <th className="text-left">Classe</th>
-                <th className="text-left">Effet</th>
-                <th>Gravité</th>
+                <th className="w-[40%] py-2 text-left sm:w-auto">Médicament</th>
+                <th className="hidden text-left sm:table-cell">Classe</th>
+                <th className="hidden text-left sm:table-cell">Effet</th>
+                <th className="w-[35%] sm:w-auto">Gravité</th>
               </tr>
             </thead>
             <tbody>
@@ -152,9 +152,9 @@ export function PharmaSection({ byDrug }: PharmaSectionProps) {
                     selected === d.drug ? "bg-accent/5" : ""
                   }`}
                 >
-                  <td className="py-2 font-medium capitalize">{d.drug}</td>
-                  <td className="text-fg-muted">{d.drug_class ?? "—"}</td>
-                  <td className="max-w-[360px] truncate text-fg-muted">{d.effect}</td>
+                  <td className="py-2 pr-2 font-medium capitalize break-words">{d.drug}</td>
+                  <td className="hidden text-fg-muted sm:table-cell">{d.drug_class ?? "—"}</td>
+                  <td className="hidden max-w-[360px] truncate text-fg-muted sm:table-cell">{d.effect}</td>
                   <td className="text-center">
                     <Badge variant={SEV_VARIANT[d.severity]}>{SEV_LABEL[d.severity]}</Badge>
                   </td>

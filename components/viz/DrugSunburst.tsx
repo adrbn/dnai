@@ -72,7 +72,7 @@ export function DrugSunburst({ byDrug, onSelect }: Props) {
 
   return (
     <div className="flex w-full flex-col items-center gap-4">
-      <svg viewBox="0 0 360 360" className="h-auto w-full max-w-[400px]">
+      <svg viewBox="0 0 360 360" className="h-auto w-full max-w-[min(90vw,400px)]">
         <defs>
           <radialGradient id="sb-core">
             <stop offset="0%" stopColor="rgb(var(--accent) / 0.25)" />

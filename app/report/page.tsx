@@ -57,7 +57,7 @@ export default function ReportPage() {
   if (!result) return null;
 
   return (
-    <main className="min-h-screen bg-grid">
+    <main className="min-h-screen overflow-x-hidden bg-grid">
       <nav className="sticky top-0 z-30 border-b border-border bg-bg/85 backdrop-blur-md no-print">
         <div className="mx-auto max-w-6xl px-4 py-3 sm:px-6">
           <div className="flex items-center justify-between gap-3">

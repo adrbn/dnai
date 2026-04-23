@@ -342,7 +342,7 @@ function PointRow({ point }: { point: ConclusionPoint }) {
       </span>
       <span className="text-fg-muted">{point.prefix}</span>
       {point.entities.length > 0 && (
-        <span className="font-semibold text-fg">{joinFr(point.entities)}</span>
+        <span className="break-words font-semibold text-fg">{joinFr(point.entities)}</span>
       )}
       {point.extraCount && point.extraCount > 0 ? (
         <span className="text-fg-muted/70">(+{point.extraCount})</span>
