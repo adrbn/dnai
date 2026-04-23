@@ -341,6 +341,16 @@ body {
     padding-top: 0;
     break-before: page;
     page-break-before: always;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .pr-section > * {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .pr-table, .pr-table tbody, .pr-table tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
   .pr-section h2 {
     display: flex;
