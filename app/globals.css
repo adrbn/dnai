@@ -102,9 +102,11 @@ body {
     position: relative;
     page-break-after: always;
     break-after: page;
-    padding: 22mm 18mm 18mm 18mm;
+    padding: 16mm 16mm 14mm 16mm;
     background: #ffffff !important;
-    min-height: 297mm;
+    height: 297mm;
+    max-height: 297mm;
+    overflow: hidden;
     box-sizing: border-box;
     color: #0f172a;
     display: flex;
@@ -124,7 +126,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 14mm;
+    margin-bottom: 7mm;
   }
   .pr-brand { display: flex; align-items: center; gap: 3mm; }
   .pr-brand-mark {
@@ -144,59 +146,51 @@ body {
   .pr-cover-date { font-size: 9pt; color: #64748b; text-align: right; }
 
   .pr-cover-hero {
-    margin-bottom: 12mm;
-    padding-bottom: 8mm;
+    margin-bottom: 6mm;
+    padding-bottom: 5mm;
     border-bottom: 0.8pt solid #e2e8f0;
   }
   .pr-cover-eyebrow {
-    font-size: 8.5pt;
+    font-size: 8pt;
     font-weight: 700;
     color: #4f7dff;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    margin-bottom: 3mm;
+    margin-bottom: 2mm;
   }
   .pr-cover-title {
-    font-size: 32pt !important;
+    font-size: 26pt !important;
     font-weight: 800 !important;
     line-height: 1.05 !important;
     letter-spacing: -0.025em !important;
-    margin: 0 0 5mm 0 !important;
+    margin: 0 0 3mm 0 !important;
     color: #0f172a;
   }
   .pr-cover-sub {
-    font-size: 11pt;
-    line-height: 1.5;
+    font-size: 10pt;
+    line-height: 1.45;
     color: #334155;
     margin: 0;
     max-width: 150mm;
   }
   .pr-cover-primer {
-    margin: 8mm 0 0;
-    padding: 4mm 5mm;
-    background: #f1f5fa;
-    border-left: 3px solid #4f7dff;
-    border-radius: 0 6px 6px 0;
-    font-size: 10pt;
-    line-height: 1.55;
-    color: #1e293b;
-    max-width: 150mm;
+    display: none !important;
   }
 
   .pr-cover-verdict {
     display: flex;
     align-items: center;
     gap: 4mm;
-    padding: 4mm 5mm;
+    padding: 3mm 4mm;
     border-radius: 2mm;
-    margin-bottom: 6mm;
+    margin-bottom: 4mm;
     border: 0.8pt solid;
   }
   .pr-cover-verdict-red { background: #fef2f2; border-color: #fecaca; color: #7f1d1d; }
   .pr-cover-verdict-yellow { background: #fefce8; border-color: #fde68a; color: #78350f; }
   .pr-cover-verdict-green { background: #f0fdf4; border-color: #bbf7d0; color: #14532d; }
   .pr-cover-verdict-icon {
-    width: 10mm; height: 10mm; flex-shrink: 0;
+    width: 8mm; height: 8mm; flex-shrink: 0;
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     font-weight: 800; font-size: 14pt;
@@ -213,22 +207,22 @@ body {
   .pr-cover-stats {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 3mm;
-    margin-bottom: 10mm;
+    gap: 2mm;
+    margin-bottom: 6mm;
   }
   .pr-cover-stat {
-    padding: 4mm 3mm;
+    padding: 3mm 2mm;
     border-radius: 2mm;
     border: 0.6pt solid #e2e8f0;
     background: #ffffff !important;
     text-align: center;
   }
   .pr-cover-stat-value {
-    font-size: 16pt;
+    font-size: 14pt;
     font-weight: 800;
     line-height: 1;
     color: #0f172a;
-    margin-bottom: 2mm;
+    margin-bottom: 1.5mm;
     letter-spacing: -0.02em;
   }
   .pr-cover-stat-label {
@@ -249,8 +243,8 @@ body {
   .pr-cover-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8mm;
-    margin-bottom: 10mm;
+    gap: 6mm;
+    margin-bottom: 5mm;
   }
   .pr-cover-col { }
   .pr-cover-heading {
@@ -266,11 +260,11 @@ body {
   .pr-cover-dl { margin: 0; padding: 0; }
   .pr-cover-row {
     display: grid;
-    grid-template-columns: 32mm 1fr;
+    grid-template-columns: 30mm 1fr;
     gap: 2mm;
-    padding: 1.2mm 0;
+    padding: 0.9mm 0;
     border-bottom: 0.3pt solid #f1f5f9;
-    font-size: 9.5pt;
+    font-size: 9pt;
   }
   .pr-cover-row:last-child { border-bottom: none; }
   .pr-cover-row dt { color: #64748b; margin: 0; font-weight: 500; }
@@ -298,14 +292,14 @@ body {
   }
 
   .pr-cover-disclaimer {
-    margin-bottom: 8mm;
-    padding: 4mm 5mm;
+    margin-bottom: 4mm;
+    padding: 3mm 4mm;
     background: #fef9ec;
     border: 0.5pt solid #f0c674;
     border-radius: 1.5mm;
-    font-size: 9pt;
+    font-size: 8.5pt;
     color: #6b4a0a;
-    line-height: 1.55;
+    line-height: 1.45;
   }
 
   .pr-cover-toc { margin-top: auto; }
@@ -320,8 +314,8 @@ body {
     display: flex;
     align-items: baseline;
     gap: 2mm;
-    padding: 1.8mm 0;
-    font-size: 10pt;
+    padding: 1.2mm 0;
+    font-size: 9pt;
     border-bottom: 0.3pt dotted #cbd5e1;
   }
   .pr-cover-toc li::before {

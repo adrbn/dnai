@@ -472,22 +472,9 @@ function SynthesisSheet({ result, info }: { result: AnalysisResult; info: PdfUse
         <span className="pr-sec-title">Synthèse</span>
       </h2>
       <p className="pr-lede">
-        {toName ? `${toName}, ce` : "Ce"} rapport résume ce que l'analyse a trouvé, ce que ça veut
-        dire concrètement, et les actions recommandées. Le détail complet et les sources figurent
-        dans les sections suivantes.
+        {toName ? `${toName}, cette` : "Cette"} page détaille les résultats et les actions
+        recommandées. Le verdict global et les chiffres clés figurent sur la couverture.
       </p>
-
-      <h3 className="pr-h3">Verdict global</h3>
-      <div
-        className={`pr-verdict ${
-          hasRedFlag ? "pr-verdict-red" : hasYellowFlag ? "pr-verdict-yellow" : "pr-verdict-green"
-        }`}
-      >
-        <div className="pr-verdict-icon" aria-hidden="true">
-          {hasRedFlag ? "!" : hasYellowFlag ? "~" : "✓"}
-        </div>
-        <div className="pr-verdict-body">{verdict}</div>
-      </div>
 
       <h3 className="pr-h3">Ce que l'analyse montre</h3>
       <ul className="pr-findings">
@@ -572,27 +559,6 @@ function SynthesisSheet({ result, info }: { result: AnalysisResult; info: PdfUse
           déterminées (le reste manque de SNPs sur votre puce).
         </li>
       </ul>
-
-      <h3 className="pr-h3">Ce que ça veut dire (en langage courant)</h3>
-      <p>
-        Une puce ADN type MyHeritage lit environ 700 000 positions précises sur votre génome. Ce
-        rapport croise ces positions avec des bases cliniques curées (<em>ClinVar</em> pour les
-        maladies, <em>CPIC / DPWG</em> pour les médicaments) et des études de population à grande
-        échelle (<em>GWAS</em>) pour les scores polygéniques.
-      </p>
-      <p>
-        {hasRedFlag
-          ? "Une ou plusieurs alertes cliniques ont été trouvées. Elles ne signifient pas automatiquement maladie ou danger, mais elles demandent une validation médicale — un variant P/LP peut par exemple nécessiter un séquençage Sanger de confirmation et un conseil génétique familial ; une alerte pharmaco critique peut changer une future prescription."
-          : hasYellowFlag
-            ? "Aucune alerte grave, mais quelques indicateurs au-dessus de la moyenne. Ce sont typiquement des signaux à prendre en compte pour la prévention (mode de vie, dépistages à l'âge adulte) plutôt que des problèmes urgents."
-            : "Aucune alerte significative. Le génome analysé ne signale pas de variante pathogène connue, pas d'alerte médicamenteuse critique, pas de risque polygénique nettement au-dessus de la moyenne."}
-      </p>
-      <p>
-        <strong>Limites importantes&nbsp;:</strong> une puce ne séquence pas tout votre génome —
-        elle lit seulement les positions pré-définies. Les variants rares (nouveaux ou familiaux)
-        ne sont pas détectés ; les régions répétées, CNV et anomalies structurales non plus. Un
-        bilan ClinVar vide sur puce ne vaut pas un bilan négatif en séquençage complet.
-      </p>
 
       <h3 className="pr-h3">Ce qu'il faut faire</h3>
       <ol className="pr-actions">
