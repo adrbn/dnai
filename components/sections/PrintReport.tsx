@@ -233,6 +233,25 @@ function CoverPage({
   const sexLabel =
     info?.sex === "F" ? "Féminin" : info?.sex === "M" ? "Masculin" : info?.sex === "X" ? "Non précisé" : "";
 
+  const clinvarCount = result.clinvar.length;
+  const criticalDrugs = result.pharma.byDrug.filter((d) => d.severity === "high").length;
+  const pharmaTotal = result.pharma.byDrug.length;
+  const prsVeryHigh = result.prs.filter((p) => p.percentile >= 90).length;
+  const prsMild = result.prs.filter((p) => p.percentile >= 75 && p.percentile < 90).length;
+  const fRoh = result.roh.fRoh;
+  const rohHigh = fRoh >= 0.0625;
+  const rohMid = fRoh >= 0.0156 && !rohHigh;
+  const hasRedFlag = clinvarCount > 0 || criticalDrugs > 0 || rohHigh;
+  const hasYellowFlag =
+    !hasRedFlag && (prsVeryHigh > 0 || prsMild > 0 || pharmaTotal > 0 || rohMid);
+  const verdictTone = hasRedFlag ? "red" : hasYellowFlag ? "yellow" : "green";
+  const verdictText = hasRedFlag
+    ? "Plusieurs éléments méritent une discussion médicale."
+    : hasYellowFlag
+      ? "Quelques points d'attention, rien d'alarmant."
+      : "Bilan rassurant — aucun signal fort détecté.";
+  const traitsDetermined = result.traits.filter((t) => t.result).length;
+
   return (
     <section className="pr-cover">
       <div className="pr-cover-top">
@@ -258,6 +277,62 @@ function CoverPage({
         <p className="pr-cover-primer">
           {sourcePrimer(result.meta.source, result.meta.totalSNPs)}
         </p>
+      </div>
+
+      <div className={`pr-cover-verdict pr-cover-verdict-${verdictTone}`}>
+        <div className="pr-cover-verdict-icon" aria-hidden="true">
+          {verdictTone === "red" ? "!" : verdictTone === "yellow" ? "~" : "✓"}
+        </div>
+        <div className="pr-cover-verdict-body">
+          <div className="pr-cover-verdict-label">Résultats en bref</div>
+          <div className="pr-cover-verdict-text">{verdictText}</div>
+        </div>
+      </div>
+
+      <div className="pr-cover-stats">
+        <div className={`pr-cover-stat ${clinvarCount > 0 ? "pr-cover-stat-red" : "pr-cover-stat-green"}`}>
+          <div className="pr-cover-stat-value">{clinvarCount}</div>
+          <div className="pr-cover-stat-label">Alerte{clinvarCount > 1 ? "s" : ""} santé (P/LP)</div>
+        </div>
+        <div
+          className={`pr-cover-stat ${
+            criticalDrugs > 0
+              ? "pr-cover-stat-red"
+              : pharmaTotal > 0
+                ? "pr-cover-stat-yellow"
+                : "pr-cover-stat-green"
+          }`}
+        >
+          <div className="pr-cover-stat-value">{pharmaTotal}</div>
+          <div className="pr-cover-stat-label">
+            Médicament{pharmaTotal > 1 ? "s" : ""}
+            {criticalDrugs > 0 ? ` · ${criticalDrugs} critique${criticalDrugs > 1 ? "s" : ""}` : ""}
+          </div>
+        </div>
+        <div
+          className={`pr-cover-stat ${
+            prsVeryHigh > 0 ? "pr-cover-stat-yellow" : "pr-cover-stat-green"
+          }`}
+        >
+          <div className="pr-cover-stat-value">{prsVeryHigh}</div>
+          <div className="pr-cover-stat-label">
+            PRS top 10%{prsMild > 0 ? ` (+${prsMild} élevé${prsMild > 1 ? "s" : ""})` : ""}
+          </div>
+        </div>
+        <div
+          className={`pr-cover-stat ${
+            rohHigh ? "pr-cover-stat-red" : rohMid ? "pr-cover-stat-yellow" : "pr-cover-stat-green"
+          }`}
+        >
+          <div className="pr-cover-stat-value">{(fRoh * 100).toFixed(2)}%</div>
+          <div className="pr-cover-stat-label">F_ROH (homozygotie)</div>
+        </div>
+        <div className="pr-cover-stat pr-cover-stat-blue">
+          <div className="pr-cover-stat-value">
+            {traitsDetermined}/{result.traits.length}
+          </div>
+          <div className="pr-cover-stat-label">Traits déterminés</div>
+        </div>
       </div>
 
       <div className="pr-cover-grid">
