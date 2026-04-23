@@ -7,7 +7,7 @@ interface FileDropperProps {
   accept?: string;
 }
 
-export function FileDropper({ onFile, accept = ".zip,.csv,.gz" }: FileDropperProps) {
+export function FileDropper({ onFile, accept = ".zip,.csv,.gz,.vcf,.vcf.gz" }: FileDropperProps) {
   const [hot, setHot] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -56,9 +56,9 @@ export function FileDropper({ onFile, accept = ".zip,.csv,.gz" }: FileDropperPro
           <line x1="12" y1="3" x2="12" y2="15" />
         </svg>
       </div>
-      <div className="text-lg font-semibold text-fg">Glissez votre fichier MyHeritage</div>
+      <div className="text-lg font-semibold text-fg">Glissez votre fichier ADN</div>
       <div className="mt-1 text-sm text-fg-muted">
-        .zip, .csv ou .csv.gz — l'analyse se fait <span className="text-accent">dans votre navigateur</span>
+        MyHeritage · 23andMe · AncestryDNA · VCF (WGS) — l'analyse se fait <span className="text-accent">dans votre navigateur</span>
       </div>
       <div className="mt-3 text-xs text-fg-muted/80">Aucune donnée envoyée sur Internet</div>
     </div>

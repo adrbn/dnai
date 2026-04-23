@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/PdfOptionsModal";
 import { useAnalysis } from "@/lib/store/analysis";
 import { exportJson } from "@/lib/export";
+import { DnaMark } from "@/components/ui/DnaMark";
 
 type Tab = "overview" | "health" | "pharma" | "traits" | "risk" | "lookup" | "compare";
 
@@ -61,9 +62,7 @@ export default function ReportPage() {
         <div className="mx-auto max-w-6xl px-4 py-3 sm:px-6">
           <div className="flex items-center justify-between gap-3">
             <Link href="/" className="flex shrink-0 items-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-accent to-accent-2 text-xs font-bold text-bg">
-                N
-              </div>
+              <DnaMark size={32} className="rounded-lg" />
               <span className="text-sm font-semibold">DNAI</span>
             </Link>
 

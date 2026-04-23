@@ -7,6 +7,7 @@ import { ProgressOverlay } from "@/components/ui/ProgressOverlay";
 import { DNAHelix } from "@/components/viz/DNAHelix";
 import { runAnalysis } from "@/lib/analyzer-client";
 import { useAnalysis } from "@/lib/store/analysis";
+import { DnaMark } from "@/components/ui/DnaMark";
 
 export default function Home() {
   const router = useRouter();
@@ -40,9 +41,7 @@ export default function Home() {
       <div className="relative mx-auto flex min-h-screen max-w-6xl flex-col items-stretch px-4 pb-12 pt-8 sm:px-6 sm:pb-16 sm:pt-10">
         <header className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-accent to-accent-2 text-sm font-bold text-bg">
-              N
-            </div>
+            <DnaMark size={40} className="rounded-xl" />
             <div>
               <div className="text-lg font-semibold leading-none tracking-tight">DNAI</div>
               <div className="text-xs text-fg-muted">Analyse ADN dans votre navigateur</div>

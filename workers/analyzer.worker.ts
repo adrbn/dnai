@@ -1,6 +1,7 @@
 /// <reference lib="webworker" />
 
 import { parseMyHeritageFile } from "../lib/parser/myheritage";
+import { looksLikeVcf, parseVcfFile } from "../lib/parser/vcf";
 import { annotateClinVar } from "../lib/annotation/clinvar";
 import { annotatePharma } from "../lib/annotation/pharma";
 import { annotateTraits } from "../lib/annotation/traits";
@@ -78,9 +79,14 @@ async function runAnalysis(msg: AnalyzeInput) {
 
   post({ type: "progress", phase: "parse", percent: 0, message: "Analyse du fichier…" });
   const fileHash = await hashFile(msg.file);
-  const parsed = await parseMyHeritageFile(msg.file, {
-    onProgress: (p) => post({ type: "progress", phase: "parse", percent: p }),
-  });
+  const isVcf = looksLikeVcf(msg.file.name);
+  const parsed = isVcf
+    ? await parseVcfFile(msg.file, {
+        onProgress: (p) => post({ type: "progress", phase: "parse", percent: p }),
+      })
+    : await parseMyHeritageFile(msg.file, {
+        onProgress: (p) => post({ type: "progress", phase: "parse", percent: p }),
+      });
   post({ type: "progress", phase: "parse", percent: 1 });
 
   post({ type: "progress", phase: "annotate", percent: 0, message: "Annotation cliniques & PGx…" });

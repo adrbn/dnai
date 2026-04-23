@@ -36,6 +36,7 @@ Le parser détecte automatiquement :
 | AncestryDNA | ~700 k SNPs | GRCh37 |
 | Living DNA | ~650 k SNPs | GRCh37 |
 | FamilyTreeDNA | ~700 k SNPs | GRCh37 |
+| VCF (WGS) | millions de variants | GRCh37 / GRCh38 |
 
 Le rapport adapte ses textes en fonction de la source détectée et du nombre de positions lues.
 
@@ -80,8 +81,7 @@ Les fichiers JSON générés vivent dans `public/data/`.
 ## Ce qui n'est pas couvert
 
 - **Ancestry / ethnicité** — ce serait redondant avec ce que donnent déjà les labos.
-- **WGS (séquençage complet)** — le parser VCF n'est pas branché. Les puces grand public suffisent pour 95 % du contenu utile aux médecins aujourd'hui.
-- **Variants structuraux, CNV, indels longs** — non couverts par les puces.
+- **Variants structuraux, CNV, indels longs** — non couverts par les puces grand public. Pour un VCF WGS, seuls les SNVs biallélliques PASS sont annotés aujourd'hui.
 - **Diagnostic médical** — DNAI ne remplace pas un généticien clinicien. Toute variante importante doit être validée en labo.
 
 ## Avertissement médical
