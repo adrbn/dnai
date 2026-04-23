@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type { Act } from "@/lib/story/acts";
 
 const SEV_COLOR = {
@@ -303,12 +304,12 @@ function OutroBody({ act }: { act: Extract<Act, { kind: "outro" }> }) {
         Pour une vue détaillée, chaque variant et chaque règle est explorable dans le rapport
         complet.
       </p>
-      <a
+      <Link
         href="/report"
         className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white transition hover:border-white/40 hover:bg-white/20"
       >
         Voir le rapport détaillé →
-      </a>
+      </Link>
     </>
   );
 }
