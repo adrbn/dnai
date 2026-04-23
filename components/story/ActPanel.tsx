@@ -224,8 +224,12 @@ function PRSBody({ act }: { act: Extract<Act, { kind: "prs" }> }) {
       <div className="mt-4 rounded-lg border border-white/10 bg-white/[0.03] p-4">
         <div className="relative h-2 w-full rounded-full bg-white/10">
           <div
-            className="absolute h-2 rounded-full bg-gradient-to-r from-[#7c9cff] to-[#c7b2ff]"
-            style={{ width: `${Math.max(2, Math.min(100, p.percentile))}%` }}
+            className="absolute h-2 rounded-full"
+            style={{
+              width: `${Math.max(2, Math.min(100, p.percentile))}%`,
+              background:
+                "linear-gradient(to right, #7c9cff 0%, #c7b2ff 50%, #f76e6e 85%, #dc2626 100%)",
+            }}
           />
           <div
             className="absolute -top-1 h-4 w-0.5 bg-white"
