@@ -3,6 +3,7 @@
 import type { AnalysisResult, ClinVarFinding, PharmaByDrug, PRSFinding, TraitFinding } from "@/lib/types";
 import type { PdfUserInfo } from "@/components/ui/PdfOptionsModal";
 import { coverageNote, sourceBadge, sourceLabel, sourcePrimer } from "@/lib/source-copy";
+import { DnaMark } from "@/components/ui/DnaMark";
 
 interface Props {
   result: AnalysisResult;
@@ -256,7 +257,7 @@ function CoverPage({
     <section className="pr-cover">
       <div className="pr-cover-top">
         <div className="pr-brand">
-          <div className="pr-brand-mark">N</div>
+          <DnaMark size={36} background={false} color="#0b0b10" className="pr-brand-mark-svg" />
           <div className="pr-brand-text">
             <div className="pr-brand-name">DNAI</div>
             <div className="pr-brand-tag">Analyse génomique personnelle</div>
