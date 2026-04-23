@@ -34,6 +34,7 @@ export type ClinVarEntry = {
 export type ClinVarFinding = {
   entry: ClinVarEntry;
   zygosity: Exclude<Zygosity, "nocall" | "ref/ref">;
+  observed: string; // actual genotype from user's file, e.g. "GG", "AG"
 };
 
 export type Severity = "low" | "medium" | "high";
@@ -103,6 +104,15 @@ export type TraitFinding = {
   genotypes_used: Record<string, string | null>;
 };
 
+export type DnaSource =
+  | "myheritage"
+  | "23andme"
+  | "ancestrydna"
+  | "livingdna"
+  | "ftdna"
+  | "wgs"
+  | "unknown";
+
 export type AnalysisMeta = {
   totalSNPs: number;
   noCalls: number;
@@ -110,16 +120,83 @@ export type AnalysisMeta = {
   filename: string;
   fileHash: string;
   parsedAt: string; // ISO
+  source: DnaSource;
+};
+
+export type DensityMap = Record<string, number[]>;
+export type PositionIndex = Record<string, { chr: string; pos: number }>;
+
+export type PRSRuleSNP = {
+  rsid: string;
+  effect: Base;
+  weight: number;
+  af: number; // effect-allele frequency (EUR/global), used for z-score normalization
+};
+
+export type PRSRule = {
+  id: string;
+  trait: string;
+  category: "metabolic" | "cardio" | "neuro" | "cancer" | "anthropometric" | "longevity";
+  description: string;
+  source: string;
+  units: string; // "log-OR" or "effect size (SD)"
+  emoji?: string;
+  snps: PRSRuleSNP[];
+};
+
+export type PRSFinding = {
+  rule: PRSRule;
+  score: number; // raw weighted sum
+  popMean: number;
+  popSd: number;
+  zScore: number;
+  percentile: number; // 0..100
+  coverage: number; // 0..1, fraction of SNPs matched
+  matched: number;
+  total: number;
+  contributors: {
+    rsid: string;
+    effect: Base;
+    weight: number;
+    observed: string | null; // "AG", "AA", etc. or null if nocall/missing
+    dosage: number | null; // 0, 1, or 2 copies of effect allele
+    contribution: number;
+  }[];
+};
+
+export type ROHSegment = {
+  chr: string;
+  startPos: number;
+  endPos: number;
+  lengthBp: number;
+  snpCount: number;
+};
+
+export type ROHResult = {
+  segments: ROHSegment[];
+  totalBp: number;
+  totalSegments: number;
+  fRoh: number; // inbreeding coefficient estimate
+  autosomalBp: number;
 };
 
 export type AnalysisResult = {
   meta: AnalysisMeta;
+  density: DensityMap;
   clinvar: ClinVarFinding[];
   pharma: { findings: PharmaFinding[]; byDrug: PharmaByDrug[] };
   traits: TraitFinding[];
+  prs: PRSFinding[];
+  roh: ROHResult;
+};
+
+export type AnalysisData = {
+  result: AnalysisResult;
+  genotypes: GenotypeMap;
+  positions: PositionIndex;
 };
 
 export type ProgressEvent =
   | { type: "progress"; phase: "parse" | "fetch" | "annotate"; percent: number; message?: string }
-  | { type: "done"; result: AnalysisResult }
+  | { type: "done"; result: AnalysisResult; genotypes: GenotypeMap; positions: PositionIndex }
   | { type: "error"; error: string };

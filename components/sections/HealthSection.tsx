@@ -1,7 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { ProteinViewer } from "@/components/viz/ProteinViewer";
+import { uniprotForGene } from "@/lib/gene-uniprot";
 import type { ClinVarFinding } from "@/lib/types";
 
 interface HealthSectionProps {
@@ -17,6 +20,8 @@ const SIG_LABEL: Record<string, string> = {
 const STARS = ["—", "✱", "✱✱", "✱✱✱", "✱✱✱✱"];
 
 export function HealthSection({ findings }: HealthSectionProps) {
+  const [openGene, setOpenGene] = useState<string | null>(null);
+
   if (findings.length === 0) {
     return (
       <Card>
@@ -62,7 +67,16 @@ export function HealthSection({ findings }: HealthSectionProps) {
           />
           <div className="grid gap-3 text-sm md:grid-cols-3">
             <Info label="rsID" value={f.entry.rs} mono />
-            <Info label="Génotype observé" value={`${f.entry.ref}${f.entry.alt}`} mono />
+            <Info
+              label="Génotype observé"
+              value={f.observed}
+              mono
+              right={
+                <span className="text-[10px] text-fg-muted">
+                  (ref {f.entry.ref} / alt {f.entry.alt})
+                </span>
+              }
+            />
             <Info
               label="Qualité review"
               value={STARS[Math.min(f.entry.rev, 4)]}
@@ -72,15 +86,33 @@ export function HealthSection({ findings }: HealthSectionProps) {
           {f.entry.note && (
             <p className="mt-3 text-sm text-fg-muted">{f.entry.note}</p>
           )}
-          {f.entry.href && (
-            <a
-              href={f.entry.href}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-2 inline-block text-xs text-accent hover:underline"
-            >
-              → Fiche ClinVar
-            </a>
+          <div className="mt-3 flex flex-wrap gap-3 text-xs">
+            {f.entry.href && (
+              <a
+                href={f.entry.href}
+                target="_blank"
+                rel="noreferrer"
+                className="text-accent hover:underline"
+              >
+                → Fiche ClinVar
+              </a>
+            )}
+            {uniprotForGene(f.entry.gene) && (
+              <button
+                type="button"
+                onClick={() =>
+                  setOpenGene(openGene === f.entry.gene ? null : f.entry.gene)
+                }
+                className="text-accent hover:underline"
+              >
+                {openGene === f.entry.gene ? "Masquer la structure 3D" : "→ Structure 3D (AlphaFold)"}
+              </button>
+            )}
+          </div>
+          {openGene === f.entry.gene && (
+            <div className="mt-3">
+              <ProteinViewer gene={f.entry.gene} onClose={() => setOpenGene(null)} />
+            </div>
           )}
         </Card>
       ))}

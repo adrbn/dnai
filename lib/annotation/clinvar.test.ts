@@ -17,6 +17,7 @@ describe("annotateClinVar", () => {
     expect(findings).toHaveLength(1);
     expect(findings[0].zygosity).toBe("alt/alt");
     expect(findings[0].entry.gene).toBe("BRCA1");
+    expect(findings[0].observed).toBe("AA");
   });
 
   it("returns finding for heterozygous", () => {
@@ -24,6 +25,7 @@ describe("annotateClinVar", () => {
     const findings = annotateClinVar(genos, mockDB);
     expect(findings).toHaveLength(1);
     expect(findings[0].zygosity).toBe("ref/alt");
+    expect(findings[0].observed).toBe("AG");
   });
 
   it("skips homozygous ref (no finding)", () => {

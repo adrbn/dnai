@@ -1,17 +1,26 @@
 import { unzipSync, gunzipSync, strFromU8 } from "fflate";
 import { normalize } from "../genotype";
-import { GenotypeMap, isNoCall } from "../types";
+import { DnaSource, GenotypeMap, isNoCall } from "../types";
 
 export type ParseOptions = {
   onProgress?: (percent: number) => void;
+  filename?: string;
 };
+
+export type DensityMap = Record<string, number[]>;
+export type PositionIndex = Record<string, { chr: string; pos: number }>;
+
+export const DENSITY_BIN_SIZE = 1_000_000; // 1 Mb bins
 
 export type ParseOutput = {
   genotypes: GenotypeMap;
+  positions: PositionIndex;
+  density: DensityMap;
   meta: {
     totalSNPs: number;
     noCalls: number;
     build: string;
+    source: DnaSource;
   };
 };
 
@@ -30,6 +39,25 @@ function detectBuildFromHeader(lines: string[]): string {
   return "GRCh37"; // MyHeritage default historically
 }
 
+function detectSource(lines: string[], filename?: string): DnaSource {
+  const headerBlob = lines
+    .filter((l) => l.startsWith("#"))
+    .slice(0, 30)
+    .join("\n")
+    .toLowerCase();
+  const fn = (filename ?? "").toLowerCase();
+
+  if (headerBlob.includes("myheritage") || fn.includes("myheritage")) return "myheritage";
+  if (headerBlob.includes("23andme") || fn.includes("23andme")) return "23andme";
+  if (headerBlob.includes("ancestrydna") || headerBlob.includes("ancestry.com") || fn.includes("ancestry"))
+    return "ancestrydna";
+  if (headerBlob.includes("living dna") || headerBlob.includes("livingdna") || fn.includes("living"))
+    return "livingdna";
+  if (headerBlob.includes("familytreedna") || headerBlob.includes("family tree dna") || fn.includes("ftdna"))
+    return "ftdna";
+  return "unknown";
+}
+
 function unquote(s: string): string {
   if (s.length >= 2 && s[0] === '"' && s[s.length - 1] === '"') {
     return s.slice(1, -1);
@@ -44,7 +72,10 @@ export async function parseMyHeritageText(
   const normalized = text.replace(/\r\n/g, "\n");
   const lines = normalized.split("\n");
   const build = detectBuildFromHeader(lines);
+  const source = detectSource(lines, opts.filename);
   const genotypes: GenotypeMap = new Map();
+  const positions: PositionIndex = {};
+  const density: DensityMap = {};
   let noCalls = 0;
   let total = 0;
   let headerSeen = false;
@@ -55,7 +86,6 @@ export async function parseMyHeritageText(
     if (!raw) continue;
     if (raw.startsWith("#")) continue;
     if (!headerSeen) {
-      // Header row "RSID,CHROMOSOME,POSITION,RESULT"
       if (raw.toUpperCase().startsWith("RSID")) {
         headerSeen = true;
         continue;
@@ -64,12 +94,19 @@ export async function parseMyHeritageText(
     const cols = raw.split(",");
     if (cols.length < 4) continue;
     const rsid = unquote(cols[0]).trim();
-    // cols[1] chromosome, cols[2] position — not stored in the map to save RAM
+    const chr = unquote(cols[1]).trim().toUpperCase();
+    const posN = parseInt(unquote(cols[2]).trim(), 10);
     const result = unquote(cols[3]).trim();
     if (!rsid) continue;
     const g = normalize(result);
     if (isNoCall(g)) noCalls++;
     genotypes.set(rsid, g);
+    if (chr && !Number.isNaN(posN)) {
+      positions[rsid] = { chr, pos: posN };
+      const bin = Math.floor(posN / DENSITY_BIN_SIZE);
+      const arr = density[chr] ?? (density[chr] = []);
+      arr[bin] = (arr[bin] ?? 0) + 1;
+    }
     total++;
     if (opts.onProgress && i % 10000 === 0) {
       opts.onProgress(i / totalLines);
@@ -79,7 +116,9 @@ export async function parseMyHeritageText(
 
   return {
     genotypes,
-    meta: { totalSNPs: total, noCalls, build },
+    positions,
+    density,
+    meta: { totalSNPs: total, noCalls, build, source },
   };
 }
 
@@ -103,5 +142,6 @@ export async function parseMyHeritageFile(
   opts: ParseOptions = {},
 ): Promise<ParseOutput> {
   const text = await blobToText(file);
-  return parseMyHeritageText(text, opts);
+  const name = (file as File).name ?? opts.filename;
+  return parseMyHeritageText(text, { ...opts, filename: name });
 }

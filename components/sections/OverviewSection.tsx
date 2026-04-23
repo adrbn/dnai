@@ -5,13 +5,16 @@ import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Karyogram } from "@/components/viz/Karyogram";
 import { SeverityBars } from "@/components/viz/SeverityBars";
-import type { AnalysisResult, Severity } from "@/lib/types";
+import { DensityHeatmap } from "@/components/viz/DensityHeatmap";
+import { ROHCard } from "@/components/viz/ROHCard";
+import type { AnalysisResult, PositionIndex, Severity } from "@/lib/types";
 
 interface OverviewSectionProps {
   result: AnalysisResult;
+  positions?: PositionIndex | null;
 }
 
-export function OverviewSection({ result }: OverviewSectionProps) {
+export function OverviewSection({ result, positions }: OverviewSectionProps) {
   const severityCounts: Record<Severity, number> = useMemo(() => {
     const c: Record<Severity, number> = { low: 0, medium: 0, high: 0 };
     for (const d of result.pharma.byDrug) c[d.severity]++;
@@ -20,10 +23,38 @@ export function OverviewSection({ result }: OverviewSectionProps) {
 
   const markers = useMemo(() => {
     const out: { chr: string; pos: number; color: string; label: string; id: string }[] = [];
-    // ClinVar — red markers. We don't have positions here, but rsid list will still be useful
-    // in v2. For now, this is a placeholder since we don't store chr/pos in seed.
+    if (!positions) return out;
+    for (const f of result.clinvar) {
+      const p = positions[f.entry.rs];
+      if (!p) continue;
+      out.push({
+        chr: p.chr,
+        pos: p.pos,
+        color: "rgb(var(--danger))",
+        label: `${f.entry.gene} · ${f.entry.rs} (${f.observed})`,
+        id: `clinvar-${f.entry.rs}`,
+      });
+    }
+    for (const d of result.pharma.byDrug) {
+      for (const c of d.contributors) {
+        if (c.zygosity === "ref/ref" || c.zygosity === "nocall") continue;
+        // find rsid from gene? pharma findings carry rsid in result.pharma.findings
+      }
+    }
+    for (const f of result.pharma.findings) {
+      if (f.zygosity === "ref/ref" || f.zygosity === "nocall" || f.zygosity === "ambiguous") continue;
+      const p = positions[f.rule.rsid];
+      if (!p) continue;
+      out.push({
+        chr: p.chr,
+        pos: p.pos,
+        color: "rgb(var(--warn))",
+        label: `${f.rule.gene} · ${f.rule.rsid}`,
+        id: `pharma-${f.rule.rsid}`,
+      });
+    }
     return out;
-  }, []);
+  }, [result, positions]);
 
   const callRate = result.meta.totalSNPs === 0
     ? 0
@@ -58,19 +89,56 @@ export function OverviewSection({ result }: OverviewSectionProps) {
 
       <Card className="md:col-span-4">
         <CardHeader title="Découvertes" subtitle="Aperçu rapide" />
-        <div className="grid grid-cols-3 gap-3">
-          <Tile value={result.clinvar.length} label="ClinVar P/LP" tone="danger" />
-          <Tile value={result.pharma.byDrug.length} label="Médicaments" tone="warn" />
-          <Tile value={result.traits.filter((t) => t.result).length} label="Traits" tone="accent" />
+        <div className="space-y-2">
+          <Tile
+            value={result.clinvar.length}
+            label="Variants ClinVar"
+            sub="Pathogènes ou probablement path."
+            tone="danger"
+          />
+          <Tile
+            value={result.pharma.byDrug.length}
+            label="Médicaments concernés"
+            sub={`sur ${result.pharma.findings.length} règles PGx`}
+            tone="warn"
+          />
+          <Tile
+            value={result.traits.filter((t) => t.result).length}
+            label="Traits déterminés"
+            sub={`sur ${result.traits.length} analysés`}
+            tone="accent"
+          />
+          <Tile
+            value={result.prs.filter((p) => p.percentile >= 75).length}
+            label="Scores élevés (PRS)"
+            sub={`sur ${result.prs.length} conditions évaluées`}
+            tone="warn"
+          />
         </div>
       </Card>
 
       <Card className="md:col-span-12">
         <CardHeader
           title="Karyogramme"
-          subtitle="Cartographie des chromosomes (GRCh37)"
+          subtitle="Cartographie des chromosomes (GRCh37) · rouge = ClinVar P/LP · orange = pharmaco"
         />
         <Karyogram markers={markers} />
+      </Card>
+
+      <Card className="md:col-span-12">
+        <CardHeader
+          title="Densité de SNPs"
+          subtitle="Couverture du génotypage par chromosome (bins de 1 Mb, échelle log)"
+        />
+        <DensityHeatmap density={result.density} />
+      </Card>
+
+      <Card className="md:col-span-12">
+        <CardHeader
+          title="Segments homozygotes"
+          subtitle="Segments ≥ 1 Mb et ≥ 30 SNPs · estimateur F_ROH de consanguinité"
+        />
+        <ROHCard roh={result.roh} />
       </Card>
     </div>
   );
@@ -98,17 +166,49 @@ function Row({
   );
 }
 
-function Tile({ value, label, tone }: { value: number; label: string; tone: "danger" | "warn" | "accent" }) {
+function Tile({
+  value,
+  label,
+  sub,
+  tone,
+}: {
+  value: number;
+  label: string;
+  sub?: string;
+  tone: "danger" | "warn" | "accent";
+}) {
   const color =
     tone === "danger"
-      ? "from-danger/30 to-danger/5 text-danger"
+      ? "text-danger"
       : tone === "warn"
-        ? "from-warn/30 to-warn/5 text-warn"
-        : "from-accent/30 to-accent/5 text-accent";
+        ? "text-warn"
+        : "text-accent";
+  const ring =
+    tone === "danger"
+      ? "border-danger/30"
+      : tone === "warn"
+        ? "border-warn/30"
+        : "border-accent/30";
+  const bar =
+    tone === "danger"
+      ? "bg-danger"
+      : tone === "warn"
+        ? "bg-warn"
+        : "bg-accent";
   return (
-    <div className={`rounded-xl border border-border bg-gradient-to-br p-3 ${color}`}>
-      <div className="text-3xl font-bold tabular-nums">{value}</div>
-      <div className="mt-1 text-xs text-fg-muted">{label}</div>
+    <div
+      className={`flex items-center gap-3 overflow-hidden rounded-xl border ${ring} bg-surface-2/40 p-3`}
+    >
+      <div className={`h-10 w-1 shrink-0 rounded-full ${bar}`} />
+      <div className="min-w-0 flex-1">
+        <div className="flex items-baseline gap-2">
+          <span className={`text-2xl font-bold tabular-nums leading-none ${color}`}>
+            {value}
+          </span>
+          <span className="truncate text-xs text-fg">{label}</span>
+        </div>
+        {sub && <div className="mt-0.5 truncate text-[10px] text-fg-muted">{sub}</div>}
+      </div>
     </div>
   );
 }

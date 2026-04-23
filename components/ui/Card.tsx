@@ -15,7 +15,7 @@ export function Card({ children, className = "", ...rest }: CardProps) {
   );
 }
 
-export function CardHeader({ title, subtitle, right }: { title: string; subtitle?: string; right?: ReactNode }) {
+export function CardHeader({ title, subtitle, right }: { title: ReactNode; subtitle?: string; right?: ReactNode }) {
   return (
     <div className="mb-4 flex items-start justify-between gap-4">
       <div>

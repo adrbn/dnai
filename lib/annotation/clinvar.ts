@@ -1,4 +1,4 @@
-import { isBase, matchAllele } from "../genotype";
+import { genotypeToString, isBase, matchAllele } from "../genotype";
 import { ClinVarEntry, ClinVarFinding, GenotypeMap, Zygosity } from "../types";
 
 export type ClinVarAnnotateOptions = {
@@ -32,7 +32,7 @@ export function annotateClinVar(
     if (z === "ref/alt" || z === "alt/alt" || z === "ambiguous") {
       // We report ambiguous as such (rare) so user sees the data honestly
       if (z === "ambiguous") continue; // actually skip ambiguous to avoid noise
-      findings.push({ entry, zygosity: z });
+      findings.push({ entry, zygosity: z, observed: genotypeToString(g) });
     }
   }
 

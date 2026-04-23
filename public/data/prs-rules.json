@@ -1,0 +1,103 @@
+[
+  {
+    "id": "prs-cad",
+    "trait": "Maladie coronarienne",
+    "category": "cardio",
+    "description": "Score pour la coronaropathie / infarctus — 9p21, PHACTR1, IL6R et COL4A2.",
+    "source": "CARDIoGRAMplusC4D (lead variants sur chip GSA)",
+    "units": "log-OR",
+    "emoji": "❤️",
+    "snps": [
+      { "rsid": "rs10757274", "effect": "G", "weight": 0.210, "af": 0.47 },
+      { "rsid": "rs2891168", "effect": "G", "weight": 0.190, "af": 0.49 },
+      { "rsid": "rs9349379", "effect": "A", "weight": 0.130, "af": 0.42 },
+      { "rsid": "rs4845625", "effect": "T", "weight": 0.070, "af": 0.47 },
+      { "rsid": "rs4773144", "effect": "G", "weight": 0.090, "af": 0.43 }
+    ]
+  },
+  {
+    "id": "prs-ad",
+    "trait": "Maladie d'Alzheimer",
+    "category": "neuro",
+    "description": "APOE ε2 (protecteur) + loci BIN1, MEF2C, ZCWPW1, FERMT2, ABCA7, CR1, SLC24A4.",
+    "source": "Lambert 2013 + Kunkle 2019 (lead SNPs GSA)",
+    "units": "log-OR",
+    "emoji": "🧠",
+    "snps": [
+      { "rsid": "rs7412", "effect": "T", "weight": -0.470, "af": 0.08 },
+      { "rsid": "rs744373", "effect": "G", "weight": 0.160, "af": 0.30 },
+      { "rsid": "rs190982", "effect": "G", "weight": 0.080, "af": 0.38 },
+      { "rsid": "rs1476679", "effect": "C", "weight": 0.100, "af": 0.29 },
+      { "rsid": "rs17125944", "effect": "C", "weight": 0.130, "af": 0.09 },
+      { "rsid": "rs3764650", "effect": "G", "weight": 0.210, "af": 0.10 },
+      { "rsid": "rs3818361", "effect": "A", "weight": 0.160, "af": 0.22 },
+      { "rsid": "rs10498633", "effect": "T", "weight": 0.100, "af": 0.25 }
+    ]
+  },
+  {
+    "id": "prs-bmi",
+    "trait": "IMC (index de masse corporelle)",
+    "category": "anthropometric",
+    "description": "Signal FTO principal, capturé par rs17817449 (haplotype de risque).",
+    "source": "GIANT 2015 — variant GSA-compatible",
+    "units": "effect size (kg/m² / copie)",
+    "emoji": "⚖️",
+    "snps": [
+      { "rsid": "rs17817449", "effect": "G", "weight": 0.390, "af": 0.60 },
+      { "rsid": "rs3751812", "effect": "T", "weight": 0.300, "af": 0.40 },
+      { "rsid": "rs1075440", "effect": "G", "weight": 0.100, "af": 0.20 }
+    ]
+  },
+  {
+    "id": "prs-height",
+    "trait": "Taille adulte",
+    "category": "anthropometric",
+    "description": "Score illustratif — variants GSA sur la taille.",
+    "source": "GIANT 2014 (Wood et al.)",
+    "units": "effect size (SD)",
+    "emoji": "📏",
+    "snps": [
+      { "rsid": "rs2871960", "effect": "A", "weight": 0.100, "af": 0.40 },
+      { "rsid": "rs9428104", "effect": "A", "weight": 0.080, "af": 0.55 },
+      { "rsid": "rs2814982", "effect": "T", "weight": 0.080, "af": 0.12 }
+    ]
+  },
+  {
+    "id": "prs-bc",
+    "trait": "Cancer du sein",
+    "category": "cancer",
+    "description": "Score polygénique éducatif — variants NRIP1 / proxies GSA.",
+    "source": "Mavaddat 2019 (GSA-compatible)",
+    "units": "log-OR",
+    "emoji": "🎀",
+    "snps": [
+      { "rsid": "rs2823093", "effect": "G", "weight": 0.080, "af": 0.25 },
+      { "rsid": "rs144848", "effect": "C", "weight": 0.100, "af": 0.27 }
+    ]
+  },
+  {
+    "id": "prs-afib",
+    "trait": "Fibrillation atriale",
+    "category": "cardio",
+    "description": "Locus PITX2 (4q25) — proxy GSA rs6817105.",
+    "source": "Roselli 2018",
+    "units": "log-OR",
+    "emoji": "💓",
+    "snps": [
+      { "rsid": "rs6817105", "effect": "T", "weight": 0.470, "af": 0.13 }
+    ]
+  },
+  {
+    "id": "prs-longevity",
+    "trait": "Longévité exceptionnelle",
+    "category": "longevity",
+    "description": "APOE ε2 (allèle T de rs7412 favorable) + FOXO3.",
+    "source": "Sebastiani 2017",
+    "units": "log-OR",
+    "emoji": "🕰️",
+    "snps": [
+      { "rsid": "rs7412", "effect": "T", "weight": 0.260, "af": 0.08 },
+      { "rsid": "rs1935949", "effect": "A", "weight": 0.100, "af": 0.35 }
+    ]
+  }
+]

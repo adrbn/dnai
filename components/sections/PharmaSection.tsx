@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { DrugSunburst } from "@/components/viz/DrugSunburst";
+import { ProteinViewer } from "@/components/viz/ProteinViewer";
+import { uniprotForGene } from "@/lib/gene-uniprot";
 import type { PharmaByDrug, Severity } from "@/lib/types";
 
 interface PharmaSectionProps {
@@ -24,6 +26,7 @@ const SEV_LABEL: Record<Severity, string> = {
 
 export function PharmaSection({ byDrug }: PharmaSectionProps) {
   const [selected, setSelected] = useState<string | null>(null);
+  const [openGene, setOpenGene] = useState<string | null>(null);
 
   const selectedDrug = useMemo(
     () => byDrug.find((d) => d.drug === selected) ?? byDrug[0] ?? null,
@@ -81,17 +84,48 @@ export function PharmaSection({ byDrug }: PharmaSectionProps) {
               Contributeurs génétiques
             </div>
             <ul className="space-y-2 text-sm">
-              {selectedDrug.contributors.map((c, i) => (
-                <li key={i} className="flex items-center justify-between rounded-lg border border-border bg-surface-2/40 p-2.5">
-                  <div>
-                    <span className="font-mono text-accent">{c.gene}</span>
-                    <span className="ml-2 text-fg-muted">{c.phenotype}</span>
-                  </div>
-                  <Badge variant={c.zygosity === "alt/alt" ? "danger" : c.zygosity === "ref/alt" ? "warn" : "neutral"}>
-                    {c.zygosity}
-                  </Badge>
-                </li>
-              ))}
+              {selectedDrug.contributors.map((c, i) => {
+                const hasStruct = uniprotForGene(c.gene) != null;
+                return (
+                  <li key={i} className="rounded-lg border border-border bg-surface-2/40 p-2.5">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="font-mono text-accent">{c.gene}</span>
+                        <span className="ml-2 text-fg-muted">{c.phenotype}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge
+                          variant={
+                            c.zygosity === "alt/alt"
+                              ? "danger"
+                              : c.zygosity === "ref/alt"
+                                ? "warn"
+                                : "neutral"
+                          }
+                        >
+                          {c.zygosity}
+                        </Badge>
+                        {hasStruct && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setOpenGene(openGene === c.gene ? null : c.gene)
+                            }
+                            className="text-xs text-accent hover:underline"
+                          >
+                            {openGene === c.gene ? "Masquer 3D" : "3D"}
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                    {openGene === c.gene && (
+                      <div className="mt-3">
+                        <ProteinViewer gene={c.gene} onClose={() => setOpenGene(null)} />
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </>
         )}

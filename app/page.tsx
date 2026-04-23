@@ -10,22 +10,22 @@ import { useAnalysis } from "@/lib/store/analysis";
 
 export default function Home() {
   const router = useRouter();
-  const { setStatus, setProgress, setResult, setError, reset } = useAnalysis();
+  const { setStatus, setProgress, setData, setError, reset } = useAnalysis();
 
   const onFile = useCallback(
     async (file: File) => {
       reset();
       setStatus("running");
       try {
-        const result = await runAnalysis(file, { onProgress: setProgress });
-        setResult(result);
+        const data = await runAnalysis(file, { onProgress: setProgress });
+        setData(data);
         router.push("/report");
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : "Erreur inconnue";
         setError(msg);
       }
     },
-    [reset, setStatus, setProgress, setResult, setError, router],
+    [reset, setStatus, setProgress, setData, setError, router],
   );
 
   return (
@@ -37,8 +37,8 @@ export default function Home() {
         <div className="absolute -bottom-40 -right-40 h-[520px] w-[520px] rounded-full bg-accent-2/20 blur-3xl" />
       </div>
 
-      <div className="relative mx-auto flex min-h-screen max-w-6xl flex-col items-stretch px-6 pb-16 pt-10">
-        <header className="flex items-center justify-between">
+      <div className="relative mx-auto flex min-h-screen max-w-6xl flex-col items-stretch px-4 pb-12 pt-8 sm:px-6 sm:pb-16 sm:pt-10">
+        <header className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-accent to-accent-2 text-sm font-bold text-bg">
               N
@@ -54,22 +54,22 @@ export default function Home() {
           </div>
         </header>
 
-        <div className="mt-12 grid flex-1 items-center gap-10 md:grid-cols-2">
+        <div className="mt-8 grid flex-1 items-center gap-8 sm:mt-12 sm:gap-10 md:grid-cols-2">
           <div className="animate-fade-in">
-            <h1 className="text-5xl font-bold leading-[1.05] tracking-tight">
+            <h1 className="text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl">
               Votre ADN,
               <br />
               <span className="bg-gradient-to-r from-accent to-accent-2 bg-clip-text text-transparent">
                 lu par vous seul.
               </span>
             </h1>
-            <p className="mt-5 text-lg text-fg-muted">
+            <p className="mt-4 text-base text-fg-muted sm:mt-5 sm:text-lg">
               Déposez votre fichier <span className="font-semibold text-fg">MyHeritage Raw DNA</span>.
               Le rapport s'assemble entièrement dans votre navigateur — pas d'envoi serveur, pas de compte,
               pas de pistage.
             </p>
 
-            <div className="mt-6 grid grid-cols-2 gap-3 text-sm">
+            <div className="mt-6 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
               <Pill emoji="🧬" label="700 000 SNPs analysés" />
               <Pill emoji="💊" label="Pharmacogénomique CPIC" />
               <Pill emoji="⚕️" label="Variants ClinVar (P/LP)" />
@@ -85,14 +85,33 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="relative hidden h-[600px] md:block">
+          <div className="relative hidden h-[720px] md:block">
             <DNAHelix className="absolute inset-0" />
           </div>
         </div>
 
         <footer className="mt-16 flex flex-col items-center justify-between gap-2 border-t border-border pt-6 text-xs text-fg-muted md:flex-row">
           <div>DNAI · build GRCh37 · inspired by CPIC, ClinVar, SNPedia</div>
-          <div>Fait avec ❤️ pour les curieux de leur génome</div>
+          <div className="flex items-center gap-1.5">
+            <span>Fait avec</span>
+            <svg
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="h-3.5 w-3.5 text-fg"
+              aria-label="amour"
+            >
+              <path d="M12 21s-7.5-4.58-10-10.08A5.5 5.5 0 0 1 12 5a5.5 5.5 0 0 1 10 5.92C19.5 16.42 12 21 12 21z" />
+            </svg>
+            <span>pour les curieux de leur génome · par</span>
+            <a
+              href="https://github.com/adrbn"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-fg hover:text-accent hover:underline"
+            >
+              Adrien Robino
+            </a>
+          </div>
         </footer>
       </div>
     </main>
