@@ -344,14 +344,21 @@ body {
     break-inside: avoid;
     page-break-inside: avoid;
   }
-  .pr-section > * {
+  .pr-section > p,
+  .pr-section > h3,
+  .pr-section > .pr-summary,
+  .pr-section > .pr-note,
+  .pr-section > .pr-metrics,
+  .pr-section > .pr-empty {
     break-inside: avoid;
     page-break-inside: avoid;
   }
-  .pr-table, .pr-table tbody, .pr-table tr {
+  .pr-table tr {
     break-inside: avoid;
     page-break-inside: avoid;
   }
+  .pr-table tbody td { padding: 1.8mm 2mm !important; font-size: 8.8pt !important; }
+  .pr-table thead th { padding: 2mm 2mm !important; }
   .pr-section h2 {
     display: flex;
     align-items: baseline;
