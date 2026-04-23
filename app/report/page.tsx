@@ -71,6 +71,12 @@ export default function ReportPage() {
             </div>
 
             <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+              <Link
+                href="/story"
+                className="whitespace-nowrap rounded-lg border border-accent/40 bg-accent/10 px-2 py-1.5 text-xs font-medium text-accent hover:border-accent hover:bg-accent/15 sm:px-2.5"
+              >
+                Récit
+              </Link>
               <button
                 type="button"
                 onClick={() => exportJson(result)}

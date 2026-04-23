@@ -20,7 +20,7 @@ export default function Home() {
       try {
         const data = await runAnalysis(file, { onProgress: setProgress });
         setData(data);
-        router.push("/report");
+        router.push("/story");
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : "Erreur inconnue";
         setError(msg);
