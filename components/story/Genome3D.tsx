@@ -40,7 +40,7 @@ const HELIX_TILT_Z = 0.12;
 // poses don't push the helix to the screen edge. The left side of the
 // viewport is fully empty now (no TimelineRibbon), so we can keep the helix
 // closer to center than before.
-const HELIX_X_OFFSET = -2.2;
+const HELIX_X_OFFSET = -4;
 // Fade the top ~18% and bottom ~18% of the helix out so it looks infinite.
 const FADE_MARGIN = 0.18;
 

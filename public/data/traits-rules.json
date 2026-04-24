@@ -274,5 +274,70 @@
     ],
     "confidence": "high",
     "sources": ["Monsuur et al. 2008", "Koskinen et al. 2009"]
+  },
+  {
+    "id": "obesity_fto",
+    "title": "Prédisposition à l'obésité (FTO)",
+    "gene": "FTO",
+    "rsids": ["rs9939609"],
+    "call_rules": [
+      { "when": { "rs9939609": "AA" }, "result": { "label": "Risque élevé (AA)", "detail": "+3 kg en moyenne vs TT à IMC adulte. Effet modulable par l'exercice (~30% d'atténuation avec activité soutenue)." } },
+      { "when": { "rs9939609": "AT" }, "result": { "label": "Risque intermédiaire (AT)", "detail": "+1.5 kg en moyenne. L'environnement alimentaire reste prépondérant." } },
+      { "when": { "rs9939609": "TT" }, "result": { "label": "Risque bas (TT)", "detail": "Allèle protecteur — effet FTO minimal. Les autres facteurs (régime, sommeil, activité) dominent." } }
+    ],
+    "confidence": "high",
+    "sources": ["Frayling et al. 2007", "Kilpeläinen et al. 2011 (exercise interaction)"]
+  },
+  {
+    "id": "mthfr_folate",
+    "title": "Métabolisme du folate (MTHFR C677T)",
+    "gene": "MTHFR",
+    "rsids": ["rs1801133"],
+    "call_rules": [
+      { "when": { "rs1801133": "GG" }, "result": { "label": "Activité normale (CC)", "detail": "MTHFR pleinement fonctionnelle. Aucun ajustement folate nécessaire." } },
+      { "when": { "rs1801133": "AG" }, "result": { "label": "Activité réduite ~30% (CT)", "detail": "Portez un allèle 677T. Apport en folates (légumes verts, agrumes) conseillé; supplémentation rarement nécessaire." } },
+      { "when": { "rs1801133": "AA" }, "result": { "label": "Activité réduite ~70% (TT)", "detail": "Homozygote 677T — homocystéine potentiellement élevée. Apport folate (idéalement 5-MTHF si grossesse ou carence B12) souvent recommandé par les praticiens. Ne pas auto-supplémenter sans test biologique." } }
+    ],
+    "confidence": "high",
+    "sources": ["Frosst et al. 1995", "Wilson et al. 1999"]
+  },
+  {
+    "id": "omega3_fads1",
+    "title": "Conversion des oméga-3 (FADS1)",
+    "gene": "FADS1",
+    "rsids": ["rs174547"],
+    "call_rules": [
+      { "when": { "rs174547": "TT" }, "result": { "label": "Convertisseur efficace", "detail": "Conversion ALA → EPA/DHA préservée. Sources végétales (lin, colza, noix) suffisent en théorie." } },
+      { "when": { "rs174547": "CT" }, "result": { "label": "Convertisseur intermédiaire", "detail": "Efficacité modérée. Sources marines (poissons gras 2×/semaine) utiles." } },
+      { "when": { "rs174547": "CC" }, "result": { "label": "Convertisseur faible", "detail": "Conversion limitée — sources marines (EPA/DHA préformés) fortement recommandées; un régime végétal strict demande souvent une supplémentation algale." } }
+    ],
+    "confidence": "high",
+    "sources": ["Schaeffer et al. 2006", "Glaser et al. 2010"]
+  },
+  {
+    "id": "vitamin_d_gc",
+    "title": "Vitamine D circulante (GC)",
+    "gene": "GC (DBP)",
+    "rsids": ["rs2282679"],
+    "call_rules": [
+      { "when": { "rs2282679": "TT" }, "result": { "label": "25-OH-D usuellement plus haute (TT)", "detail": "Variant associé à des niveaux circulants plus élevés — statut vitamine D généralement plus facile à maintenir." } },
+      { "when": { "rs2282679": "GT" }, "result": { "label": "Niveau intermédiaire (GT)", "detail": "Exposition solaire modérée + aliments enrichis suffisent souvent en dehors de l'hiver." } },
+      { "when": { "rs2282679": "GG" }, "result": { "label": "Tendance à des niveaux plus bas (GG)", "detail": "Variant associé à des 25-OH-D plus basses. Dosage sanguin conseillé en hiver pour cibler une supplémentation adaptée, plutôt qu'une prise à l'aveugle." } }
+    ],
+    "confidence": "high",
+    "sources": ["Wang et al. 2010 (Lancet)", "Ahn et al. 2010"]
+  },
+  {
+    "id": "salt_sensitivity_agt",
+    "title": "Sensibilité au sel (AGT)",
+    "gene": "AGT",
+    "rsids": ["rs699"],
+    "call_rules": [
+      { "when": { "rs699": "GG" }, "result": { "label": "Sensibilité au sel probable (GG = 235M/M)", "detail": "Allèle Met235 — réponse tensionnelle plus forte au sel chez certaines populations. Réduire le sel a un effet mesurable sur la tension." } },
+      { "when": { "rs699": "AG" }, "result": { "label": "Sensibilité intermédiaire", "detail": "Un seul allèle à risque — réponse au sel variable." } },
+      { "when": { "rs699": "AA" }, "result": { "label": "Peu sensible au sel (AA = 235T/T)", "detail": "Réponse tensionnelle au sel généralement faible — cela n'annule pas les recommandations globales sur l'apport sodé (&lt;5 g/j)." } }
+    ],
+    "confidence": "medium",
+    "sources": ["Jeunemaitre et al. 1992", "Beeks et al. 2004 review"]
   }
 ]
