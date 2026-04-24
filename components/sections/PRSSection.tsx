@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { explainPRS } from "@/lib/prs-explain";
+import { PRSRadar } from "@/components/viz/PRSRadar";
 import type { PRSFinding } from "@/lib/types";
 
 const CATEGORY_LABEL: Record<PRSFinding["rule"]["category"], string> = {
@@ -52,6 +53,16 @@ export function PRSSection({ findings }: PRSProps) {
 
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
+      {sorted.length >= 3 && (
+        <Card className="md:col-span-12">
+          <CardHeader
+            title="Vous, d'un seul coup d'œil"
+            subtitle={`${sorted.length} scores — distance au centre = votre percentile vs la population de référence`}
+          />
+          <PRSRadar findings={sorted} />
+        </Card>
+      )}
+
       <Card className="md:col-span-12">
         <div className="rounded-xl border border-warn/30 bg-warn/5 p-4 text-sm">
           <div className="font-semibold text-warn">Scores polygéniques éducatifs</div>
