@@ -130,7 +130,7 @@ const STRINGS: Record<Lang, Strings> = {
           n: "02",
           ttl: "Pharmacogénomique",
           src: "CPIC · DPWG",
-          body: "15 médicaments courants. Haplotypes d'étoile CYP2C19, CYP2D6, VKORC1, SLCO1B1, DPYD, HLA-B.",
+          body: "15 médicaments courants. Allèles en étoile CYP2C19, CYP2D6, VKORC1, SLCO1B1, DPYD, HLA-B.",
         },
         {
           n: "03",
@@ -149,7 +149,7 @@ const STRINGS: Record<Lang, Strings> = {
     sample: {
       eyebrow: "Pages 4–5 d'un rapport type",
       heading:
-        "Chaque finding est détaillé sur une demi-page, avec position, fréquence, et un paragraphe explicatif.",
+        "Chaque variant est détaillé sur une demi-page : position, fréquence, et un paragraphe en langage clair.",
       health: "Santé · clinvar",
       pharma: "Pharmacogénomique",
     },
