@@ -1,0 +1,45 @@
+{
+  "_meta": {
+    "description": "Hand-curated LD proxy table for light-weight imputation. For each target rsID, a single high-r² proxy rsID (EUR reference) is given with an unordered-diploid allele map (keys/values are sorted allele pairs, e.g. 'AG' not 'GA'). When the target is absent but the proxy is present, the target genotype is imputed. This is an honest approximation, not full reference-panel imputation.",
+    "population": "EUR (CEU)",
+    "build": "GRCh38",
+    "minR2": 0.85
+  },
+  "entries": [
+    {
+      "target": "rs9939609",
+      "proxy": "rs17817449",
+      "r2": 0.99,
+      "map": { "GG": "AA", "GT": "AT", "TT": "TT" },
+      "note": "FTO obesity tag — rs17817449 is a near-perfect EUR proxy."
+    },
+    {
+      "target": "rs4988235",
+      "proxy": "rs182549",
+      "r2": 0.99,
+      "map": { "CC": "CC", "CT": "CT", "TT": "TT" },
+      "note": "MCM6 lactose persistence — rs182549 in near-perfect LD."
+    },
+    {
+      "target": "rs4680",
+      "proxy": "rs4633",
+      "r2": 0.92,
+      "map": { "CC": "GG", "CT": "AG", "TT": "AA" },
+      "note": "COMT Val158Met — rs4633 silent proxy."
+    },
+    {
+      "target": "rs6265",
+      "proxy": "rs11030104",
+      "r2": 0.95,
+      "map": { "AA": "AA", "AG": "AG", "GG": "GG" },
+      "note": "BDNF Val66Met — rs11030104 near-perfect proxy."
+    },
+    {
+      "target": "rs1421085",
+      "proxy": "rs17817449",
+      "r2": 0.93,
+      "map": { "GG": "CC", "GT": "CT", "TT": "TT" },
+      "note": "FTO — alternate route if rs1421085 is the target."
+    }
+  ]
+}

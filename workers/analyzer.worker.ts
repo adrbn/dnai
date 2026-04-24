@@ -2,6 +2,7 @@
 
 import { parseMyHeritageFile } from "../lib/parser/myheritage";
 import { looksLikeVcf, parseVcfFile } from "../lib/parser/vcf";
+import { imputeGenotypes, loadLDTable, type ImputationReport } from "../lib/parser/impute";
 import { annotateClinVar } from "../lib/annotation/clinvar";
 import { annotatePharma } from "../lib/annotation/pharma";
 import { annotateTraits } from "../lib/annotation/traits";
@@ -31,6 +32,7 @@ type AnalyzeInput = {
     clinvar: string;
     clinvarSeed?: string;
     prs?: string;
+    ldProxies?: string;
   };
 };
 
@@ -155,24 +157,39 @@ async function runAnalysis(msg: AnalyzeInput) {
       });
   post({ type: "progress", phase: "parse", percent: 1 });
 
+  // LD-proxy imputation — only kicks in if the data URL is provided. Cheap,
+  // best-effort; failures are swallowed so analysis always proceeds.
+  let genotypes = parsed.genotypes;
+  let imputation: ImputationReport | null = null;
+  if (msg.dataUrls.ldProxies) {
+    try {
+      const table = await loadLDTable(msg.dataUrls.ldProxies);
+      const imputed = imputeGenotypes(parsed.genotypes, table);
+      genotypes = imputed.genotypes;
+      imputation = imputed.report;
+    } catch {
+      // Non-fatal — imputation is optional.
+    }
+  }
+
   post({ type: "progress", phase: "annotate", percent: 0, message: "Annotation cliniques & PGx…" });
-  const clinvar = annotateClinVar(parsed.genotypes, mergedClinVar);
+  const clinvar = annotateClinVar(genotypes, mergedClinVar);
   post({ type: "progress", phase: "annotate", percent: 0.2 });
-  const pharma = annotatePharma(parsed.genotypes, pgxRules);
+  const pharma = annotatePharma(genotypes, pgxRules);
   post({ type: "progress", phase: "annotate", percent: 0.45 });
-  const traits = annotateTraits(parsed.genotypes, traitRules);
+  const traits = annotateTraits(genotypes, traitRules);
   post({ type: "progress", phase: "annotate", percent: 0.65 });
-  const prs = annotatePRS(parsed.genotypes, prsRules);
+  const prs = annotatePRS(genotypes, prsRules);
   post({ type: "progress", phase: "annotate", percent: 0.85 });
-  const roh = computeROH(parsed.genotypes, parsed.positions);
+  const roh = computeROH(genotypes, parsed.positions);
   post({ type: "progress", phase: "annotate", percent: 0.9, message: "Ancêtres, Néandertal, haplogroupes…" });
 
-  const neanderthal = computeNeanderthal(parsed.genotypes);
-  const ancestry = computeAncestry(parsed.genotypes);
-  const yHaplogroup = computeYHaplogroup(parsed.genotypes);
-  const mtHaplogroup = computeMtHaplogroup(parsed.genotypes);
-  const actionable = computeActionable(parsed.genotypes);
-  const carriers = computeCarriers(parsed.genotypes);
+  const neanderthal = computeNeanderthal(genotypes);
+  const ancestry = computeAncestry(genotypes);
+  const yHaplogroup = computeYHaplogroup(genotypes);
+  const mtHaplogroup = computeMtHaplogroup(genotypes);
+  const actionable = computeActionable(genotypes);
+  const carriers = computeCarriers(genotypes);
   const fun = computeFun(fileHash);
   post({ type: "progress", phase: "annotate", percent: 1 });
 
@@ -199,8 +216,9 @@ async function runAnalysis(msg: AnalyzeInput) {
     actionable,
     carriers,
     fun,
+    imputation: imputation ?? undefined,
   };
-  return { result, genotypes: parsed.genotypes, positions: parsed.positions };
+  return { result, genotypes, positions: parsed.positions };
 }
 
 ctx.addEventListener("message", async (ev: MessageEvent<InMessage>) => {

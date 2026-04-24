@@ -260,6 +260,22 @@ export type AnalysisResult = {
   carriers?: CarrierFinding[];
   actionable?: ActionableFinding[];
   fun?: FunResult;
+  imputation?: {
+    attempted: number;
+    imputed: number;
+    skippedAlreadyPresent: number;
+    skippedProxyMissing: number;
+    skippedProxyUnmapped: number;
+    entries: Array<{
+      target: string;
+      proxy: string;
+      r2: number;
+      source: "imputed" | "skipped";
+      reason?: string;
+      proxyObserved?: string;
+      imputedAs?: string;
+    }>;
+  };
 };
 
 export type AnalysisData = {

@@ -12,6 +12,7 @@ const DATA_URLS = {
   clinvar: "/data/clinvar-full.json",
   clinvarSeed: "/data/clinvar-seed.json",
   prs: "/data/prs-rules.json",
+  ldProxies: "/data/ld-proxies.json",
 };
 
 export function runAnalysis(file: File, opts: RunOptions = {}): Promise<AnalysisData> {

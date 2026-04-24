@@ -120,6 +120,9 @@ export function OverviewSection({ result, positions }: OverviewSectionProps) {
       </div>
 
       <FileStrip result={result} />
+      {result.imputation && result.imputation.imputed > 0 && (
+        <ImputationNote imputation={result.imputation} />
+      )}
 
       <Card>
         <CardHeader
@@ -342,3 +345,38 @@ function IconActivity() {
   );
 }
 
+
+function ImputationNote({
+  imputation,
+}: {
+  imputation: NonNullable<AnalysisResult["imputation"]>;
+}) {
+  const imputed = imputation.entries.filter((e) => e.source === "imputed");
+  return (
+    <Card className="border-accent/30 bg-accent/5">
+      <CardHeader
+        title="Imputation LD (proxies)"
+        subtitle={`${imputation.imputed} variant(s) reconstitué(s) via tag SNPs en LD serrée (r² ≥ 0.85)`}
+      />
+      <p className="text-sm text-fg-muted">
+        Certains variants absents de votre chip ont été <em>imputés</em> depuis un
+        SNP voisin en déséquilibre de liaison (référence EUR). C&apos;est une
+        approximation honnête — utile pour ne pas perdre un trait à cause d&apos;une
+        puce incomplète, mais moins fiable qu&apos;un génotypage direct.
+      </p>
+      {imputed.length > 0 && (
+        <ul className="mt-3 space-y-1 font-mono text-[11px] text-fg/80">
+          {imputed.map((e) => (
+            <li key={e.target} className="flex flex-wrap gap-x-3 gap-y-0.5">
+              <span className="text-accent">{e.target}</span>
+              <span className="text-fg-muted">
+                ← {e.proxy} ({e.proxyObserved}) → {e.imputedAs}
+              </span>
+              <span className="text-fg-muted/70">r²={e.r2.toFixed(2)}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </Card>
+  );
+}
