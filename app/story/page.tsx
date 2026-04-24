@@ -29,8 +29,13 @@ export default function StoryPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
 
+  // Gate the scroll listener on hydrated+unlocked: until those flip, the
+  // <main> isn't mounted so containerRef.current is null. Without these deps
+  // the effect runs once (container null), bails, and is never re-run —
+  // active stays stuck at 0, timeline frozen, camera pose frozen.
+  const storyMounted = hydrated && unlocked && acts.length > 0;
   useEffect(() => {
-    if (acts.length === 0) return;
+    if (!storyMounted) return;
     const root = containerRef.current;
     if (!root) return;
 
@@ -67,7 +72,7 @@ export default function StoryPage() {
       window.removeEventListener("resize", onScroll);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, [acts.length]);
+  }, [storyMounted]);
 
   const frame = useInterpolatedFrame(frames, active);
 
@@ -79,7 +84,7 @@ export default function StoryPage() {
   };
 
   useEffect(() => {
-    if (acts.length === 0) return;
+    if (!storyMounted) return;
     const onKey = (e: KeyboardEvent) => {
       // Ignore when the user is typing in a field.
       const t = e.target as HTMLElement | null;
@@ -100,7 +105,7 @@ export default function StoryPage() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [acts.length, active]);
+  }, [storyMounted, acts.length, active]);
 
   if (!result) return null;
   if (hydrated && !unlocked) return <Paywall eyebrow="Récit" />;
