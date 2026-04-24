@@ -97,7 +97,7 @@ const STRINGS: Record<Lang, Strings> = {
       ctaBusy: "Analyse en cours…",
       sample: "Voir un rapport témoin",
       testimony: "« J'ai vu en 3 min ce que mon généticien n'avait pas discuté. »",
-      testimonyAuthor: "— A. M., porteuse BRCA1",
+      testimonyAuthor: "— A. M., porteuse Facteur V Leiden",
       trust: ["Analyse locale", "ClinVar · CPIC · DPWG", "702 k variantes / 3 s", "Code source ouvert"],
     },
     specimen: {
@@ -203,7 +203,7 @@ const STRINGS: Record<Lang, Strings> = {
       ctaBusy: "Analysing…",
       sample: "See a sample",
       testimony: "\"In 3 min I saw what my geneticist hadn't mentioned.\"",
-      testimonyAuthor: "— A. M., BRCA1 carrier",
+      testimonyAuthor: "— A. M., Factor V Leiden carrier",
       trust: ["Local analysis", "ClinVar · CPIC · DPWG", "702k variants / 3 s", "Open source"],
     },
     specimen: {
@@ -292,41 +292,41 @@ const SAMPLE_CLINVAR: {
   note: Record<Lang, string>;
 }[] = [
   {
-    gene: "BRCA1",
-    rsid: "rs28897743",
-    chr: 17,
-    position: 41276045,
+    gene: "F5",
+    rsid: "rs6025",
+    chr: 1,
+    position: 169519049,
     genotype: "A/G",
     zygosity: "het",
     clinsig: "Pathogenic",
-    freq: 0.00002,
-    consequence: "missense_variant · M1775R",
+    freq: 0.025,
+    consequence: "missense_variant · R506Q (Leiden)",
     condition: {
-      fr: "Prédisposition héréditaire sein-ovaire.",
-      en: "Hereditary breast-ovarian cancer predisposition.",
+      fr: "Thrombophilie — Facteur V Leiden.",
+      en: "Thrombophilia — Factor V Leiden.",
     },
     note: {
-      fr: "Variant clairement pathogène. Suivi spécialisé recommandé — oncogénétique.",
-      en: "Clearly pathogenic variant. Specialist follow-up recommended — oncogenetics.",
+      fr: "Hétérozygote. Risque thrombo-embolique modéré — éviter œstrogènes, prudence péri-opératoire.",
+      en: "Heterozygous. Moderate thromboembolic risk — avoid estrogens, peri-op caution.",
     },
   },
   {
-    gene: "HFE",
-    rsid: "rs1800562",
-    chr: 6,
-    position: 26093141,
-    genotype: "A/A",
-    zygosity: "hom",
-    clinsig: "Pathogenic",
-    freq: 0.042,
-    consequence: "missense_variant · C282Y",
+    gene: "MTHFR",
+    rsid: "rs1801133",
+    chr: 1,
+    position: 11856378,
+    genotype: "C/T",
+    zygosity: "het",
+    clinsig: "Risk factor",
+    freq: 0.312,
+    consequence: "missense_variant · A222V (C677T)",
     condition: {
-      fr: "Hémochromatose héréditaire type 1.",
-      en: "Hereditary hemochromatosis type 1.",
+      fr: "Métabolisme des folates — homocystéine.",
+      en: "Folate metabolism — homocysteine.",
     },
     note: {
-      fr: "Homozygote C282Y. Surveillance de la ferritine et du coefficient de saturation.",
-      en: "C282Y homozygous. Monitor ferritin and transferrin saturation.",
+      fr: "Variant commun. Surveillance homocystéine si facteurs associés ; apports en folates adéquats.",
+      en: "Common variant. Monitor homocysteine if co-factors present ; maintain folate intake.",
     },
   },
 ];
@@ -343,37 +343,37 @@ const SAMPLE_PHARMA: {
   {
     drug: "Clopidogrel",
     gene: "CYP2C19",
-    phenotype: "Poor metabolizer",
-    star: "*2/*2",
-    severity: "high",
+    phenotype: "Intermediate metabolizer",
+    star: "*1/*2",
+    severity: "moderate",
     source: "CPIC Level A",
     advice: {
-      fr: "Efficacité réduite après stent. Prasugrel ou ticagrélor préférables.",
-      en: "Reduced efficacy post-stent. Prasugrel or ticagrelor preferred.",
+      fr: "Activation partielle. Envisager prasugrel ou ticagrélor selon contexte clinique.",
+      en: "Partial activation. Consider prasugrel or ticagrelor depending on clinical context.",
     },
   },
   {
-    drug: "Warfarine",
-    gene: "VKORC1 + CYP2C9",
-    phenotype: "Sensible",
-    star: "AA · *1/*3",
-    severity: "high",
+    drug: "Simvastatine",
+    gene: "SLCO1B1",
+    phenotype: "Fonction diminuée",
+    star: "rs4149056 · C/T",
+    severity: "moderate",
     source: "CPIC Level A",
     advice: {
-      fr: "Dose initiale basse (≈ 2 mg/j). INR rapproché les 2 premières semaines.",
-      en: "Low starting dose (≈ 2 mg/day). Tight INR monitoring first 2 weeks.",
+      fr: "Risque myopathie à forte dose. Limiter à 20 mg/j ou préférer rosuvastatine.",
+      en: "Myopathy risk at high dose. Cap at 20 mg/day or prefer rosuvastatin.",
     },
   },
   {
     drug: "Codéine",
     gene: "CYP2D6",
-    phenotype: "Ultra-rapide",
-    star: "*1/*2xN",
-    severity: "high",
+    phenotype: "Métaboliseur normal",
+    star: "*1/*1",
+    severity: "info",
     source: "CPIC Level A",
     advice: {
-      fr: "Éviter — risque d'intoxication morphinique. Alternative : paracétamol ou AINS.",
-      en: "Avoid — morphine toxicity risk. Alternatives: acetaminophen or NSAIDs.",
+      fr: "Conversion en morphine attendue. Posologie standard adaptée à la douleur.",
+      en: "Expected morphine conversion. Standard dosing appropriate for pain.",
     },
   },
 ];
@@ -488,18 +488,26 @@ function Nav({
           {strings.tagline}
         </div>
       </div>
-      <div className="flex items-center gap-5 text-[13px] sm:gap-7" style={{ color: CL.ink2 }}>
-        <a href="#method" className="hidden hover:underline sm:inline" style={{ color: CL.ink2 }}>
+      <div className="relative z-20 flex items-center gap-1 text-[13px] sm:gap-2" style={{ color: CL.ink2 }}>
+        <a
+          href="#method"
+          className="hidden rounded-sm px-3 py-2 hover:underline sm:inline-block"
+          style={{ color: CL.ink2 }}
+        >
           {strings.method}
         </a>
-        <a href="#sample" className="hidden hover:underline md:inline" style={{ color: CL.ink2 }}>
+        <a
+          href="#sample"
+          className="hidden rounded-sm px-3 py-2 hover:underline md:inline-block"
+          style={{ color: CL.ink2 }}
+        >
           {strings.sample}
         </a>
         <a
           href="https://github.com/adrbn/dnai"
           target="_blank"
           rel="noopener noreferrer"
-          className="hidden hover:underline lg:inline"
+          className="hidden rounded-sm px-3 py-2 hover:underline lg:inline-block"
           style={{ color: CL.ink2 }}
         >
           {strings.source}
@@ -541,7 +549,7 @@ function Hero({
 }) {
   return (
     <section
-      className="relative overflow-hidden px-6 py-16 sm:px-10 sm:py-20 lg:px-14 lg:py-24"
+      className="relative overflow-hidden px-6 py-8 sm:px-10 sm:py-10 lg:px-14 lg:py-12"
       style={{ borderBottom: `1px solid ${CL.rule}` }}
     >
       {/* subtle grid watermark */}
@@ -567,11 +575,11 @@ function Hero({
             <span>{strings.hero.eyebrow}</span>
           </div>
           <h1
-            className="mt-7 font-serif"
+            className="mt-5 font-serif"
             style={{
               fontFamily: "var(--font-serif), ui-serif, Georgia, serif",
-              fontSize: "clamp(48px, 8.5vw, 84px)",
-              lineHeight: 0.96,
+              fontSize: "clamp(40px, 6.5vw, 68px)",
+              lineHeight: 0.98,
               letterSpacing: "-0.028em",
               fontWeight: 400,
               color: CL.ink,
@@ -580,7 +588,7 @@ function Hero({
             {strings.hero.headline}
           </h1>
           <p
-            className="mt-7 max-w-[520px]"
+            className="mt-5 max-w-[520px]"
             style={{
               fontFamily: "var(--font-serif), ui-serif, Georgia, serif",
               fontSize: 19,
@@ -593,7 +601,7 @@ function Hero({
 
           {/* pricing panel */}
           <div
-            className="mt-10 grid max-w-[520px] grid-cols-1 sm:grid-cols-2"
+            className="mt-7 grid max-w-[520px] grid-cols-1 sm:grid-cols-2"
             style={{ border: `1px solid ${CL.rule}`, background: CL.paperLight }}
           >
             <div
@@ -666,7 +674,7 @@ function Hero({
 
           {/* trust row */}
           <div
-            className="mt-8 flex flex-wrap gap-6 text-[11px] uppercase tracking-[0.1em]"
+            className="mt-6 flex flex-wrap gap-6 text-[11px] uppercase tracking-[0.1em]"
             style={{ color: CL.ink3, fontFamily: "var(--font-sans)" }}
           >
             <span className="flex items-center gap-2">
@@ -688,7 +696,7 @@ function Hero({
         </div>
 
         {/* specimen + helix card */}
-        <div className="relative hidden min-h-[620px] items-center justify-center lg:flex">
+        <div className="relative hidden min-h-[520px] items-center justify-center lg:flex">
           <div
             className="absolute"
             style={{
@@ -718,7 +726,7 @@ function Hero({
                 className="mt-2"
                 style={{ fontFamily: "var(--font-serif)", fontSize: 22, letterSpacing: "-0.01em" }}
               >
-                rs28897743
+                rs6025
               </div>
             </div>
             <HelixSvg />
@@ -726,7 +734,7 @@ function Hero({
               className="text-[10px] tracking-[0.08em]"
               style={{ opacity: 0.6, fontFamily: "var(--font-mono)" }}
             >
-              BRCA1 · chr17 · M1775R
+              F5 · chr1 · R506Q
             </div>
           </div>
           <div
@@ -763,7 +771,7 @@ function SpecimenReport({ lang, strings }: { lang: Lang; strings: Strings["speci
       sev: "P",
       color: CL.oxblood,
       gene: "HFE",
-      cond: lang === "fr" ? "Hémochromatose, C282Y hom." : "Hemochromatosis, C282Y hom.",
+      cond: lang === "fr" ? "Hémochromatose, C282Y hét." : "Hemochromatosis, C282Y het.",
       tag: strings.pathogenic,
     },
     {
@@ -863,9 +871,9 @@ function SpecimenReport({ lang, strings }: { lang: Lang; strings: Strings["speci
                 letterSpacing: "-0.015em",
               }}
             >
-              BRCA1 &nbsp;
+              F5 &nbsp;
               <span className="italic" style={{ color: CL.ink3 }}>
-                M1775R
+                R506Q
               </span>
             </div>
             <div
@@ -883,10 +891,10 @@ function SpecimenReport({ lang, strings }: { lang: Lang; strings: Strings["speci
               className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[10px] tracking-[0.04em]"
               style={{ color: CL.ink3, fontFamily: "var(--font-mono)" }}
             >
-              <span>rs28897743</span>
-              <span>chr17 : 41,276,045</span>
+              <span>rs6025</span>
+              <span>chr1 : 169,519,049</span>
               <span>A/G · het</span>
-              <span>AF 0.002 %</span>
+              <span>AF 2.5 %</span>
             </div>
           </div>
         </div>

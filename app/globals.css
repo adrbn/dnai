@@ -2,18 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Clinique palette — paper background, ink foreground, clinical accents */
 :root {
-  --bg: 9 10 14;
-  --surface: 16 18 25;
-  --surface-2: 22 24 33;
-  --border: 36 40 52;
-  --fg: 232 234 240;
-  --fg-muted: 150 156 170;
-  --accent: 120 180 255;
-  --accent-2: 170 140 255;
-  --danger: 247 110 110;
-  --warn: 236 196 92;
-  --ok: 120 220 160;
+  --bg: 243 239 232;          /* #f3efe8 paper */
+  --surface: 248 244 234;     /* #f8f4ea paperLight */
+  --surface-2: 232 228 218;   /* #e8e4da paperDk */
+  --border: 212 207 196;      /* #d4cfc4 line */
+  --fg: 26 22 19;             /* #1a1613 ink */
+  --fg-muted: 107 98 90;      /* #6b625a muted */
+  --accent: 28 61 120;        /* #1c3d78 cobalt */
+  --accent-2: 110 26 26;      /* #6e1a1a oxblood */
+  --danger: 110 26 26;        /* #6e1a1a oxblood */
+  --warn: 163 107 31;         /* #a36b1f amber */
+  --ok: 74 107 74;            /* #4a6b4a sage */
 }
 
 html,
@@ -40,17 +41,19 @@ body {
 ::-webkit-scrollbar-thumb { background: rgb(var(--surface-2)); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: rgb(var(--border)); }
 
-/* Glass card helper */
+/* Clinical paper card (was "glass" — kept class name for compat) */
 .glass {
-  background: linear-gradient(180deg, rgb(var(--surface) / 0.92), rgb(var(--surface-2) / 0.92));
+  background: rgb(var(--surface));
   border: 1px solid rgb(var(--border));
-  backdrop-filter: blur(12px);
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
 }
 
-/* Subtle grid background */
+/* Subtle dot background — cobalt tint on paper */
 .bg-grid {
+  background-color: rgb(var(--bg));
   background-image:
-    radial-gradient(circle at 1px 1px, rgb(var(--border)) 1px, transparent 0);
+    radial-gradient(circle at 1px 1px, rgb(var(--border) / 0.9) 1px, transparent 0);
   background-size: 24px 24px;
 }
 
@@ -69,7 +72,7 @@ body {
 
   html, body {
     background: white !important;
-    color: #0f172a !important;
+    color: #1a1613 !important;
     color-scheme: light !important;
     forced-color-adjust: none;
     -webkit-print-color-adjust: exact;
@@ -92,7 +95,7 @@ body {
     font-family: var(--font-sans), "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     font-size: 10pt;
     line-height: 1.55;
-    color: #0f172a;
+    color: #1a1613;
     font-feature-settings: "ss01", "cv11", "tnum";
   }
   .pr-mono, .print-report code { font-family: var(--font-mono), "JetBrains Mono", ui-monospace, monospace; }
@@ -108,7 +111,7 @@ body {
     max-height: 297mm;
     overflow: hidden;
     box-sizing: border-box;
-    color: #0f172a;
+    color: #1a1613;
     display: flex;
     flex-direction: column;
     forced-color-adjust: none;
@@ -120,7 +123,7 @@ body {
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 6mm;
-    background: linear-gradient(90deg, #4f7dff 0%, #8b6fff 100%);
+    background: linear-gradient(90deg, #6e1a1a 0%, #1c3d78 100%);
   }
   .pr-cover-top {
     display: flex;
@@ -132,7 +135,7 @@ body {
   .pr-brand-mark {
     width: 10mm; height: 10mm;
     border-radius: 2.5mm;
-    background: linear-gradient(135deg, #4f7dff, #8b6fff);
+    background: #1a1613;
     color: #fff;
     font-weight: 800;
     font-size: 13pt;
@@ -153,18 +156,19 @@ body {
   .pr-cover-eyebrow {
     font-size: 8pt;
     font-weight: 700;
-    color: #4f7dff;
+    color: #6e1a1a;
     text-transform: uppercase;
     letter-spacing: 0.12em;
     margin-bottom: 2mm;
   }
   .pr-cover-title {
-    font-size: 26pt !important;
-    font-weight: 800 !important;
-    line-height: 1.05 !important;
+    font-family: var(--font-serif), "Source Serif 4", ui-serif, Georgia, serif !important;
+    font-size: 30pt !important;
+    font-weight: 500 !important;
+    line-height: 1.02 !important;
     letter-spacing: -0.025em !important;
     margin: 0 0 3mm 0 !important;
-    color: #0f172a;
+    color: #1a1613;
   }
   .pr-cover-sub {
     font-size: 10pt;
@@ -221,7 +225,7 @@ body {
     font-size: 14pt;
     font-weight: 800;
     line-height: 1;
-    color: #0f172a;
+    color: #1a1613;
     margin-bottom: 1.5mm;
     letter-spacing: -0.02em;
   }
@@ -237,8 +241,8 @@ body {
   .pr-cover-stat-yellow .pr-cover-stat-value { color: #92400e; }
   .pr-cover-stat-green { border-color: #bbf7d0; background: #f0fdf4 !important; }
   .pr-cover-stat-green .pr-cover-stat-value { color: #166534; }
-  .pr-cover-stat-blue { border-color: #bfdbfe; background: #eff6ff !important; }
-  .pr-cover-stat-blue .pr-cover-stat-value { color: #1e40af; }
+  .pr-cover-stat-blue { border-color: #f3dcd6; background: #faf3f1 !important; }
+  .pr-cover-stat-blue .pr-cover-stat-value { color: #6e1a1a; }
 
   .pr-cover-grid {
     display: grid;
@@ -268,7 +272,7 @@ body {
   }
   .pr-cover-row:last-child { border-bottom: none; }
   .pr-cover-row dt { color: #64748b; margin: 0; font-weight: 500; }
-  .pr-cover-row dd { margin: 0; color: #0f172a; font-weight: 500; }
+  .pr-cover-row dd { margin: 0; color: #1a1613; font-weight: 500; }
   .pr-cover-row dd code {
     font-size: 8.5pt;
     background: #f1f5f9;
@@ -280,7 +284,7 @@ body {
     margin-bottom: 8mm;
     padding: 4mm 5mm;
     background: #f8fafc;
-    border-left: 3px solid #4f7dff;
+    border-left: 3px solid #6e1a1a;
     border-radius: 1.5mm;
   }
   .pr-cover-notes p {
@@ -359,7 +363,7 @@ body {
     gap: 4mm;
     margin: 0 0 6mm 0;
     padding-bottom: 3mm;
-    border-bottom: 0.8pt solid #0f172a;
+    border-bottom: 0.8pt solid #1a1613;
     page-break-after: avoid;
     break-after: avoid;
   }
@@ -367,14 +371,15 @@ body {
     font-family: var(--font-mono), "JetBrains Mono", monospace;
     font-size: 10pt;
     font-weight: 700;
-    color: #4f7dff;
+    color: #6e1a1a;
     letter-spacing: 0.02em;
   }
   .pr-sec-title {
-    font-size: 17pt;
-    font-weight: 700;
+    font-family: var(--font-serif), "Source Serif 4", ui-serif, Georgia, serif;
+    font-size: 19pt;
+    font-weight: 500;
     letter-spacing: -0.02em;
-    color: #0f172a;
+    color: #1a1613;
   }
 
   /* ===== Section intros and callouts ===== */
@@ -398,8 +403,8 @@ body {
   .pr-summary {
     margin: 0 0 5mm 0;
     padding: 4mm 5mm;
-    background: #eef4ff;
-    border-left: 3px solid #4f7dff;
+    background: #faf3f1;
+    border-left: 3px solid #6e1a1a;
     border-radius: 1.5mm;
     page-break-inside: avoid;
     break-inside: avoid;
@@ -407,14 +412,14 @@ body {
   .pr-summary-label {
     font-size: 8pt;
     font-weight: 700;
-    color: #3461d9;
+    color: #6e1a1a;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     margin-bottom: 1.5mm;
   }
   .pr-summary-body {
     font-size: 10pt;
-    color: #1e3a8a;
+    color: #6e1a1a;
     line-height: 1.55;
   }
 
@@ -454,7 +459,7 @@ body {
   }
   .pr-table thead th {
     text-align: left;
-    background: #0f172a;
+    background: #1a1613;
     color: #fff;
     border-bottom: none;
     padding: 2.5mm 2.5mm;
@@ -492,7 +497,7 @@ body {
   }
   .pr-sev-pill-high { background: #c53030; color: #fff; }
   .pr-sev-pill-medium { background: #c97a00; color: #fff; }
-  .pr-sev-pill-low { background: #cbd5e1; color: #0f172a; }
+  .pr-sev-pill-low { background: #cbd5e1; color: #1a1613; }
 
   /* ===== Metrics grid (ROH) ===== */
   .pr-metrics {
@@ -521,7 +526,7 @@ body {
     font-family: var(--font-mono), "JetBrains Mono", monospace;
     font-size: 14pt;
     font-weight: 700;
-    color: #0f172a;
+    color: #1a1613;
     letter-spacing: -0.02em;
   }
 
@@ -538,7 +543,7 @@ body {
     font-size: 11.5pt;
     font-weight: 700;
     margin: 7mm 0 3mm 0;
-    color: #0f172a;
+    color: #1a1613;
     letter-spacing: -0.01em;
     page-break-after: avoid;
     break-after: avoid;
@@ -602,7 +607,7 @@ body {
   .pr-tag-red { background: #fee2e2; color: #991b1b; }
   .pr-tag-yellow { background: #fef3c7; color: #854d0e; }
   .pr-tag-green { background: #dcfce7; color: #166534; }
-  .pr-tag-blue { background: #dbeafe; color: #1e3a8a; }
+  .pr-tag-blue { background: #dbeafe; color: #6e1a1a; }
 
   .pr-actions {
     margin: 0 0 6mm 0;
@@ -627,7 +632,7 @@ body {
     top: 2.5mm;
     width: 6mm; height: 6mm;
     border-radius: 50%;
-    background: #0f172a;
+    background: #1a1613;
     color: #fff;
     font-size: 8.5pt;
     font-weight: 700;
@@ -639,7 +644,7 @@ body {
   .pr-key-takeaway {
     margin: 6mm 0 0 0;
     padding: 5mm 6mm;
-    background: linear-gradient(135deg, #0f172a, #1e293b);
+    background: linear-gradient(135deg, #1a1613, #2a211b);
     color: #fff;
     border-radius: 2mm;
     page-break-inside: avoid;
@@ -648,7 +653,7 @@ body {
   .pr-key-label {
     font-size: 8pt;
     font-weight: 700;
-    color: #93c5fd;
+    color: #d4cfc4;
     text-transform: uppercase;
     letter-spacing: 0.12em;
     margin-bottom: 2mm;

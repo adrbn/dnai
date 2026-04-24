@@ -20,6 +20,7 @@ import {
 import { useAnalysis } from "@/lib/store/analysis";
 import { exportJson } from "@/lib/export";
 import { DnaMark } from "@/components/ui/DnaMark";
+import { Paywall, useUnlockGate } from "@/components/Paywall";
 
 type Tab = "overview" | "health" | "pharma" | "traits" | "risk" | "lookup" | "compare";
 
@@ -39,6 +40,7 @@ export default function ReportPage() {
   const [tab, setTab] = useState<Tab>("overview");
   const [pdfModalOpen, setPdfModalOpen] = useState(false);
   const [pdfInfo, setPdfInfo] = useState<PdfUserInfo | null>(null);
+  const { unlocked, hydrated } = useUnlockGate();
 
   useEffect(() => {
     if (!result) router.replace("/");
@@ -55,15 +57,19 @@ export default function ReportPage() {
   };
 
   if (!result) return null;
+  if (hydrated && !unlocked) return <Paywall eyebrow="Rapport" />;
+  if (!hydrated) return null;
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-grid">
-      <nav className="sticky top-0 z-30 border-b border-border bg-bg/85 backdrop-blur-md no-print">
+      <nav className="sticky top-0 z-30 border-b border-border bg-paper/90 backdrop-blur-md no-print">
         <div className="mx-auto max-w-6xl px-4 py-3 sm:px-6">
           <div className="flex items-center justify-between gap-3">
-            <Link href="/" className="flex shrink-0 items-center gap-2">
-              <DnaMark size={32} className="rounded-lg" />
-              <span className="text-sm font-semibold">DNAI</span>
+            <Link href="/" className="flex shrink-0 items-baseline gap-2 rounded-sm px-2 py-1 hover:bg-ink/5">
+              <span className="font-serif text-[20px] font-medium tracking-[-0.02em] text-ink">
+                dnai<span className="text-oxblood">.</span>
+              </span>
+              <span className="text-[10px] uppercase tracking-[0.22em] text-ink/55">Rapport</span>
             </Link>
 
             <div className="hidden lg:flex flex-1 justify-center">
@@ -73,21 +79,21 @@ export default function ReportPage() {
             <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
               <Link
                 href="/story"
-                className="whitespace-nowrap rounded-lg border border-accent/40 bg-accent/10 px-2 py-1.5 text-xs font-medium text-accent hover:border-accent hover:bg-accent/15 sm:px-2.5"
+                className="whitespace-nowrap rounded-sm border border-ink bg-ink px-3 py-2 text-xs font-medium text-paper transition hover:bg-ink/90 sm:px-3.5"
               >
-                Récit
+                Récit →
               </Link>
               <button
                 type="button"
                 onClick={() => exportJson(result)}
-                className="whitespace-nowrap rounded-lg border border-border bg-surface px-2 py-1.5 text-xs text-fg-muted hover:border-accent hover:text-accent sm:px-2.5"
+                className="whitespace-nowrap rounded-sm border border-border bg-surface px-3 py-2 text-xs text-ink/70 transition hover:border-ink hover:text-ink sm:px-3.5"
               >
                 JSON
               </button>
               <button
                 type="button"
                 onClick={() => setPdfModalOpen(true)}
-                className="whitespace-nowrap rounded-lg border border-border bg-surface px-2 py-1.5 text-xs text-fg-muted hover:border-accent hover:text-accent sm:px-2.5"
+                className="whitespace-nowrap rounded-sm border border-border bg-surface px-3 py-2 text-xs text-ink/70 transition hover:border-ink hover:text-ink sm:px-3.5"
               >
                 PDF
               </button>
@@ -97,7 +103,7 @@ export default function ReportPage() {
                   reset();
                   router.push("/");
                 }}
-                className="whitespace-nowrap rounded-lg border border-border bg-surface px-2 py-1.5 text-xs text-fg-muted hover:border-danger hover:text-danger sm:px-2.5"
+                className="whitespace-nowrap rounded-sm border border-border bg-surface px-3 py-2 text-xs text-ink/70 transition hover:border-oxblood hover:text-oxblood sm:px-3.5"
               >
                 Effacer
               </button>
@@ -148,16 +154,16 @@ function TabList({
   onSelect: (t: Tab) => void;
 }) {
   return (
-    <div className="inline-flex gap-0.5 rounded-xl border border-border bg-surface p-1">
+    <div className="inline-flex gap-0 rounded-sm border border-border bg-surface">
       {tabs.map((t) => (
         <button
           key={t.key}
           onClick={() => onSelect(t.key)}
           type="button"
-          className={`whitespace-nowrap rounded-lg px-2.5 py-1.5 text-xs font-medium transition md:px-3 md:text-sm ${
+          className={`whitespace-nowrap border-r border-border px-3 py-2 text-xs font-medium uppercase tracking-[0.08em] transition last:border-r-0 md:px-4 ${
             active === t.key
-              ? "bg-accent/15 text-accent shadow-[inset_0_0_0_1px_rgb(var(--accent)/0.3)]"
-              : "text-fg-muted hover:bg-surface-2 hover:text-fg"
+              ? "bg-ink text-paper"
+              : "text-ink/60 hover:bg-ink/5 hover:text-ink"
           }`}
         >
           <span className="hidden md:inline">{t.label}</span>

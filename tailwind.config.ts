@@ -21,10 +21,18 @@ const config: Config = {
         danger: "rgb(var(--danger) / <alpha-value>)",
         warn: "rgb(var(--warn) / <alpha-value>)",
         ok: "rgb(var(--ok) / <alpha-value>)",
+        // Clinique aliases — semantic names for paper palette
+        ink: "rgb(var(--fg) / <alpha-value>)",
+        paper: "rgb(var(--bg) / <alpha-value>)",
+        oxblood: "rgb(var(--accent-2) / <alpha-value>)",
+        cobalt: "rgb(var(--accent) / <alpha-value>)",
+        sage: "rgb(var(--ok) / <alpha-value>)",
+        amber: "rgb(var(--warn) / <alpha-value>)",
       },
       fontFamily: {
         sans: ["var(--font-sans)", "Inter", "ui-sans-serif", "system-ui", "sans-serif"],
         mono: ["var(--font-mono)", "JetBrains Mono", "ui-monospace", "monospace"],
+        serif: ["var(--font-serif)", "Source Serif 4", "ui-serif", "Georgia", "serif"],
       },
       keyframes: {
         "fade-in": {
