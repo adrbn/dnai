@@ -259,5 +259,20 @@
     ],
     "confidence": "medium",
     "sources": ["Han et al. 2008"]
+  },
+  {
+    "id": "celiac_hla",
+    "title": "Prédisposition cœliaque (HLA-DQ2/DQ8)",
+    "gene": "HLA-DQA1/DQB1",
+    "rsids": ["rs2187668", "rs7454108"],
+    "call_rules": [
+      { "when": { "rs2187668": "TT" }, "result": { "label": "HLA-DQ2.5 homozygote", "detail": "Haplotype à plus fort risque — ~95% des cœliaques portent DQ2/DQ8. Ne diagnostique pas la maladie : la majorité des porteurs ne la développe jamais." } },
+      { "when": { "rs2187668": "CT" }, "result": { "label": "HLA-DQ2.5 hétérozygote", "detail": "Prédisposition présente. La maladie cœliaque reste rare (~1%) même avec cet allèle." } },
+      { "when": { "rs7454108": "CC" }, "result": { "label": "HLA-DQ8 positif", "detail": "Prédisposition DQ8 — second haplotype à risque. Test clinique nécessaire si symptômes." } },
+      { "when": { "rs7454108": "CT" }, "result": { "label": "HLA-DQ8 porteur", "detail": "Un allèle DQ8 — prédisposition modérée." } },
+      { "when": { "rs2187668": "CC", "rs7454108": "TT" }, "result": { "label": "Risque faible", "detail": "Ni DQ2.5 ni DQ8 détectés — maladie cœliaque très peu probable." } }
+    ],
+    "confidence": "high",
+    "sources": ["Monsuur et al. 2008", "Koskinen et al. 2009"]
   }
 ]
