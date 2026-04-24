@@ -79,7 +79,7 @@ export function PharmaSection({ byDrug }: PharmaSectionProps) {
         />
         {selectedDrug && (
           <>
-            <p className="mb-4 text-sm leading-relaxed text-fg">{selectedDrug.effect}</p>
+            <p className="mb-4 text-sm leading-relaxed text-fg first-letter:uppercase">{selectedDrug.effect}</p>
             <div className="mb-2 text-xs uppercase tracking-wider text-fg-muted">
               Contributeurs génétiques
             </div>
@@ -153,8 +153,8 @@ export function PharmaSection({ byDrug }: PharmaSectionProps) {
                   }`}
                 >
                   <td className="py-2 pr-2 font-medium capitalize break-words">{d.drug}</td>
-                  <td className="hidden text-fg-muted sm:table-cell">{d.drug_class ?? "—"}</td>
-                  <td className="hidden max-w-[360px] truncate text-fg-muted sm:table-cell">{d.effect}</td>
+                  <td className="hidden text-fg-muted first-letter:uppercase sm:table-cell">{d.drug_class ?? "—"}</td>
+                  <td className="hidden max-w-[360px] truncate text-fg-muted first-letter:uppercase sm:table-cell">{d.effect}</td>
                   <td className="text-center">
                     <Badge variant={SEV_VARIANT[d.severity]}>{SEV_LABEL[d.severity]}</Badge>
                   </td>

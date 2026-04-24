@@ -8,6 +8,7 @@ import { runAnalysis } from "@/lib/analyzer-client";
 import { useAnalysis } from "@/lib/store/analysis";
 import { useConsent } from "@/lib/store/consent";
 import { DisclaimerModal } from "@/components/DisclaimerModal";
+import { useLang, type Lang as I18nLang } from "@/lib/i18n/lang";
 
 // ——————————————————————————————————————————————————————————————
 // Direction 1 · CLINIQUE — medical-grade second opinion.
@@ -384,7 +385,7 @@ const SAMPLE_PHARMA: {
 export default function Home() {
   const router = useRouter();
   const { setStatus, setProgress, setData, setError, reset, status } = useAnalysis();
-  const [lang, setLang] = useState<Lang>("fr");
+  const [lang, setLang] = useLang();
   const inputRef = useRef<HTMLInputElement>(null);
   const busy = status === "running";
 

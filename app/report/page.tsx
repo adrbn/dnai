@@ -22,18 +22,42 @@ import { exportJson } from "@/lib/export";
 import { DnaMark } from "@/components/ui/DnaMark";
 import { Paywall, useUnlockGate } from "@/components/Paywall";
 import { MedicalDisclaimerBanner } from "@/components/MedicalDisclaimerBanner";
+import { useLang, type Lang } from "@/lib/i18n/lang";
 
 type Tab = "overview" | "health" | "pharma" | "traits" | "risk" | "lookup" | "compare";
 
-const TABS: { key: Tab; label: string; short: string }[] = [
-  { key: "overview", label: "Vue", short: "Vue" },
-  { key: "health", label: "Santé", short: "Santé" },
-  { key: "pharma", label: "Pharmaco", short: "Rx" },
-  { key: "risk", label: "Risque", short: "PRS" },
-  { key: "traits", label: "Traits", short: "Traits" },
-  { key: "lookup", label: "Recherche", short: "Rech." },
-  { key: "compare", label: "Comparer", short: "Diff" },
-];
+const TAB_LABELS: Record<Lang, Record<Tab, { label: string; short: string }>> = {
+  fr: {
+    overview: { label: "Vue", short: "Vue" },
+    health: { label: "Santé", short: "Santé" },
+    pharma: { label: "Pharmaco", short: "Rx" },
+    risk: { label: "Risque", short: "PRS" },
+    traits: { label: "Traits", short: "Traits" },
+    lookup: { label: "Recherche", short: "Rech." },
+    compare: { label: "Comparer", short: "Diff" },
+  },
+  en: {
+    overview: { label: "Overview", short: "View" },
+    health: { label: "Health", short: "Health" },
+    pharma: { label: "Pharma", short: "Rx" },
+    risk: { label: "Risk", short: "PRS" },
+    traits: { label: "Traits", short: "Traits" },
+    lookup: { label: "Lookup", short: "Find" },
+    compare: { label: "Compare", short: "Diff" },
+  },
+};
+
+const TAB_ORDER: Tab[] = ["overview", "health", "pharma", "risk", "traits", "lookup", "compare"];
+
+const CHROME: Record<Lang, {
+  eyebrow: string;
+  story: string;
+  reset: string;
+  disclaimer: string;
+}> = {
+  fr: { eyebrow: "Rapport", story: "Récit →", reset: "Effacer", disclaimer: "Information seulement — pas un diagnostic." },
+  en: { eyebrow: "Report", story: "Story →", reset: "Reset", disclaimer: "For information only — not a diagnosis." },
+};
 
 export default function ReportPage() {
   const { result, positions, genotypes, reset } = useAnalysis();
@@ -42,6 +66,9 @@ export default function ReportPage() {
   const [pdfModalOpen, setPdfModalOpen] = useState(false);
   const [pdfInfo, setPdfInfo] = useState<PdfUserInfo | null>(null);
   const { unlocked, hydrated } = useUnlockGate();
+  const [lang, setLang] = useLang();
+  const tabs = TAB_ORDER.map((key) => ({ key, ...TAB_LABELS[lang][key] }));
+  const chrome = CHROME[lang];
 
   useEffect(() => {
     if (!result) router.replace("/");
@@ -73,19 +100,20 @@ export default function ReportPage() {
               <span className="font-serif text-[20px] font-medium tracking-[-0.02em] text-ink">
                 dnai<span className="text-oxblood">.</span>
               </span>
-              <span className="text-[10px] uppercase tracking-[0.22em] text-ink/55">Rapport</span>
+              <span className="text-[10px] uppercase tracking-[0.22em] text-ink/55">{chrome.eyebrow}</span>
             </Link>
 
             <div className="hidden lg:flex flex-1 justify-center">
-              <TabList tabs={TABS} active={tab} onSelect={setTab} />
+              <TabList tabs={tabs} active={tab} onSelect={setTab} />
             </div>
 
             <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+              <LangToggle lang={lang} onChange={setLang} />
               <Link
                 href="/story"
                 className="inline-flex items-center whitespace-nowrap rounded-sm border border-ink bg-ink px-3.5 py-2.5 text-xs font-medium text-paper transition hover:bg-ink/90 sm:px-4"
               >
-                Récit →
+                {chrome.story}
               </Link>
               <button
                 type="button"
@@ -109,13 +137,13 @@ export default function ReportPage() {
                 }}
                 className="inline-flex items-center whitespace-nowrap rounded-sm border border-border bg-surface px-3.5 py-2.5 text-xs text-ink/70 transition hover:border-oxblood hover:text-oxblood sm:px-4"
               >
-                Effacer
+                {chrome.reset}
               </button>
             </div>
           </div>
 
           <div className="mt-3 -mx-4 overflow-x-auto px-4 sm:px-6 lg:hidden">
-            <TabList tabs={TABS} active={tab} onSelect={setTab} />
+            <TabList tabs={tabs} active={tab} onSelect={setTab} />
           </div>
         </div>
       </nav>
@@ -145,6 +173,26 @@ export default function ReportPage() {
         />
       )}
     </main>
+  );
+}
+
+function LangToggle({ lang, onChange }: { lang: Lang; onChange: (l: Lang) => void }) {
+  return (
+    <div className="inline-flex items-center rounded-sm border border-border bg-surface text-[10px] font-semibold uppercase tracking-[0.22em]">
+      {(["fr", "en"] as const).map((l) => (
+        <button
+          key={l}
+          type="button"
+          onClick={() => onChange(l)}
+          aria-pressed={lang === l}
+          className={`px-2.5 py-2 transition ${
+            lang === l ? "bg-ink text-paper" : "text-ink/55 hover:text-ink"
+          }`}
+        >
+          {l}
+        </button>
+      ))}
+    </div>
   );
 }
 

@@ -19,8 +19,8 @@ export function CardHeader({ title, subtitle, right }: { title: ReactNode; subti
   return (
     <div className="mb-4 flex items-start justify-between gap-4">
       <div>
-        <h3 className="text-lg font-semibold tracking-tight text-fg">{title}</h3>
-        {subtitle && <p className="mt-0.5 text-sm text-fg-muted">{subtitle}</p>}
+        <h3 className="text-lg font-semibold tracking-tight text-fg first-letter:uppercase">{title}</h3>
+        {subtitle && <p className="mt-0.5 text-sm text-fg-muted first-letter:uppercase">{subtitle}</p>}
       </div>
       {right}
     </div>

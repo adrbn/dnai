@@ -197,8 +197,12 @@ function PharmaBody({ act }: { act: Extract<Act, { kind: "pharma" }> }) {
         <span className="text-xs text-ink/50">Rang {act.rank}</span>
       </div>
       <h2 className="font-serif text-[28px] font-medium capitalize tracking-[-0.01em] sm:text-[34px]">{d.drug}</h2>
-      {d.drug_class && <p className="mt-1 text-xs text-ink/55">{d.drug_class}</p>}
-      <p className="mt-3 text-sm leading-relaxed text-ink/85 sm:text-base">{d.effect}</p>
+      {d.drug_class && (
+        <p className="mt-1 text-xs text-ink/55 first-letter:uppercase">{d.drug_class}</p>
+      )}
+      <p className="mt-3 text-sm leading-relaxed text-ink/85 first-letter:uppercase sm:text-base">
+        {d.effect}
+      </p>
       <div className="mt-4 space-y-1.5">
         {d.contributors.map((c, i) => (
           <div
