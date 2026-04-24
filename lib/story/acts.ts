@@ -275,7 +275,7 @@ export function buildStory(
       acts.push({
         id: "actionable",
         kind: "actionable",
-        title: "Variants actionnables",
+        title: "Variants documentés",
         findings: interesting,
       });
     }

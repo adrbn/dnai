@@ -19,9 +19,9 @@ const SEV_VARIANT: Record<Severity, "ok" | "warn" | "danger"> = {
 };
 
 const SEV_LABEL: Record<Severity, string> = {
-  low: "Mineur",
-  medium: "Modéré",
-  high: "Critique",
+  low: "Pertinence faible",
+  medium: "Pertinence modérée",
+  high: "Pertinence haute",
 };
 
 export function PharmaSection({ byDrug }: PharmaSectionProps) {
@@ -59,9 +59,9 @@ export function PharmaSection({ byDrug }: PharmaSectionProps) {
           <DrugSunburst byDrug={byDrug} onSelect={setSelected} />
         </div>
         <div className="mt-4 flex justify-center gap-4 text-xs">
-          <LegendDot color="rgb(247 110 110)" label="Critique" />
-          <LegendDot color="rgb(236 196 92)" label="Modéré" />
-          <LegendDot color="rgb(120 220 160)" label="Mineur" />
+          <LegendDot color="rgb(247 110 110)" label="Pertinence haute" />
+          <LegendDot color="rgb(236 196 92)" label="Pertinence modérée" />
+          <LegendDot color="rgb(120 220 160)" label="Pertinence faible" />
         </div>
       </Card>
 

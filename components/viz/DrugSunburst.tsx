@@ -11,9 +11,9 @@ const COLOR: Record<Severity, string> = {
 
 const SEV_ORDER: Severity[] = ["high", "medium", "low"];
 const SEV_LABEL: Record<Severity, string> = {
-  high: "Critique",
-  medium: "Modéré",
-  low: "Mineur",
+  high: "Pertinence haute",
+  medium: "Pertinence modérée",
+  low: "Pertinence faible",
 };
 
 interface Props {

@@ -21,6 +21,7 @@ import { useAnalysis } from "@/lib/store/analysis";
 import { exportJson } from "@/lib/export";
 import { DnaMark } from "@/components/ui/DnaMark";
 import { Paywall, useUnlockGate } from "@/components/Paywall";
+import { MedicalDisclaimerBanner } from "@/components/MedicalDisclaimerBanner";
 
 type Tab = "overview" | "health" | "pharma" | "traits" | "risk" | "lookup" | "compare";
 
@@ -62,7 +63,10 @@ export default function ReportPage() {
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-grid">
-      <nav className="sticky top-0 z-30 border-b border-border bg-paper/90 backdrop-blur-md no-print">
+      <div className="no-print">
+        <MedicalDisclaimerBanner />
+      </div>
+      <nav className="sticky top-[34px] z-30 border-b border-border bg-paper/90 backdrop-blur-md no-print">
         <div className="mx-auto max-w-6xl px-4 py-3 sm:px-6">
           <div className="flex items-center justify-between gap-3">
             <Link href="/" className="flex shrink-0 items-baseline gap-2 rounded-sm px-2 py-1 hover:bg-ink/5">
@@ -79,21 +83,21 @@ export default function ReportPage() {
             <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
               <Link
                 href="/story"
-                className="whitespace-nowrap rounded-sm border border-ink bg-ink px-3 py-2 text-xs font-medium text-paper transition hover:bg-ink/90 sm:px-3.5"
+                className="inline-flex items-center whitespace-nowrap rounded-sm border border-ink bg-ink px-3.5 py-2.5 text-xs font-medium text-paper transition hover:bg-ink/90 sm:px-4"
               >
                 Récit →
               </Link>
               <button
                 type="button"
                 onClick={() => exportJson(result)}
-                className="whitespace-nowrap rounded-sm border border-border bg-surface px-3 py-2 text-xs text-ink/70 transition hover:border-ink hover:text-ink sm:px-3.5"
+                className="inline-flex items-center whitespace-nowrap rounded-sm border border-border bg-surface px-3.5 py-2.5 text-xs text-ink/70 transition hover:border-ink hover:text-ink sm:px-4"
               >
                 JSON
               </button>
               <button
                 type="button"
                 onClick={() => setPdfModalOpen(true)}
-                className="whitespace-nowrap rounded-sm border border-border bg-surface px-3 py-2 text-xs text-ink/70 transition hover:border-ink hover:text-ink sm:px-3.5"
+                className="inline-flex items-center whitespace-nowrap rounded-sm border border-border bg-surface px-3.5 py-2.5 text-xs text-ink/70 transition hover:border-ink hover:text-ink sm:px-4"
               >
                 PDF
               </button>
@@ -103,7 +107,7 @@ export default function ReportPage() {
                   reset();
                   router.push("/");
                 }}
-                className="whitespace-nowrap rounded-sm border border-border bg-surface px-3 py-2 text-xs text-ink/70 transition hover:border-oxblood hover:text-oxblood sm:px-3.5"
+                className="inline-flex items-center whitespace-nowrap rounded-sm border border-border bg-surface px-3.5 py-2.5 text-xs text-ink/70 transition hover:border-oxblood hover:text-oxblood sm:px-4"
               >
                 Effacer
               </button>

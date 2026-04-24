@@ -89,10 +89,12 @@ export function PrintReport({ result, info }: Props) {
           <>
             <SummaryCallout>{pharmaSummary(result.pharma.byDrug)}</SummaryCallout>
             <PharmaTable byDrug={result.pharma.byDrug} />
-            <NoteCallout title="Que faire ?">
-              Conservez cette liste dans votre dossier médical et présentez-la avant toute nouvelle
-              prescription. Les alertes <em>Critique</em> justifient souvent un ajustement de dose,
-              le choix d'une alternative, ou un test enzymatique de confirmation avant prescription.
+            <NoteCallout title="Comment utiliser cette information ?">
+              Cette liste peut être partagée avec votre médecin ou pharmacien à titre informatif.
+              Les associations de <em>pertinence haute</em> sont décrites dans la littérature CPIC/DPWG comme
+              susceptibles de justifier un ajustement de posologie, une alternative thérapeutique ou un test
+              enzymatique de confirmation — la décision revient au professionnel de santé. DNAI ne prescrit pas
+              et ne remplace pas un test clinique accrédité.
             </NoteCallout>
           </>
         )}
@@ -383,9 +385,12 @@ function CoverPage({
 
       {showDisclaimer && (
         <div className="pr-cover-disclaimer">
-          <strong>Information non médicale, à but éducatif.</strong> Ce rapport ne pose aucun
-          diagnostic. Toute découverte doit être validée par un professionnel de santé avant toute
-          décision clinique. {coverageNote(result.meta.source)}
+          <strong>Information à but éducatif — pas un diagnostic médical.</strong> DNAI n&apos;est pas un
+          dispositif médical au sens du Règlement (UE) 2017/745. Les données présentées ici proviennent de bases
+          publiques (ClinVar, CPIC, DPWG, PGS Catalog) et sont restituées à titre descriptif. Elles ne
+          constituent ni un diagnostic, ni une recommandation thérapeutique, et ne remplacent ni une
+          consultation médicale ni un test génétique clinique accrédité. Toute découverte doit être confirmée
+          par un laboratoire agréé avant toute décision clinique. {coverageNote(result.meta.source)}
         </div>
       )}
 
@@ -745,7 +750,7 @@ function PharmaTable({ byDrug }: { byDrug: PharmaByDrug[] }) {
             <td>{d.drug_class ?? "—"}</td>
             <td>
               <span className={`pr-sev-pill pr-sev-pill-${d.severity}`}>
-                {d.severity === "high" ? "Critique" : d.severity === "medium" ? "Modérée" : "Mineure"}
+                {d.severity === "high" ? "Pertinence haute" : d.severity === "medium" ? "Pertinence modérée" : "Pertinence faible"}
               </span>
             </td>
             <td>{d.effect}</td>

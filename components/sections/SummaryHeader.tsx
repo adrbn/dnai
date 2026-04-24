@@ -242,7 +242,7 @@ function overallConclusion(s: Stats, result: AnalysisResult): Conclusion {
     points.push({
       tone: "warn",
       label: "Pharmaco",
-      prefix: `${s.drugs} médicament${s.drugs > 1 ? "s" : ""} à mentionner au médecin`,
+      prefix: `${s.drugs} médicament${s.drugs > 1 ? "s" : ""} cité${s.drugs > 1 ? "s" : ""} dans la littérature`,
       entities: [],
     });
   }
@@ -406,11 +406,11 @@ function scopedConclusionPoints(
         const shown = critical.slice(0, MAX);
         points.push({
           tone: "danger",
-          label: "Critique",
-          prefix: "sensibilité à",
+          label: "Pertinence haute",
+          prefix: "sensibilité documentée à",
           entities: shown,
           extraCount: critical.length - shown.length,
-          suffix: "— à signaler au médecin",
+          suffix: "— information à partager avec votre médecin",
         });
       }
       const mild = result.pharma.byDrug
@@ -420,8 +420,8 @@ function scopedConclusionPoints(
         const shown = mild.slice(0, MAX);
         points.push({
           tone: "warn",
-          label: "Mineur",
-          prefix: `${mild.length} médicament${mild.length > 1 ? "s" : ""} à mentionner :`,
+          label: "Pertinence faible",
+          prefix: `${mild.length} médicament${mild.length > 1 ? "s" : ""} cité${mild.length > 1 ? "s" : ""} dans la littérature :`,
           entities: shown,
           extraCount: mild.length - shown.length,
         });

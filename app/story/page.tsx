@@ -11,6 +11,7 @@ import { ActPanel } from "@/components/story/ActPanel";
 import { DnaMark } from "@/components/ui/DnaMark";
 import type { HighlightPoint } from "@/components/story/Genome3D";
 import { Paywall, useUnlockGate } from "@/components/Paywall";
+import { MedicalDisclaimerBanner } from "@/components/MedicalDisclaimerBanner";
 
 export default function StoryPage() {
   const { result, positions } = useAnalysis();
@@ -55,6 +56,7 @@ export default function StoryPage() {
 
   return (
     <main className="relative min-h-screen bg-[#1a1613] text-paper">
+      <MedicalDisclaimerBanner tone="ink" />
       <div className="fixed inset-0 z-0">
         <GenomeStage {...frame} />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#1a1613]/55 via-transparent to-[#1a1613]/75" />

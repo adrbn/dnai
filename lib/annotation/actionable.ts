@@ -2,6 +2,28 @@ import type { ActionableFinding, Base, GenotypeMap } from "../types";
 import { genotypeToString, matchAllele } from "../genotype";
 import { isNoCall } from "../types";
 
+/**
+ * SaMD compliance: reformulate imperative medical advice
+ * ("conseil médical recommandé", "surveiller", "recommandé") into
+ * descriptive literature references. The app must never appear to
+ * prescribe or recommend — only quote published genotype-phenotype
+ * associations.
+ */
+function softenNote(raw: string): string {
+  if (!raw) return raw;
+  let s = raw;
+  s = s.replace(/\bconseil médical recommandé\b/gi, "un suivi médical est décrit dans la littérature");
+  s = s.replace(/\bsuivi médical\b/gi, "un suivi médical est mentionné");
+  s = s.replace(/\b[Dd]osage de la ferritine recommandé\b/gi, "un dosage de la ferritine est mentionné dans la littérature");
+  s = s.replace(/\b[Ss]urveiller la ferritine\b/gi, "un suivi de la ferritine est mentionné");
+  s = s.replace(/\b[Ff]olate recommandé\b/gi, "une supplémentation en folate est décrite");
+  s = s.replace(/\b[Hh]ygiène de vie protectrice\b/gi, "la littérature associe hygiène de vie et profil protecteur");
+  s = s.replace(/\b[Mm]ode de vie, sommeil et suivi conseillés\b/gi, "mode de vie, sommeil et suivi sont cités dans la littérature");
+  s = s.replace(/\s{2,}/g, " ").trim();
+  if (!s.endsWith(".")) s += ".";
+  return `${s} — Source : littérature ClinVar/publications. Pour information, ne constitue pas une recommandation médicale.`;
+}
+
 type SingleVariantRule = {
   id: string;
   gene: string;
@@ -142,7 +164,7 @@ function apoeFromGenotypes(genotypes: GenotypeMap): ActionableFinding | null {
         name: "APOE (Alzheimer tardif)",
         call: geno,
         risk,
-        note,
+        note: softenNote(note),
         rsids: ["rs429358", "rs7412"],
         genotypes: { rs429358: genotypeToString(a), rs7412: genotypeToString(b) },
       };
@@ -166,7 +188,7 @@ export function computeActionable(genotypes: GenotypeMap): ActionableFinding[] {
       name: rule.name,
       call: outcome.call,
       risk: outcome.risk,
-      note: outcome.note,
+      note: softenNote(outcome.note),
       rsids: [rule.rsid],
       genotypes: { [rule.rsid]: genotypeToString(g) },
     });

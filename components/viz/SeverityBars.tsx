@@ -21,9 +21,9 @@ export function SeverityBars({ counts }: SeverityBarsProps) {
   const pct = Math.min(1, score / maxRef);
 
   const levels: { key: Severity; label: string }[] = [
-    { key: "high", label: "Critique" },
-    { key: "medium", label: "Modéré" },
-    { key: "low", label: "Mineur" },
+    { key: "high", label: "Pertinence haute" },
+    { key: "medium", label: "Pertinence modérée" },
+    { key: "low", label: "Pertinence faible" },
   ];
 
   // semicircle gauge: radius 60, center at (80, 70)

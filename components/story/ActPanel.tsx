@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import type { Act } from "@/lib/story/acts";
+import { WorldAncestryMap } from "./WorldAncestryMap";
 
 const SEV_COLOR = {
   high: "text-oxblood border-oxblood/40 bg-oxblood/8",
@@ -15,7 +16,7 @@ const SIG_LABEL: Record<string, string> = {
   "P/LP": "Pathogène / probablement pathogène",
 };
 
-const SEV_LABEL = { high: "Critique", medium: "Modéré", low: "Mineur" };
+const SEV_LABEL = { high: "Pertinence haute", medium: "Pertinence modérée", low: "Pertinence faible" };
 
 export function ActPanel({ act }: { act: Act }) {
   return (
@@ -35,7 +36,7 @@ function Chapter({ act }: { act: Act }) {
     neanderthal: "Néandertal",
     "health-intro": "Chapitre 3 — Santé",
     clinvar: "Santé",
-    actionable: "Variants actionnables",
+    actionable: "Variants documentés",
     carriers: "Dépistage de porteurs",
     "pharma-intro": "Chapitre 4 — Pharmaco",
     pharma: "Pharmaco",
@@ -349,45 +350,67 @@ const REGION_COLOR: Record<string, string> = {
 
 function AncestryBody({ act }: { act: Extract<Act, { kind: "ancestry" }> }) {
   const a = act.ancestry;
+  const top = a.topRegion;
+  const secondary = a.components.filter((c) => c.region !== top.region && c.percent >= 3);
+  const coveragePct = (a.coverage * 100).toFixed(0);
   return (
     <>
       <h2 className="font-serif text-[28px] font-medium tracking-[-0.01em] sm:text-[34px]">Vos origines</h2>
-      <p className="mt-2 text-xs text-ink/65">
-        Projection sur un panel de marqueurs continentaux ({a.matched}/{a.total} SNPs).
+      <p className="mt-2 text-[13px] leading-relaxed text-ink/70">
+        Votre ADN a été projeté sur un panel de {a.total} marqueurs continentaux (AIMs).
+        {" "}
+        {a.matched}/{a.total} ont pu être lus dans votre fichier ({coveragePct}% de couverture).
+        La composante dominante est{" "}
+        <strong className="text-ink">{top.label}</strong> à {top.percent.toFixed(1)}%.
       </p>
-      <div className="mt-4 h-3 w-full overflow-hidden rounded-full bg-ink/8">
-        <div className="flex h-full w-full">
-          {a.components.map((c) => (
-            <div
-              key={c.region}
-              style={{
-                width: `${c.percent}%`,
-                background: REGION_COLOR[c.region] ?? "#888",
-              }}
-              title={`${c.label} ${c.percent}%`}
-            />
-          ))}
+
+      <WorldAncestryMap ancestry={a} />
+
+      {/* Contextual detail block */}
+      <div className="mt-4 rounded-sm border border-ink/10 bg-ink/[0.03] p-4 text-[12.5px] leading-relaxed text-ink/75">
+        <div className="mb-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-oxblood">
+          Comment c&apos;est calculé
+        </div>
+        <p>
+          Pour chaque marqueur, on compare vos deux allèles aux fréquences observées dans cinq groupes
+          continentaux (1000 Genomes, ALFA, panels Kidd AISNP). Un maximum de vraisemblance
+          déterminant la composition la plus probable, puis une normalisation softmax donne les
+          pourcentages ci-dessous.
+        </p>
+        {secondary.length > 0 && (
+          <p className="mt-2">
+            Composantes secondaires significatives :{" "}
+            {secondary.map((c, i) => (
+              <span key={c.region}>
+                <strong className="text-ink">{c.label}</strong> ({c.percent.toFixed(1)}%)
+                {i < secondary.length - 1 ? ", " : ""}
+              </span>
+            ))}
+            . Cela peut refléter une ascendance mixte récente ou un partage ancien de fréquences
+            alléliques entre régions.
+          </p>
+        )}
+      </div>
+
+      {/* Migration timeline */}
+      <div className="mt-4 grid grid-cols-3 gap-2 text-center text-[11px] text-ink/65">
+        <div className="rounded-sm border border-ink/10 bg-paper p-2.5">
+          <div className="font-serif text-[18px] text-ink">70k</div>
+          <div>ans — sortie d&apos;Afrique</div>
+        </div>
+        <div className="rounded-sm border border-ink/10 bg-paper p-2.5">
+          <div className="font-serif text-[18px] text-ink">45k</div>
+          <div>ans — peuplement de l&apos;Eurasie</div>
+        </div>
+        <div className="rounded-sm border border-ink/10 bg-paper p-2.5">
+          <div className="font-serif text-[18px] text-ink">15k</div>
+          <div>ans — arrivée aux Amériques</div>
         </div>
       </div>
-      <div className="mt-4 space-y-1.5">
-        {a.components.map((c) => (
-          <div
-            key={c.region}
-            className="flex items-center justify-between rounded-lg border border-ink/10 bg-ink/[0.03] px-3 py-2 text-sm"
-          >
-            <div className="flex items-center gap-2">
-              <span
-                className="h-3 w-3 rounded-full"
-                style={{ background: REGION_COLOR[c.region] ?? "#888" }}
-              />
-              <span className="text-ink/85">{c.label}</span>
-            </div>
-            <span className="font-mono tabular-nums text-ink">{c.percent.toFixed(1)}%</span>
-          </div>
-        ))}
-      </div>
-      <p className="mt-3 text-[11px] italic text-ink/45">
-        Estimation indicative — les panels cliniques utilisent des milliers de marqueurs.
+
+      <p className="mt-4 text-[11px] italic text-ink/45">
+        Estimation indicative, pour information — les panels cliniques d&apos;ascendance utilisent
+        des milliers de marqueurs et ne peuvent résoudre des différences sub-continentales fines.
       </p>
     </>
   );
@@ -488,9 +511,9 @@ const ACTIONABLE_RISK_COLOR: Record<string, string> = {
 function ActionableBody({ act }: { act: Extract<Act, { kind: "actionable" }> }) {
   return (
     <>
-      <h2 className="font-serif text-[28px] font-medium tracking-[-0.01em] sm:text-[34px]">Variants actionnables</h2>
+      <h2 className="font-serif text-[28px] font-medium tracking-[-0.01em] sm:text-[34px]">Variants documentés</h2>
       <p className="mt-2 text-xs text-ink/65">
-        Variants simples à fort impact clinique ou informatif.
+        Variants simples associés à une signification clinique dans la littérature.
       </p>
       <div className="mt-4 space-y-2">
         {act.findings.map((f) => (

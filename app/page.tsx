@@ -1,10 +1,13 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ProgressOverlay } from "@/components/ui/ProgressOverlay";
 import { runAnalysis } from "@/lib/analyzer-client";
 import { useAnalysis } from "@/lib/store/analysis";
+import { useConsent } from "@/lib/store/consent";
+import { DisclaimerModal } from "@/components/DisclaimerModal";
 
 // ——————————————————————————————————————————————————————————————
 // Direction 1 · CLINIQUE — medical-grade second opinion.
@@ -401,20 +404,55 @@ export default function Home() {
     [reset, setStatus, setProgress, setData, setError, router],
   );
 
+  // ——— Consent gate : must acknowledge disclaimer before any analysis runs
+  const { accepted, hydrated, hydrate } = useConsent();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    if (!hydrated) hydrate();
+  }, [hydrated, hydrate]);
+
+  const maybeRunFile = useCallback(
+    (f: File) => {
+      if (accepted) {
+        onFile(f);
+      } else {
+        setPendingFile(f);
+        setModalOpen(true);
+      }
+    },
+    [accepted, onFile],
+  );
+
   const pickFile = useCallback(() => {
     if (busy) return;
+    if (!accepted) {
+      setModalOpen(true);
+      return;
+    }
     inputRef.current?.click();
-  }, [busy]);
+  }, [busy, accepted]);
 
   const onDrop = useCallback(
     (ev: React.DragEvent<HTMLDivElement>) => {
       ev.preventDefault();
       if (busy) return;
       const f = ev.dataTransfer.files?.[0];
-      if (f) onFile(f);
+      if (f) maybeRunFile(f);
     },
-    [onFile, busy],
+    [maybeRunFile, busy],
   );
+
+  const onAccepted = useCallback(() => {
+    setModalOpen(false);
+    if (pendingFile) {
+      onFile(pendingFile);
+      setPendingFile(null);
+    } else {
+      inputRef.current?.click();
+    }
+  }, [pendingFile, onFile]);
 
   const s = STRINGS[lang];
 
@@ -441,8 +479,18 @@ export default function Home() {
         className="hidden"
         onChange={(e) => {
           const f = e.target.files?.[0];
-          if (f) onFile(f);
+          if (f) maybeRunFile(f);
         }}
+      />
+
+      <DisclaimerModal
+        open={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          setPendingFile(null);
+        }}
+        onAccepted={onAccepted}
+        lang={lang}
       />
 
       <div className="mx-auto max-w-[1440px]">
@@ -549,7 +597,7 @@ function Hero({
 }) {
   return (
     <section
-      className="relative overflow-hidden px-6 py-8 sm:px-10 sm:py-10 lg:px-14 lg:py-12"
+      className="relative flex min-h-[calc(100vh-1px)] flex-col justify-center overflow-hidden px-6 py-10 sm:px-10 sm:py-12 lg:px-14 lg:py-14"
       style={{ borderBottom: `1px solid ${CL.rule}` }}
     >
       {/* subtle grid watermark */}
@@ -634,7 +682,7 @@ function Hero({
               <button
                 onClick={onPick}
                 disabled={busy}
-                className="mt-5 w-full px-4 py-3 text-[13px] uppercase tracking-[0.08em] transition disabled:opacity-60"
+                className="mt-5 inline-flex w-full items-center justify-center gap-2 whitespace-nowrap px-4 py-3 text-[12px] uppercase tracking-[0.06em] transition disabled:opacity-60 sm:text-[13px]"
                 style={{
                   background: CL.ink,
                   color: CL.paper,
@@ -1200,13 +1248,15 @@ function SampleSpread({ strings, lang }: { strings: Strings["sample"]; lang: Lan
               const sevLabel =
                 p.severity === "high"
                   ? lang === "fr"
-                    ? "Critique"
-                    : "Critical"
+                    ? "Pertinence haute"
+                    : "High relevance"
                   : p.severity === "moderate"
                     ? lang === "fr"
-                      ? "Modéré"
-                      : "Moderate"
-                    : "Info";
+                      ? "Pertinence modérée"
+                      : "Moderate relevance"
+                    : lang === "fr"
+                      ? "Info"
+                      : "Info";
               return (
                 <div
                   key={i}
@@ -1342,10 +1392,21 @@ function CtaFooter({
 function Footer({ strings }: { strings: Strings["footer"] }) {
   return (
     <footer
-      className="px-6 py-6 text-center text-[11px] uppercase tracking-[0.1em] sm:px-10 lg:px-14"
-      style={{ color: CL.ink3, fontFamily: "var(--font-sans)" }}
+      className="border-t px-6 py-7 text-center text-[11px] sm:px-10 lg:px-14"
+      style={{ color: CL.ink3, fontFamily: "var(--font-sans)", borderColor: CL.rule }}
     >
-      {strings.copy}
+      <div className="mx-auto max-w-3xl space-y-3">
+        <p className="uppercase tracking-[0.1em]">{strings.copy}</p>
+        <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-[11px] tracking-wide">
+          <a href="/legal/terms" className="underline underline-offset-4 hover:text-ink">Conditions</a>
+          <a href="/legal/privacy" className="underline underline-offset-4 hover:text-ink">Confidentialité</a>
+          <a href="/legal/notice" className="underline underline-offset-4 hover:text-ink">Mentions légales</a>
+        </nav>
+        <p className="mx-auto max-w-2xl pt-2 text-[11px] normal-case leading-relaxed text-ink/55">
+          DNAI est un outil éducatif — pas un dispositif médical. Les informations proviennent de bases publiques
+          (ClinVar, CPIC, DPWG, PGS Catalog) et ne remplacent ni un diagnostic, ni un test génétique clinique accrédité.
+        </p>
+      </div>
     </footer>
   );
 }
