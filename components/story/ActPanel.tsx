@@ -3,6 +3,8 @@
 import Link from "next/link";
 import type { Act } from "@/lib/story/acts";
 import { WorldAncestryMap } from "./WorldAncestryMap";
+import { ReadAloudButton } from "./ReadAloudButton";
+import { narrationFor } from "@/lib/story/narration";
 
 const SEV_COLOR = {
   high: "text-oxblood border-oxblood/40 bg-oxblood/8",
@@ -21,7 +23,10 @@ const SEV_LABEL = { high: "Pertinence haute", medium: "Pertinence modérée", lo
 export function ActPanel({ act }: { act: Act }) {
   return (
     <div className="pointer-events-auto w-full max-w-xl rounded-sm border border-ink/12 bg-paper p-7 text-ink shadow-[0_30px_80px_-20px_rgba(21,20,16,0.55)] sm:p-9">
-      <Chapter act={act} />
+      <div className="mb-4 flex items-start justify-between gap-3">
+        <Chapter act={act} />
+        <ReadAloudButton text={narrationFor(act)} />
+      </div>
       <Body act={act} />
     </div>
   );
@@ -48,7 +53,7 @@ function Chapter({ act }: { act: Act }) {
     outro: "Épilogue",
   };
   return (
-    <div className="mb-4 text-[10px] font-semibold uppercase tracking-[0.28em] text-oxblood">
+    <div className="text-[10px] font-semibold uppercase tracking-[0.28em] text-oxblood">
       {labels[act.kind]}
     </div>
   );
