@@ -5,6 +5,7 @@ import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { explainPRS } from "@/lib/prs-explain";
 import { PRSRadar } from "@/components/viz/PRSRadar";
+import { PRSDistribution } from "@/components/viz/PRSDistribution";
 import type { PRSFinding } from "@/lib/types";
 
 const CATEGORY_LABEL: Record<PRSFinding["rule"]["category"], string> = {
@@ -100,6 +101,17 @@ export function PRSSection({ findings }: PRSProps) {
             }
           />
           <p className="text-sm text-fg-muted">{exp.what}</p>
+          <div className="mt-3 rounded-lg border border-border/60 bg-surface-2/30 p-2">
+            <PRSDistribution
+              zScore={f.zScore}
+              percentile={f.percentile}
+              color={CATEGORY_COLOR[f.rule.category]}
+            />
+            <div className="mt-1 px-1 text-[10px] text-fg-muted">
+              Courbe = distribution du score dans la population de référence.
+              Votre position relative est marquée.
+            </div>
+          </div>
           <PercentileBar percentile={f.percentile} color={CATEGORY_COLOR[f.rule.category]} />
           <div
             className="mt-4 rounded-lg border p-3 text-sm"
