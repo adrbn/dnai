@@ -31,21 +31,42 @@ export default function StoryPage() {
 
   useEffect(() => {
     if (acts.length === 0) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-        if (visible[0]) {
-          const idx = Number((visible[0].target as HTMLElement).dataset.actIndex);
-          if (!Number.isNaN(idx)) setActive(idx);
+    const root = containerRef.current;
+    if (!root) return;
+
+    // Pick whichever section's center is closest to viewport center. This
+    // works even when sections are taller than the viewport (where no
+    // IntersectionObserver threshold would ever fire cleanly).
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const sections = root.querySelectorAll<HTMLElement>("[data-act-index]");
+      const mid = window.innerHeight / 2;
+      let bestIdx = 0;
+      let bestDist = Infinity;
+      sections.forEach((s) => {
+        const r = s.getBoundingClientRect();
+        const center = r.top + r.height / 2;
+        const d = Math.abs(center - mid);
+        if (d < bestDist) {
+          bestDist = d;
+          bestIdx = Number(s.dataset.actIndex) || 0;
         }
-      },
-      { threshold: [0.35, 0.6, 0.85], rootMargin: "-10% 0px -35% 0px" },
-    );
-    const sections = containerRef.current?.querySelectorAll<HTMLElement>("[data-act-index]");
-    sections?.forEach((s) => observer.observe(s));
-    return () => observer.disconnect();
+      });
+      setActive(bestIdx);
+    };
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, [acts.length]);
 
   const frame = useInterpolatedFrame(frames, active);
