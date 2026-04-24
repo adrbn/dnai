@@ -9,3 +9,9 @@ scripts/.cache/
 scripts/.venv/
 public/data/clinvar-slim-b37.json.gz
 !public/data/clinvar-slim-seed.json
+
+# npm leftovers — project uses pnpm
+package-lock.json
+
+# internal planning/notes, not useful to public readers
+docs/superpowers/

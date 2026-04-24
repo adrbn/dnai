@@ -565,7 +565,8 @@ function Nav({
             <button
               key={l}
               onClick={() => onLang(l)}
-              className="px-3 py-1.5 text-[11px] uppercase tracking-[0.1em] transition"
+              type="button"
+              className="inline-flex min-w-[44px] items-center justify-center px-3.5 py-2 text-[11px] uppercase tracking-[0.1em] transition"
               style={{
                 background: lang === l ? CL.ink : "transparent",
                 color: lang === l ? CL.paper : CL.ink2,
@@ -597,7 +598,7 @@ function Hero({
 }) {
   return (
     <section
-      className="relative flex min-h-[calc(100vh-1px)] flex-col justify-center overflow-hidden px-6 py-10 sm:px-10 sm:py-12 lg:px-14 lg:py-14"
+      className="relative flex min-h-[calc(100vh-1px)] flex-col overflow-hidden px-6 pb-10 pt-4 sm:px-10 sm:pb-12 sm:pt-6 lg:px-14 lg:pb-14 lg:pt-8"
       style={{ borderBottom: `1px solid ${CL.rule}` }}
     >
       {/* subtle grid watermark */}
