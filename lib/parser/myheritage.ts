@@ -65,6 +65,26 @@ function unquote(s: string): string {
   return s;
 }
 
+/**
+ * Auto-detect field separator. MyHeritage uses ",", 23andMe / AncestryDNA /
+ * FTDNA use tab. We look at the first non-comment, non-empty data line.
+ */
+function detectDelimiter(lines: string[]): "," | "\t" {
+  for (const raw of lines) {
+    if (!raw) continue;
+    if (raw.startsWith("#")) continue;
+    // skip the optional header line ("RSID,CHROMOSOME,..." or "rsid\tchromosome\t...")
+    if (raw.toLowerCase().includes("rsid") || raw.toLowerCase().startsWith("# rsid")) continue;
+    const tabs = (raw.match(/\t/g) ?? []).length;
+    const commas = (raw.match(/,/g) ?? []).length;
+    if (tabs >= 3 && tabs >= commas) return "\t";
+    if (commas >= 3) return ",";
+    // keep scanning if the first data line is ambiguous
+  }
+  // Default to comma to preserve historical behavior.
+  return ",";
+}
+
 export async function parseMyHeritageText(
   text: string,
   opts: ParseOptions = {},
@@ -73,6 +93,7 @@ export async function parseMyHeritageText(
   const lines = normalized.split("\n");
   const build = detectBuildFromHeader(lines);
   const source = detectSource(lines, opts.filename);
+  const delim = detectDelimiter(lines);
   const genotypes: GenotypeMap = new Map();
   const positions: PositionIndex = {};
   const density: DensityMap = {};
@@ -91,7 +112,7 @@ export async function parseMyHeritageText(
         continue;
       }
     }
-    const cols = raw.split(",");
+    const cols = raw.split(delim);
     if (cols.length < 4) continue;
     const rsid = unquote(cols[0]).trim();
     const chr = unquote(cols[1]).trim().toUpperCase();
@@ -127,9 +148,12 @@ async function blobToText(blob: Blob): Promise<string> {
   const buf = new Uint8Array(await blob.arrayBuffer());
   if (name.endsWith(".zip")) {
     const entries = unzipSync(buf);
-    const csvName = Object.keys(entries).find((k) => k.endsWith(".csv"));
-    if (!csvName) throw new Error("ZIP ne contient pas de .csv");
-    return strFromU8(entries[csvName]);
+    // Accept .csv (MyHeritage) or .txt (23andMe, AncestryDNA, FTDNA).
+    const dataName =
+      Object.keys(entries).find((k) => k.endsWith(".csv")) ??
+      Object.keys(entries).find((k) => k.toLowerCase().endsWith(".txt"));
+    if (!dataName) throw new Error("ZIP ne contient ni .csv ni .txt");
+    return strFromU8(entries[dataName]);
   }
   if (name.endsWith(".gz") || name.endsWith(".csv.gz")) {
     return strFromU8(gunzipSync(buf));
