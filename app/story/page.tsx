@@ -71,6 +71,37 @@ export default function StoryPage() {
 
   const frame = useInterpolatedFrame(frames, active);
 
+  const jumpTo = (idx: number) => {
+    const root = containerRef.current;
+    if (!root) return;
+    const section = root.querySelector<HTMLElement>(`[data-act-index="${idx}"]`);
+    if (section) section.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
+  useEffect(() => {
+    if (acts.length === 0) return;
+    const onKey = (e: KeyboardEvent) => {
+      // Ignore when the user is typing in a field.
+      const t = e.target as HTMLElement | null;
+      if (t && /input|textarea|select/i.test(t.tagName)) return;
+      if (e.key === "ArrowDown" || e.key === "ArrowRight" || e.key === "PageDown") {
+        e.preventDefault();
+        jumpTo(Math.min(acts.length - 1, active + 1));
+      } else if (e.key === "ArrowUp" || e.key === "ArrowLeft" || e.key === "PageUp") {
+        e.preventDefault();
+        jumpTo(Math.max(0, active - 1));
+      } else if (e.key === "Home") {
+        e.preventDefault();
+        jumpTo(0);
+      } else if (e.key === "End") {
+        e.preventDefault();
+        jumpTo(acts.length - 1);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [acts.length, active]);
+
   if (!result) return null;
   if (hydrated && !unlocked) return <Paywall eyebrow="Récit" />;
   // While waiting for hydration, avoid flashing gated content
@@ -106,7 +137,7 @@ export default function StoryPage() {
       </header>
 
       <Progress total={acts.length} active={active} />
-      <TimelineRibbon acts={acts} active={active} />
+      <TimelineRibbon acts={acts} active={active} onJump={jumpTo} />
 
       <div ref={containerRef} className="relative z-10">
         {acts.map((act, i) => (

@@ -5,6 +5,7 @@ import type { Act } from "@/lib/story/acts";
 interface TimelineRibbonProps {
   acts: Act[];
   active: number;
+  onJump?: (index: number) => void;
 }
 
 function chromosomeFor(act: Act): string | null {
@@ -67,7 +68,7 @@ function kindLabel(kind: Act["kind"]): string {
   }
 }
 
-export function TimelineRibbon({ acts, active }: TimelineRibbonProps) {
+export function TimelineRibbon({ acts, active, onJump }: TimelineRibbonProps) {
   if (acts.length === 0) return null;
   const act = acts[active];
   if (!act) return null;
@@ -118,16 +119,26 @@ export function TimelineRibbon({ acts, active }: TimelineRibbonProps) {
         </div>
         <div className="mt-3 flex gap-[3px]">
           {acts.map((_, i) => (
-            <div
+            <button
               key={i}
-              className={`h-1 flex-1 rounded-full transition-colors ${
-                i < active
-                  ? "bg-paper/35"
-                  : i === active
-                    ? "bg-paper/85"
-                    : "bg-paper/10"
+              type="button"
+              onClick={() => onJump?.(i)}
+              aria-label={`Aller au chapitre ${i + 1}`}
+              aria-current={i === active ? "step" : undefined}
+              className={`group relative h-3 flex-1 cursor-pointer transition-colors ${
+                onJump ? "hover:opacity-100" : "pointer-events-none"
               }`}
-            />
+            >
+              <span
+                className={`absolute inset-x-0 top-1 h-1 rounded-full transition-colors ${
+                  i < active
+                    ? "bg-paper/35 group-hover:bg-paper/55"
+                    : i === active
+                      ? "bg-paper/85"
+                      : "bg-paper/10 group-hover:bg-paper/30"
+                }`}
+              />
+            </button>
           ))}
         </div>
       </div>
