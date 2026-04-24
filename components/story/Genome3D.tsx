@@ -28,10 +28,19 @@ interface Genome3DProps {
   reducedMotion?: boolean;
 }
 
-const HELIX_N = 120;
-const HELIX_Y_HALF = 6;
-const HELIX_TURNS = 3;
+const HELIX_N = 180;
+const HELIX_Y_HALF = 10;
+const HELIX_TURNS = 5;
 const STRAND_RADIUS = 1.2;
+// Static cosmetic tilt of the whole helix group (radians).
+const HELIX_TILT_X = -0.18;
+const HELIX_TILT_Z = 0.12;
+// Shift the helix out of the center so the scrolling text panel on the right
+// never occludes it. The camera still looks at the world origin, which pushes
+// the helix into the left third of the viewport.
+const HELIX_X_OFFSET = -5;
+// Fade the top ~18% and bottom ~18% of the helix out so it looks infinite.
+const FADE_MARGIN = 0.18;
 
 interface BasePairData {
   t: number;
@@ -39,6 +48,14 @@ interface BasePairData {
   theta: number;
   p1: [number, number, number];
   p2: [number, number, number];
+  fade: number; // 0..1 — 1 in the middle, 0 at both ends
+}
+
+function fadeAt(t: number): number {
+  // Smoothstep fade on both ends so the helix looks infinite.
+  const d = Math.min(t, 1 - t);
+  const x = Math.min(1, d / FADE_MARGIN);
+  return x * x * (3 - 2 * x);
 }
 
 function buildPairs(): BasePairData[] {
@@ -53,6 +70,7 @@ function buildPairs(): BasePairData[] {
       theta,
       p1: [Math.cos(theta) * STRAND_RADIUS, y, Math.sin(theta) * STRAND_RADIUS],
       p2: [Math.cos(theta + Math.PI) * STRAND_RADIUS, y, Math.sin(theta + Math.PI) * STRAND_RADIUS],
+      fade: fadeAt(t),
     });
   }
   return arr;
@@ -111,8 +129,11 @@ function Helix({
   const strand2Refs = useRef<(THREE.Mesh | null)[]>([]);
 
   useFrame((state, dt) => {
-    if (group.current && !reducedMotion && !frozen) {
-      group.current.rotation.y += dt * 0.12;
+    // Keep the helix slowly rotating on itself even while the camera tracks a
+    // highlighted variant — freezing it made the whole stage look broken.
+    if (group.current && !reducedMotion) {
+      const speed = frozen ? 0.06 : 0.12;
+      group.current.rotation.y += dt * speed;
     }
 
     const time = state.clock.elapsedTime;
@@ -147,49 +168,58 @@ function Helix({
   }, [highlightMap]);
 
   return (
-    <group ref={group}>
-      {pairs.map((p, i) => {
-        const hk1 = highlightKeys.has(`${i}-0`);
-        const hk2 = highlightKeys.has(`${i}-1`);
-        return (
-          <group key={i}>
-            <mesh
-              position={p.p1}
-              ref={(el) => {
-                strand1Refs.current[i] = el;
-              }}
-            >
-              <sphereGeometry args={[0.1, 14, 14]} />
-              <meshStandardMaterial
-                color={hk1 ? "#ffffff" : "#7c9cff"}
-                emissive={hk1 ? "#ffffff" : "#4f7dff"}
-                emissiveIntensity={hk1 ? 2.5 : 0.55}
-                roughness={0.3}
-              />
-            </mesh>
-            <mesh
-              position={p.p2}
-              ref={(el) => {
-                strand2Refs.current[i] = el;
-              }}
-            >
-              <sphereGeometry args={[0.1, 14, 14]} />
-              <meshStandardMaterial
-                color={hk2 ? "#ffffff" : "#c7b2ff"}
-                emissive={hk2 ? "#ffffff" : "#8b6fff"}
-                emissiveIntensity={hk2 ? 2.5 : 0.55}
-                roughness={0.3}
-              />
-            </mesh>
-            <BasePair a={p.p1} b={p.p2} />
-          </group>
-        );
-      })}
+    // Outer group holds the static cosmetic tilt + left offset; inner group does the Y-spin.
+    <group position={[HELIX_X_OFFSET, 0, 0]} rotation={[HELIX_TILT_X, 0, HELIX_TILT_Z]}>
+      <group ref={group}>
+        {pairs.map((p, i) => {
+          const hk1 = highlightKeys.has(`${i}-0`);
+          const hk2 = highlightKeys.has(`${i}-1`);
+          const fade = p.fade;
+          const opacity = Math.max(0.04, fade);
+          return (
+            <group key={i}>
+              <mesh
+                position={p.p1}
+                ref={(el) => {
+                  strand1Refs.current[i] = el;
+                }}
+              >
+                <sphereGeometry args={[0.1, 14, 14]} />
+                <meshStandardMaterial
+                  color={hk1 ? "#ffffff" : "#7c9cff"}
+                  emissive={hk1 ? "#ffffff" : "#4f7dff"}
+                  emissiveIntensity={hk1 ? 2.5 : 0.55 * fade}
+                  roughness={0.3}
+                  transparent
+                  opacity={opacity}
+                />
+              </mesh>
+              <mesh
+                position={p.p2}
+                ref={(el) => {
+                  strand2Refs.current[i] = el;
+                }}
+              >
+                <sphereGeometry args={[0.1, 14, 14]} />
+                <meshStandardMaterial
+                  color={hk2 ? "#ffffff" : "#c7b2ff"}
+                  emissive={hk2 ? "#ffffff" : "#8b6fff"}
+                  emissiveIntensity={hk2 ? 2.5 : 0.55 * fade}
+                  roughness={0.3}
+                  transparent
+                  opacity={opacity}
+                />
+              </mesh>
+              <BasePair a={p.p1} b={p.p2} fade={fade} />
+            </group>
+          );
+        })}
+      </group>
     </group>
   );
 }
 
-function BasePair({ a, b }: { a: [number, number, number]; b: [number, number, number] }) {
+function BasePair({ a, b, fade = 1 }: { a: [number, number, number]; b: [number, number, number]; fade?: number }) {
   const mid: [number, number, number] = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2];
   const dx = b[0] - a[0];
   const dy = b[1] - a[1];
@@ -206,9 +236,9 @@ function BasePair({ a, b }: { a: [number, number, number]; b: [number, number, n
       <meshStandardMaterial
         color="#6b7280"
         emissive="#4f7dff"
-        emissiveIntensity={0.08}
+        emissiveIntensity={0.08 * fade}
         transparent
-        opacity={0.5}
+        opacity={0.5 * Math.max(0.06, fade)}
       />
     </mesh>
   );

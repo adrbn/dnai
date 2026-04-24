@@ -4,13 +4,15 @@ import { locusToWorld } from "./chromosomes";
 
 // All acts stay on the beautiful double helix. Camera angles differ per
 // chapter to keep visual rhythm (close / wide / tilt / orbit).
-const HELIX_FAR: CameraPose = { position: [0, 0, 24], target: [0, 0, 0], fov: 42 };
-const HELIX_CLOSE: CameraPose = { position: [6, 0, 10], target: [0, 0, 0], fov: 38 };
-const HELIX_TOP: CameraPose = { position: [4, 5, 14], target: [0, 0, 0], fov: 40 };
-const HELIX_BOTTOM: CameraPose = { position: [-4, -5, 14], target: [0, -1, 0], fov: 40 };
-const HELIX_SIDE: CameraPose = { position: [14, 1, 8], target: [0, 0, 0], fov: 36 };
-const HELIX_ORBIT_L: CameraPose = { position: [-12, 3, 12], target: [0, 0, 0], fov: 40 };
-const HELIX_OUTRO: CameraPose = { position: [0, 0, 30], target: [0, 0, 0], fov: 38 };
+// Poses are calibrated for the longer helix (HELIX_Y_HALF=10). Z spread is
+// wide so chapter scroll changes feel like genuine zoom/orbit moves.
+const HELIX_FAR: CameraPose = { position: [0, 0, 34], target: [0, 0, 0], fov: 38 };
+const HELIX_CLOSE: CameraPose = { position: [5, 0, 11], target: [0, 0, 0], fov: 32 };
+const HELIX_TOP: CameraPose = { position: [4, 7, 18], target: [0, 1, 0], fov: 36 };
+const HELIX_BOTTOM: CameraPose = { position: [-4, -7, 18], target: [0, -1, 0], fov: 36 };
+const HELIX_SIDE: CameraPose = { position: [16, 2, 9], target: [0, 0, 0], fov: 30 };
+const HELIX_ORBIT_L: CameraPose = { position: [-14, 4, 14], target: [0, 0, 0], fov: 36 };
+const HELIX_OUTRO: CameraPose = { position: [0, 0, 42], target: [0, 0, 0], fov: 34 };
 
 export function poseForAct(act: Act): CameraPose {
   switch (act.kind) {
