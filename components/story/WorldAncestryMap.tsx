@@ -1,53 +1,46 @@
 "use client";
 
 import { useMemo } from "react";
+import { geoEqualEarth, geoPath, geoGraticule10 } from "d3-geo";
+import { feature } from "topojson-client";
+import worldTopo from "world-atlas/countries-110m.json";
 import type { AncestryComponent, AncestryResult } from "@/lib/types";
 
 type Region = AncestryComponent["region"];
 
-// Equirectangular projection over a 800×400 viewBox.
-// Continent blobs are hand-drawn simplifications — editorial, not cartographic.
-const CONTINENTS: { d: string; fill?: string }[] = [
-  // North America
-  { d: "M 72,95 C 58,120 62,175 110,200 L 170,218 L 205,215 L 232,190 L 245,165 L 240,140 L 215,110 L 180,92 L 140,85 L 105,82 Z" },
-  // Central America
-  { d: "M 200,220 L 230,230 L 255,248 L 262,262 L 248,258 L 222,238 Z" },
-  // South America
-  { d: "M 255,260 C 248,295 258,340 275,365 L 288,355 L 295,320 L 300,290 L 292,268 L 272,258 Z" },
-  // Greenland
-  { d: "M 300,70 L 330,65 L 348,82 L 342,102 L 312,108 L 295,92 Z" },
-  // Europe
-  { d: "M 390,108 L 418,100 L 450,108 L 462,122 L 455,138 L 428,148 L 398,145 L 382,132 L 380,118 Z" },
-  // Africa
-  { d: "M 415,160 C 402,200 418,250 445,285 L 468,298 L 485,278 L 495,240 L 490,200 L 475,170 L 450,158 L 428,155 Z" },
-  // Middle East / Arabia
-  { d: "M 470,165 L 498,170 L 510,188 L 500,205 L 478,200 L 465,182 Z" },
-  // Asia core (Eurasia east)
-  { d: "M 470,105 L 530,98 L 600,102 L 660,115 L 690,135 L 680,158 L 640,170 L 590,172 L 540,168 L 498,158 L 478,142 L 468,122 Z" },
-  // India (SAS)
-  { d: "M 560,185 L 588,188 L 598,218 L 585,238 L 568,232 L 558,208 Z" },
-  // South-East Asia
-  { d: "M 632,180 L 660,182 L 672,205 L 660,222 L 640,218 L 628,198 Z" },
-  // Indonesia/archipelago (dotted)
-  { d: "M 660,235 L 680,232 L 700,240 L 705,252 L 685,252 L 668,245 Z" },
-  // Australia
-  { d: "M 672,285 C 668,305 688,320 715,320 L 738,312 L 742,295 L 725,278 L 698,275 Z" },
-  // Japan
-  { d: "M 710,148 L 720,152 L 724,168 L 716,175 L 706,165 Z" },
-  // UK / Ireland
-  { d: "M 372,110 L 382,108 L 385,125 L 375,130 L 368,120 Z" },
-  // Madagascar
-  { d: "M 500,275 L 508,280 L 510,298 L 500,302 L 496,288 Z" },
-];
+// Pre-compute the projection + geo paths once at module scope: the world
+// topology is static and the map has a fixed viewBox.
+const WIDTH = 960;
+const HEIGHT = 480;
 
-// Approximate centroids per continental cluster, in the same 800×400 space.
-const REGION_CENTROIDS: Record<Region, { x: number; y: number }> = {
-  AFR: { x: 455, y: 230 },
-  EUR: { x: 418, y: 125 },
-  EAS: { x: 640, y: 150 },
-  SAS: { x: 578, y: 210 },
-  AMR: { x: 200, y: 170 },
+const projection = geoEqualEarth()
+  .scale(170)
+  .translate([WIDTH / 2, HEIGHT / 2 + 10]);
+
+const pathFn = geoPath(projection);
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const world = worldTopo as any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const countries = feature(world, world.objects.countries) as any;
+
+const graticulePath = pathFn(geoGraticule10()) ?? "";
+
+// Region centroids in lon/lat — projected below.
+const REGION_LONLAT: Record<Region, [number, number]> = {
+  AFR: [20, 2], // central Africa
+  EUR: [12, 50], // central Europe
+  EAS: [110, 35], // eastern China
+  SAS: [78, 22], // northern India
+  AMR: [-95, 38], // central North America — dominant for AMR PGS references
 };
+
+const REGION_CENTROIDS: Record<Region, { x: number; y: number }> = Object.fromEntries(
+  (Object.keys(REGION_LONLAT) as Region[]).map((r) => {
+    const [x, y] = projection(REGION_LONLAT[r]) ?? [0, 0];
+    return [r, { x, y }];
+  }),
+) as Record<Region, { x: number; y: number }>;
 
 const REGION_COLOR: Record<Region, string> = {
   AFR: "#b8792f",
@@ -63,37 +56,55 @@ export function WorldAncestryMap({ ancestry }: { ancestry: AncestryResult }) {
     [ancestry.components],
   );
   const top = ancestry.topRegion;
+
+  const countryPaths = useMemo(
+    () =>
+      (countries.features as unknown[])
+        .map((f) => pathFn(f as Parameters<typeof pathFn>[0]))
+        .filter((d): d is string => Boolean(d)),
+    [],
+  );
+
+  const sphereOutline = useMemo(() => pathFn({ type: "Sphere" }) ?? "", []);
+
   return (
     <div className="mt-4 overflow-hidden rounded-sm border border-ink/12 bg-paper">
       <svg
-        viewBox="0 0 800 400"
+        viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
         className="block h-auto w-full"
         xmlns="http://www.w3.org/2000/svg"
         role="img"
         aria-label={`Carte des origines — ${top.label} ${top.percent.toFixed(1)}%`}
       >
         <defs>
-          <pattern id="graticule" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(26,22,19,0.05)" strokeWidth="0.5" />
-          </pattern>
-          {/* Radial gradient for each region halo */}
           {(Object.keys(REGION_COLOR) as Region[]).map((r) => (
             <radialGradient key={r} id={`halo-${r}`}>
-              <stop offset="0%" stopColor={REGION_COLOR[r]} stopOpacity="0.55" />
-              <stop offset="55%" stopColor={REGION_COLOR[r]} stopOpacity="0.15" />
+              <stop offset="0%" stopColor={REGION_COLOR[r]} stopOpacity="0.6" />
+              <stop offset="45%" stopColor={REGION_COLOR[r]} stopOpacity="0.22" />
               <stop offset="100%" stopColor={REGION_COLOR[r]} stopOpacity="0" />
             </radialGradient>
           ))}
+          <clipPath id="sphere-clip">
+            <path d={sphereOutline} />
+          </clipPath>
         </defs>
 
-        {/* Background */}
-        <rect width="800" height="400" fill="#f5efe5" />
-        <rect width="800" height="400" fill="url(#graticule)" />
+        {/* Ocean (sphere) */}
+        <path d={sphereOutline} fill="#f0e9dd" stroke="rgba(26,22,19,0.18)" strokeWidth="0.8" />
 
-        {/* Continents (subtle fill so the halos read on top) */}
-        <g fill="rgba(26,22,19,0.18)" stroke="rgba(26,22,19,0.35)" strokeWidth="0.7">
-          {CONTINENTS.map((c, i) => (
-            <path key={i} d={c.d} />
+        {/* Graticule (faint lon/lat grid) */}
+        <path
+          d={graticulePath}
+          fill="none"
+          stroke="rgba(26,22,19,0.08)"
+          strokeWidth="0.4"
+          clipPath="url(#sphere-clip)"
+        />
+
+        {/* Countries */}
+        <g fill="rgba(26,22,19,0.16)" stroke="rgba(26,22,19,0.32)" strokeWidth="0.4">
+          {countryPaths.map((d: string, i: number) => (
+            <path key={i} d={d} vectorEffect="non-scaling-stroke" />
           ))}
         </g>
 
@@ -101,8 +112,7 @@ export function WorldAncestryMap({ ancestry }: { ancestry: AncestryResult }) {
         {ordered.map((c) => {
           const center = REGION_CENTROIDS[c.region];
           if (!center || c.percent < 0.5) return null;
-          // Halo radius proportional to sqrt(percent), clamped
-          const r = 22 + Math.sqrt(c.percent) * 11;
+          const r = 32 + Math.sqrt(c.percent) * 13;
           return (
             <circle
               key={`halo-${c.region}`}
@@ -114,24 +124,23 @@ export function WorldAncestryMap({ ancestry }: { ancestry: AncestryResult }) {
           );
         })}
 
-        {/* Region dots + labels for components ≥ 1% */}
+        {/* Region dots for components ≥ 1% */}
         {ordered
           .filter((c) => c.percent >= 1)
           .map((c) => {
             const center = REGION_CENTROIDS[c.region];
             if (!center) return null;
-            const r = 3 + Math.sqrt(c.percent) * 0.6;
+            const r = 3.2 + Math.sqrt(c.percent) * 0.55;
             return (
-              <g key={`mark-${c.region}`}>
-                <circle
-                  cx={center.x}
-                  cy={center.y}
-                  r={r}
-                  fill={REGION_COLOR[c.region]}
-                  stroke="#f5efe5"
-                  strokeWidth="1.5"
-                />
-              </g>
+              <circle
+                key={`mark-${c.region}`}
+                cx={center.x}
+                cy={center.y}
+                r={r}
+                fill={REGION_COLOR[c.region]}
+                stroke="#f0e9dd"
+                strokeWidth="1.5"
+              />
             );
           })}
 
@@ -139,7 +148,7 @@ export function WorldAncestryMap({ ancestry }: { ancestry: AncestryResult }) {
         {(() => {
           const center = REGION_CENTROIDS[top.region];
           if (!center) return null;
-          const labelY = center.y - 22 - Math.sqrt(top.percent) * 0.9;
+          const labelY = center.y - 28 - Math.sqrt(top.percent) * 0.9;
           return (
             <g>
               <text
@@ -147,7 +156,7 @@ export function WorldAncestryMap({ ancestry }: { ancestry: AncestryResult }) {
                 y={labelY}
                 textAnchor="middle"
                 style={{ fontFamily: "var(--font-serif)" }}
-                fontSize="18"
+                fontSize="20"
                 fontWeight="500"
                 fill="#1a1613"
               >
@@ -155,11 +164,11 @@ export function WorldAncestryMap({ ancestry }: { ancestry: AncestryResult }) {
               </text>
               <text
                 x={center.x}
-                y={labelY + 14}
+                y={labelY + 15}
                 textAnchor="middle"
-                style={{ fontFamily: "var(--font-sans)", letterSpacing: "0.12em" }}
-                fontSize="8"
-                fill="rgba(26,22,19,0.55)"
+                style={{ fontFamily: "var(--font-sans)", letterSpacing: "0.14em" }}
+                fontSize="9"
+                fill="rgba(26,22,19,0.6)"
               >
                 {top.label.toUpperCase()}
               </text>

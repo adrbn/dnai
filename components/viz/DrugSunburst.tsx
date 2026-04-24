@@ -133,22 +133,35 @@ export function DrugSunburst({ byDrug, onSelect }: Props) {
         })}
 
         {/* center label */}
-        <circle cx={cx} cy={cy} r={62} fill="rgb(16 18 25)" stroke="rgb(36 40 52)" />
+        <circle
+          cx={cx}
+          cy={cy}
+          r={62}
+          fill="#f5efe5"
+          stroke="rgba(26,22,19,0.18)"
+          strokeWidth={1}
+        />
         <text
           x={cx}
-          y={cy - 6}
+          y={cy - 4}
           textAnchor="middle"
-          className="fill-fg text-[28px] font-bold tabular-nums"
+          style={{ fontFamily: "var(--font-serif)" }}
+          fontSize="32"
+          fontWeight={500}
+          fill="#1a1613"
+          className="tabular-nums"
         >
           {byDrug.length}
         </text>
         <text
           x={cx}
-          y={cy + 14}
+          y={cy + 18}
           textAnchor="middle"
-          className="fill-fg-muted text-[9px] uppercase tracking-[0.15em]"
+          fontSize="9"
+          fill="rgba(26,22,19,0.6)"
+          style={{ letterSpacing: "0.18em" }}
         >
-          médicaments
+          MÉDICAMENTS
         </text>
       </svg>
 
