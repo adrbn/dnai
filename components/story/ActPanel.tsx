@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { Act } from "@/lib/story/acts";
 import { WorldAncestryMap } from "./WorldAncestryMap";
+import { HaplogroupTree } from "./HaplogroupTree";
 
 const SEV_COLOR = {
   high: "text-oxblood border-oxblood/40 bg-oxblood/8",
@@ -423,19 +424,21 @@ function AncestryBody({ act }: { act: Extract<Act, { kind: "ancestry" }> }) {
 }
 
 function HaplogroupYBody({ act }: { act: Extract<Act, { kind: "haplogroup-y" }> }) {
-  return <HaplogroupBody hap={act.hap} title="Votre lignée paternelle" subtitle="Chromosome Y hérité de père en fils." />;
+  return <HaplogroupBody hap={act.hap} kind="y" title="Votre lignée paternelle" subtitle="Chromosome Y hérité de père en fils." />;
 }
 
 function HaplogroupMtBody({ act }: { act: Extract<Act, { kind: "haplogroup-mt" }> }) {
-  return <HaplogroupBody hap={act.hap} title="Votre lignée maternelle" subtitle="ADN mitochondrial hérité de mère en fille." />;
+  return <HaplogroupBody hap={act.hap} kind="mt" title="Votre lignée maternelle" subtitle="ADN mitochondrial hérité de mère en fille." />;
 }
 
 function HaplogroupBody({
   hap,
+  kind,
   title,
   subtitle,
 }: {
   hap: Extract<Act, { kind: "haplogroup-y" }>["hap"];
+  kind: "y" | "mt";
   title: string;
   subtitle: string;
 }) {
@@ -450,18 +453,7 @@ function HaplogroupBody({
           <p className="mt-2 text-xs italic text-ink/60">{hap.migration}</p>
         )}
       </div>
-      {hap.path.length > 0 && (
-        <div className="mt-3 flex flex-wrap items-center gap-1.5 text-[10px]">
-          {hap.path.map((b, i) => (
-            <span key={i} className="inline-flex items-center gap-1">
-              <span className="rounded-full border border-ink/15 bg-ink/5 px-2 py-0.5 font-mono text-ink/75">
-                {b.id}
-              </span>
-              {i < hap.path.length - 1 && <span className="text-ink/30">→</span>}
-            </span>
-          ))}
-        </div>
-      )}
+      <HaplogroupTree hap={hap} kind={kind} />
     </>
   );
 }
