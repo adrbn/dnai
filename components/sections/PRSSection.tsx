@@ -7,6 +7,8 @@ import { explainPRS } from "@/lib/prs-explain";
 import { PRSRadar } from "@/components/viz/PRSRadar";
 import { PRSDistribution } from "@/components/viz/PRSDistribution";
 import type { PRSFinding } from "@/lib/types";
+import { S, tr, trTpl } from "@/lib/i18n/strings";
+import type { Lang } from "@/lib/i18n/lang";
 
 const CATEGORY_LABEL: Record<PRSFinding["rule"]["category"], string> = {
   metabolic: "Métabolique",
@@ -28,9 +30,10 @@ const CATEGORY_COLOR: Record<PRSFinding["rule"]["category"], string> = {
 
 interface PRSProps {
   findings: PRSFinding[];
+  lang?: Lang;
 }
 
-export function PRSSection({ findings }: PRSProps) {
+export function PRSSection({ findings, lang = "fr" }: PRSProps) {
   const [openId, setOpenId] = useState<string | null>(null);
 
   const sorted = useMemo(() => {
@@ -57,8 +60,8 @@ export function PRSSection({ findings }: PRSProps) {
       {sorted.length >= 3 && (
         <Card className="md:col-span-12">
           <CardHeader
-            title="Vous, d'un seul coup d'œil"
-            subtitle={`${sorted.length} scores — distance au centre = votre percentile vs la population de référence`}
+            title={tr(S.prs.radarTitle, lang)}
+            subtitle={trTpl(S.prs.radarSubtitleTpl, lang, sorted.length)}
           />
           <PRSRadar findings={sorted} />
         </Card>
@@ -66,12 +69,9 @@ export function PRSSection({ findings }: PRSProps) {
 
       <Card className="md:col-span-12">
         <div className="rounded-xl border border-warn/30 bg-warn/5 p-4 text-sm">
-          <div className="font-semibold text-warn">Scores polygéniques éducatifs</div>
+          <div className="font-semibold text-warn">{tr(S.prs.disclaimerTitle, lang)}</div>
           <p className="mt-1 text-fg-muted">
-            Chaque score combine un nombre limité de variants à effet connu. Il ne
-            constitue <em>pas</em> un test clinique : la variance expliquée est faible,
-            et des facteurs environnementaux non-génétiques dominent pour la plupart de
-            ces conditions. Les percentiles se lisent{" "}
+            {tr(S.prs.disclaimerBody, lang)} Les percentiles se lisent{" "}
             <span className="text-fg">par rapport à une population de référence</span>{" "}
             (HWE + fréquences alléliques européennes).
           </p>

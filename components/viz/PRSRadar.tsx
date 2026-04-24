@@ -23,9 +23,11 @@ const CATEGORY_COLOR: Record<PRSFinding["rule"]["category"], string> = {
  */
 export function PRSRadar({ findings, size = 320 }: PRSRadarProps) {
   if (findings.length < 3) return null;
+  // Pad room for the label ring (we place labels at 1.18 × r) plus a little
+  // slack so long trait names like "Longévité exceptionnelle" don't get clipped.
+  const pad = 96;
   const cx = size / 2;
   const cy = size / 2;
-  const pad = 44;
   const r = size / 2 - pad;
 
   const n = findings.length;
@@ -93,14 +95,11 @@ export function PRSRadar({ findings, size = 320 }: PRSRadarProps) {
       {findings.map((f, i) => {
         const frac = Math.max(0.05, Math.min(1, f.percentile / 100));
         const { x, y } = polar(i, frac);
-        const labelPos = polar(i, 1.13);
+        const labelPos = polar(i, 1.18);
         const angle = (i / n) * Math.PI * 2 - Math.PI / 2;
+        const cos = Math.cos(angle);
         const anchor =
-          Math.abs(Math.cos(angle)) < 0.2
-            ? "middle"
-            : Math.cos(angle) > 0
-              ? "start"
-              : "end";
+          Math.abs(cos) < 0.2 ? "middle" : cos > 0 ? "start" : "end";
         return (
           <g key={f.rule.id}>
             <circle
@@ -123,7 +122,7 @@ export function PRSRadar({ findings, size = 320 }: PRSRadarProps) {
                 letterSpacing: 0.2,
               }}
             >
-              {truncate(f.rule.trait, 18)}
+              {truncate(f.rule.trait, 14)}
             </text>
           </g>
         );

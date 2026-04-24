@@ -10,12 +10,28 @@ export function ROHCard({ roh }: Props) {
   const fPct = roh.fRoh * 100;
   const level =
     roh.fRoh < 0.0156
-      ? { label: "Standard", tone: "ok", hint: "Niveau attendu dans une population non-consanguine." }
+      ? {
+          label: "Standard",
+          tone: "ok",
+          hint: "Valeur normale — rien à signaler. Aucun signe d'apparentement entre vos parents biologiques.",
+        }
       : roh.fRoh < 0.03125
-        ? { label: "Modéré", tone: "warn", hint: "Apparenté équivalent à des cousins éloignés." }
+        ? {
+            label: "Légèrement élevé",
+            tone: "warn",
+            hint: "Cousinage ancien possible. Fréquent dans les populations endogames (isolats géographiques, certaines communautés).",
+          }
         : roh.fRoh < 0.0625
-          ? { label: "Notable", tone: "warn", hint: "Équivalent à des cousins germains." }
-          : { label: "Élevé", tone: "danger", hint: "Parents apparentés au 1er ou 2e degré." };
+          ? {
+              label: "Notable",
+              tone: "warn",
+              hint: "Équivalent à des cousins éloignés dans la généalogie — pas inhabituel selon les origines.",
+            }
+          : {
+              label: "Élevé",
+              tone: "danger",
+              hint: "Compatible avec des parents apparentés au 1ᵉʳ ou 2ᵉ degré (cousins germains, oncle-nièce…).",
+            };
 
   const toneBg =
     level.tone === "ok"

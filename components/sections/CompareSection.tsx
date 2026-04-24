@@ -23,12 +23,15 @@ const SEV_COLOR: Record<Severity, string> = {
   high: "rgb(247 110 110)",
 };
 
+import type { Lang } from "@/lib/i18n/lang";
+
 interface CompareProps {
   result: AnalysisResult;
   genotypes: GenotypeMap | null;
+  lang?: Lang;
 }
 
-export function CompareSection({ result, genotypes }: CompareProps) {
+export function CompareSection({ result, genotypes, lang: _lang = "fr" }: CompareProps) {
   const { compareResult, compareGenotypes, setCompare } = useAnalysis();
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);

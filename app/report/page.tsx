@@ -151,13 +151,13 @@ export default function ReportPage() {
       <div className="mx-auto max-w-6xl px-4 py-6 no-print sm:px-6 sm:py-8">
         <SummaryHeader result={result} active={tab} />
         <div className="animate-fade-in">
-          {tab === "overview" && <OverviewSection result={result} positions={positions} />}
-          {tab === "health" && <HealthSection findings={result.clinvar} />}
-          {tab === "pharma" && <PharmaSection byDrug={result.pharma.byDrug} />}
-          {tab === "risk" && <PRSSection findings={result.prs} />}
-          {tab === "traits" && <TraitsSection findings={result.traits} />}
-          {tab === "lookup" && <LookupSection genotypes={genotypes} positions={positions} />}
-          {tab === "compare" && <CompareSection result={result} genotypes={genotypes} />}
+          {tab === "overview" && <OverviewSection result={result} positions={positions} lang={lang} />}
+          {tab === "health" && <HealthSection findings={result.clinvar} lang={lang} />}
+          {tab === "pharma" && <PharmaSection byDrug={result.pharma.byDrug} lang={lang} />}
+          {tab === "risk" && <PRSSection findings={result.prs} lang={lang} />}
+          {tab === "traits" && <TraitsSection findings={result.traits} lang={lang} />}
+          {tab === "lookup" && <LookupSection genotypes={genotypes} positions={positions} lang={lang} />}
+          {tab === "compare" && <CompareSection result={result} genotypes={genotypes} lang={lang} />}
         </div>
       </div>
       <div className="print-only">

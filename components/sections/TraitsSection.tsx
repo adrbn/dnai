@@ -4,9 +4,12 @@ import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { TraitsAvatar } from "@/components/viz/TraitsAvatar";
 import type { TraitConfidence, TraitFinding } from "@/lib/types";
+import { S, tr, trTpl } from "@/lib/i18n/strings";
+import type { Lang } from "@/lib/i18n/lang";
 
 interface TraitsSectionProps {
   findings: TraitFinding[];
+  lang?: Lang;
 }
 
 const CONFIDENCE_VAR: Record<TraitConfidence, "ok" | "warn" | "neutral"> = {
@@ -92,7 +95,7 @@ function TraitCard({ f }: { f: TraitFinding }) {
   );
 }
 
-export function TraitsSection({ findings }: TraitsSectionProps) {
+export function TraitsSection({ findings, lang = "fr" }: TraitsSectionProps) {
   const determined = findings.filter((f) => f.result !== null);
   const indeterminate = findings.filter((f) => f.result === null);
 
@@ -107,8 +110,8 @@ export function TraitsSection({ findings }: TraitsSectionProps) {
       {appearance.length >= 2 && (
         <Card>
           <CardHeader
-            title="Votre avatar"
-            subtitle="Cartoon dérivé de vos variants morphologiques — caricatural, pas un portrait."
+            title={tr(S.traits.avatarTitle, lang)}
+            subtitle={tr(S.traits.avatarSubtitle, lang)}
           />
           <div className="mt-2 grid items-center gap-6 md:grid-cols-[auto_1fr]">
             <TraitsAvatar findings={determined} />
@@ -131,8 +134,8 @@ export function TraitsSection({ findings }: TraitsSectionProps) {
       {appearance.length > 0 && (
         <div>
           <div className="mb-3 flex items-baseline justify-between">
-            <h2 className="font-serif text-xl font-medium tracking-tight">Apparence</h2>
-            <span className="text-xs text-fg-muted">{appearance.length} variants</span>
+            <h2 className="font-serif text-xl font-medium tracking-tight">{tr(S.traits.appearance, lang)}</h2>
+            <span className="text-xs text-fg-muted">{appearance.length} {tr(S.traits.variants, lang)}</span>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {appearance.map((f) => (
@@ -145,8 +148,8 @@ export function TraitsSection({ findings }: TraitsSectionProps) {
       {nutrition.length > 0 && (
         <div>
           <div className="mb-3 flex items-baseline justify-between">
-            <h2 className="font-serif text-xl font-medium tracking-tight">Nutrition & métabolisme</h2>
-            <span className="text-xs text-fg-muted">{nutrition.length} variants</span>
+            <h2 className="font-serif text-xl font-medium tracking-tight">{tr(S.traits.nutrition, lang)}</h2>
+            <span className="text-xs text-fg-muted">{nutrition.length} {tr(S.traits.variants, lang)}</span>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {nutrition.map((f) => (
@@ -159,8 +162,8 @@ export function TraitsSection({ findings }: TraitsSectionProps) {
       {other.length > 0 && (
         <div>
           <div className="mb-3 flex items-baseline justify-between">
-            <h2 className="font-serif text-xl font-medium tracking-tight">Autres traits</h2>
-            <span className="text-xs text-fg-muted">{other.length} variants</span>
+            <h2 className="font-serif text-xl font-medium tracking-tight">{tr(S.traits.other, lang)}</h2>
+            <span className="text-xs text-fg-muted">{other.length} {tr(S.traits.variants, lang)}</span>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {other.map((f) => (
@@ -173,7 +176,7 @@ export function TraitsSection({ findings }: TraitsSectionProps) {
       {indeterminate.length > 0 && (
         <Card>
           <h3 className="text-sm font-semibold text-fg-muted">
-            {indeterminate.length} trait(s) indéterminé(s) — rsID manquant ou génotype non reconnu
+            {trTpl(S.traits.indeterminateTpl, lang, indeterminate.length)}
           </h3>
           <div className="mt-3 flex flex-wrap gap-2 text-xs">
             {indeterminate.map((f) => (

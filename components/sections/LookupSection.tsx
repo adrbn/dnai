@@ -6,10 +6,12 @@ import { Badge } from "@/components/ui/Badge";
 import { genotypeToString } from "@/lib/genotype";
 import type { GenotypeMap, PositionIndex } from "@/lib/types";
 import { isNoCall } from "@/lib/types";
+import type { Lang } from "@/lib/i18n/lang";
 
 interface LookupSectionProps {
   genotypes: GenotypeMap | null;
   positions: PositionIndex | null;
+  lang?: Lang;
 }
 
 type Hit = {
@@ -25,7 +27,7 @@ const CHROMS = [
   "13","14","15","16","17","18","19","20","21","22","X","Y","MT",
 ];
 
-export function LookupSection({ genotypes, positions }: LookupSectionProps) {
+export function LookupSection({ genotypes, positions, lang: _lang = "fr" }: LookupSectionProps) {
   const [query, setQuery] = useState("");
   const [chrFilter, setChrFilter] = useState<string>("");
 

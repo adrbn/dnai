@@ -170,10 +170,12 @@ function severityRank(s: "high" | "medium" | "low"): number {
 }
 
 function interpretFRoh(fRoh: number): string {
-  if (fRoh < 0.005) return "Profil panmictique typique — pas de consanguinité détectable.";
-  if (fRoh < 0.015) return "Léger excès d'homozygotie, compatible avec des ancêtres communs lointains.";
-  if (fRoh < 0.04) return "Indice notable de consanguinité (ex : cousins éloignés dans l'arbre).";
-  return "Consanguinité marquée — segments homozygotes étendus.";
+  // Thresholds aligned with ROHCard: <1.56% = standard, <3.125% = cousinage
+  // ancien, <6.25% = cousins éloignés, sinon parents apparentés au 1er/2e degré.
+  if (fRoh < 0.0156) return "Niveau standard — attendu dans toute population humaine, rien à signaler.";
+  if (fRoh < 0.03125) return "Léger excès d'homozygotie, compatible avec des ancêtres communs lointains (cousinage ancien, fréquent).";
+  if (fRoh < 0.0625) return "Homozygotie notable — équivalent à des cousins éloignés dans la généalogie.";
+  return "Consanguinité marquée — parents biologiques probablement apparentés au 1ᵉʳ ou 2ᵉ degré.";
 }
 
 function sourceLabel(source: string, totalSNPs: number): string {

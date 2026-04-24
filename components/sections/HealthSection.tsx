@@ -6,9 +6,11 @@ import { Badge } from "@/components/ui/Badge";
 import { ProteinViewer } from "@/components/viz/ProteinViewer";
 import { uniprotForGene } from "@/lib/gene-uniprot";
 import type { ClinVarFinding } from "@/lib/types";
+import type { Lang } from "@/lib/i18n/lang";
 
 interface HealthSectionProps {
   findings: ClinVarFinding[];
+  lang?: Lang;
 }
 
 const SIG_LABEL: Record<string, string> = {
@@ -19,7 +21,7 @@ const SIG_LABEL: Record<string, string> = {
 
 const STARS = ["—", "✱", "✱✱", "✱✱✱", "✱✱✱✱"];
 
-export function HealthSection({ findings }: HealthSectionProps) {
+export function HealthSection({ findings, lang: _lang = "fr" }: HealthSectionProps) {
   const [openGene, setOpenGene] = useState<string | null>(null);
 
   if (findings.length === 0) {

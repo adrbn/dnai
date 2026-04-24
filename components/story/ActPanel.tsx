@@ -581,20 +581,37 @@ function FunBody({ act }: { act: Extract<Act, { kind: "fun" }> }) {
   const centroid = "100 100";
   return (
     <>
-      <h2 className="font-serif text-[28px] font-medium tracking-[-0.01em] sm:text-[34px]">Votre ADN créatif</h2>
-      <p className="mt-2 text-xs text-ink/65">
-        Trois signatures uniques générées depuis l'empreinte de votre fichier.
+      <h2 className="font-serif text-[28px] font-medium tracking-[-0.01em] sm:text-[34px]">
+        Votre ADN créatif
+      </h2>
+      <p className="mt-3 text-sm text-ink/70">
+        Trois signatures visuelles et sonores, générées déterministiquement depuis
+        l&apos;empreinte SHA-256 de votre fichier ADN. Deux fichiers identiques
+        donnent les mêmes signatures ; un seul octet changé produit trois œuvres
+        différentes.
+      </p>
+      <p className="mt-2 text-xs italic text-ink/55">
+        Le but : rappeler que votre ADN, même réduit à un hash, peut produire
+        quelque chose d&apos;unique et de joli — sans aucun lien avec un
+        phénotype ou un risque médical.
       </p>
 
-      <div className="mt-4 rounded-lg border border-ink/10 bg-ink/[0.03] p-4">
-        <div className="text-[10px] uppercase tracking-wider text-ink/50">Votre mélodie</div>
-        <div className="mt-2 flex items-end gap-1">
+      <div className="mt-6 rounded-lg border border-ink/10 bg-ink/[0.03] p-5">
+        <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink/55">
+          Votre mélodie
+        </div>
+        <p className="mt-1 text-[11px] text-ink/55">
+          16 notes tirées de votre hash, mappées sur une gamme diatonique. Chaque
+          barre = une hauteur ; le tempo et la tonalité sont eux-mêmes dérivés du
+          même hash.
+        </p>
+        <div className="mt-4 flex items-end gap-1.5">
           {f.music.notes.map((n, i) => {
             const height = ((n - 55) / 30) * 48 + 8;
             return (
               <div
                 key={i}
-                className="w-2 rounded-sm"
+                className="w-2.5 rounded-sm"
                 style={{
                   height: `${Math.max(6, height)}px`,
                   background: `hsl(${210 + (i * 8) % 150} 70% ${50 + (i % 3) * 8}%)`,
@@ -603,15 +620,20 @@ function FunBody({ act }: { act: Extract<Act, { kind: "fun" }> }) {
             );
           })}
         </div>
-        <div className="mt-2 text-[10px] text-ink/55">
+        <div className="mt-3 font-mono text-[11px] text-ink/60">
           {f.music.key} · {f.music.tempo} BPM · 16 notes
         </div>
       </div>
 
-      <div className="mt-3 flex gap-3">
-        <div className="rounded-lg border border-ink/10 bg-ink/[0.03] p-3">
-          <div className="text-[10px] uppercase tracking-wider text-ink/50">Sigil ADN</div>
-          <svg viewBox="0 0 200 200" className="mt-2 h-28 w-28">
+      <div className="mt-4 grid gap-4 sm:grid-cols-[auto_1fr]">
+        <div className="rounded-lg border border-ink/10 bg-ink/[0.03] p-4">
+          <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink/55">
+            Sigil ADN
+          </div>
+          <p className="mt-1 text-[11px] text-ink/55">
+            Un glyphe abstrait dessiné depuis votre hash.
+          </p>
+          <svg viewBox="0 0 200 200" className="mt-3 h-32 w-32">
             <defs>
               <radialGradient id={`gfun-${f.art.seed}`}>
                 <stop offset="0%" stopColor={f.art.palette[0]} />
@@ -623,25 +645,50 @@ function FunBody({ act }: { act: Extract<Act, { kind: "fun" }> }) {
             <path d={f.art.shapes} fill="none" stroke={f.art.palette[2]} strokeWidth="1.2" />
             <circle cx={centroid.split(" ")[0]} cy={centroid.split(" ")[1]} r="3" fill="#fff" />
           </svg>
+          <div className="mt-2 flex gap-1">
+            {f.art.palette.map((c, i) => (
+              <span
+                key={i}
+                className="h-3 w-3 rounded-sm border border-ink/10"
+                style={{ background: c }}
+                title={c}
+              />
+            ))}
+          </div>
         </div>
-        <div className="flex-1 rounded-lg border border-ink/10 bg-ink/[0.03] p-3">
-          <div className="text-[10px] uppercase tracking-wider text-ink/50">Jumeaux historiques</div>
-          <div className="mt-2 space-y-1.5">
+
+        <div className="rounded-lg border border-ink/10 bg-ink/[0.03] p-4">
+          <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink/55">
+            Jumeaux historiques
+          </div>
+          <p className="mt-1 text-[11px] text-ink/55">
+            Personnages célèbres dont le nom, modulé par votre hash, ressort avec
+            la similarité affichée. <em>Totalement fictif</em> — aucun vrai lien
+            génétique.
+          </p>
+          <div className="mt-3 space-y-2">
             {f.twins.map((t) => (
-              <div key={t.name} className="text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="font-medium text-ink/85">{t.name}</span>
-                  <span className="font-mono text-ink/65">{t.similarity.toFixed(0)}%</span>
+              <div key={t.name} className="rounded-md bg-ink/[0.04] px-2.5 py-1.5">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-sm font-medium text-ink/90">{t.name}</span>
+                  <span className="font-mono text-xs text-ink/65 tabular-nums">
+                    {t.similarity.toFixed(0)}%
+                  </span>
                 </div>
-                <div className="text-[10px] text-ink/45">{t.era}</div>
+                <div className="mt-0.5 text-[10px] text-ink/50">{t.era}</div>
+                {t.note && (
+                  <div className="mt-1 text-[10px] text-ink/60">{t.note}</div>
+                )}
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      <p className="mt-3 text-[11px] italic text-ink/45">
-        Générées depuis l'empreinte SHA-256 — purement ludique.
+      <p className="mt-4 text-[11px] italic text-ink/50">
+        Signatures déterministes dérivées de SHA-256 — purement ludique, aucune
+        valeur biologique ni médicale. Partageable sans risque : le hash ne
+        laisse pas deviner les variants.
       </p>
     </>
   );

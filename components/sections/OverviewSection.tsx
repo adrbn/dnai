@@ -6,13 +6,16 @@ import { Karyogram } from "@/components/viz/Karyogram";
 import { DensityHeatmap } from "@/components/viz/DensityHeatmap";
 import { ROHCard } from "@/components/viz/ROHCard";
 import type { AnalysisResult, PharmaByDrug, PositionIndex } from "@/lib/types";
+import { S, tr } from "@/lib/i18n/strings";
+import type { Lang } from "@/lib/i18n/lang";
 
 interface OverviewSectionProps {
   result: AnalysisResult;
   positions?: PositionIndex | null;
+  lang?: Lang;
 }
 
-export function OverviewSection({ result, positions }: OverviewSectionProps) {
+export function OverviewSection({ result, positions, lang = "fr" }: OverviewSectionProps) {
   const topClinvar = useMemo(() => result.clinvar.slice(0, 4), [result.clinvar]);
   const topPharma = useMemo(() => {
     const rank = { high: 0, medium: 1, low: 2 } as const;
@@ -60,10 +63,10 @@ export function OverviewSection({ result, positions }: OverviewSectionProps) {
         <TopFindingsCard
           tone="danger"
           icon={<IconHeart />}
-          title="Santé"
-          totalLabel="variantes P/LP"
+          title={tr(S.overview.healthTitle, lang)}
+          totalLabel={tr(S.overview.healthTotalLabel, lang)}
           total={result.clinvar.length}
-          emptyLabel="Aucune variante pathogène détectée sur les gènes curés."
+          emptyLabel={tr(S.overview.healthEmpty, lang)}
           items={topClinvar.map((f) => ({
             key: f.entry.rs,
             primary: cleanLabel(f.entry.condition) || f.entry.gene,
@@ -77,10 +80,10 @@ export function OverviewSection({ result, positions }: OverviewSectionProps) {
         <TopFindingsCard
           tone="warn"
           icon={<IconPill />}
-          title="Pharmaco"
-          totalLabel="médicaments concernés"
+          title={tr(S.overview.pharmaTitle, lang)}
+          totalLabel={tr(S.overview.pharmaTotalLabel, lang)}
           total={result.pharma.byDrug.length}
-          emptyLabel="Pas d'alerte CPIC / DPWG pour les SNPs lus."
+          emptyLabel={tr(S.overview.pharmaEmpty, lang)}
           items={topPharma.map((d) => ({
             key: d.drug,
             primary: d.drug,
@@ -97,10 +100,10 @@ export function OverviewSection({ result, positions }: OverviewSectionProps) {
         <TopFindingsCard
           tone="accent"
           icon={<IconActivity />}
-          title="Risque polygénique"
-          totalLabel="scores calculés"
+          title={tr(S.overview.prsTitle, lang)}
+          totalLabel={tr(S.overview.prsTotalLabel, lang)}
           total={result.prs.length}
-          emptyLabel="Aucun score polygénique à afficher."
+          emptyLabel={tr(S.overview.prsEmpty, lang)}
           items={topPrs.map((p) => ({
             key: p.rule.trait,
             primary: p.rule.trait,
@@ -126,8 +129,8 @@ export function OverviewSection({ result, positions }: OverviewSectionProps) {
 
       <Card>
         <CardHeader
-          title="Karyogramme"
-          subtitle="Cartographie des chromosomes (GRCh37) · rouge = ClinVar P/LP · orange = pharmaco"
+          title={tr(S.overview.karyogramTitle, lang)}
+          subtitle={tr(S.overview.karyogramSubtitle, lang)}
         />
         <Karyogram markers={markers} />
       </Card>
@@ -135,15 +138,15 @@ export function OverviewSection({ result, positions }: OverviewSectionProps) {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader
-            title="Densité de SNPs"
-            subtitle="Couverture par chromosome · bins 1 Mb, échelle log"
+            title={tr(S.overview.densityTitle, lang)}
+            subtitle={tr(S.overview.densitySubtitle, lang)}
           />
           <DensityHeatmap density={result.density} />
         </Card>
         <Card>
           <CardHeader
-            title="Segments homozygotes"
-            subtitle="Estimateur F_ROH de consanguinité · segments ≥ 1 Mb"
+            title={tr(S.overview.rohTitle, lang)}
+            subtitle={tr(S.overview.rohSubtitle, lang)}
           />
           <ROHCard roh={result.roh} />
         </Card>

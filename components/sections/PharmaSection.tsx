@@ -7,9 +7,11 @@ import { DrugSunburst } from "@/components/viz/DrugSunburst";
 import { ProteinViewer } from "@/components/viz/ProteinViewer";
 import { uniprotForGene } from "@/lib/gene-uniprot";
 import type { PharmaByDrug, Severity } from "@/lib/types";
+import type { Lang } from "@/lib/i18n/lang";
 
 interface PharmaSectionProps {
   byDrug: PharmaByDrug[];
+  lang?: Lang;
 }
 
 const SEV_VARIANT: Record<Severity, "ok" | "warn" | "danger"> = {
@@ -24,7 +26,7 @@ const SEV_LABEL: Record<Severity, string> = {
   high: "Pertinence haute",
 };
 
-export function PharmaSection({ byDrug }: PharmaSectionProps) {
+export function PharmaSection({ byDrug, lang: _lang = "fr" }: PharmaSectionProps) {
   const [selected, setSelected] = useState<string | null>(null);
   const [openGene, setOpenGene] = useState<string | null>(null);
 

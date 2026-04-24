@@ -614,7 +614,7 @@ function Hero({
 }) {
   return (
     <section
-      className="relative flex min-h-[calc(100vh-1px)] flex-col overflow-hidden px-6 pb-10 pt-4 sm:px-10 sm:pb-12 sm:pt-6 lg:px-14 lg:pb-14 lg:pt-8"
+      className="relative flex min-h-[calc(100vh-1px)] flex-col overflow-hidden px-6 pb-10 pt-12 sm:px-10 sm:pb-12 sm:pt-16 lg:px-14 lg:pb-14 lg:pt-20"
       style={{ borderBottom: `1px solid ${CL.rule}` }}
     >
       {/* subtle grid watermark */}
