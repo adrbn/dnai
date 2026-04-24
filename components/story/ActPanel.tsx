@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Act } from "@/lib/story/acts";
 import { WorldAncestryMap } from "./WorldAncestryMap";
 import { HaplogroupTree } from "./HaplogroupTree";
+import { AncestryTree3D } from "./AncestryTree3D";
 
 const SEV_COLOR = {
   high: "text-oxblood border-oxblood/40 bg-oxblood/8",
@@ -453,6 +454,7 @@ function HaplogroupBody({
           <p className="mt-2 text-xs italic text-ink/60">{hap.migration}</p>
         )}
       </div>
+      <AncestryTree3D hap={hap} kind={kind} />
       <HaplogroupTree hap={hap} kind={kind} />
     </>
   );
