@@ -8,7 +8,6 @@ import { buildStory, type Act } from "@/lib/story/acts";
 import { frameForAct, type StoryFrame } from "@/lib/story/poses";
 import { GenomeStage } from "@/components/story/GenomeStage";
 import { ActPanel } from "@/components/story/ActPanel";
-import { TimelineRibbon } from "@/components/story/TimelineRibbon";
 import { DnaMark } from "@/components/ui/DnaMark";
 import type { HighlightPoint } from "@/components/story/Genome3D";
 import { Paywall, useUnlockGate } from "@/components/Paywall";
@@ -142,7 +141,6 @@ export default function StoryPage() {
       </header>
 
       <Progress total={acts.length} active={active} />
-      <TimelineRibbon acts={acts} active={active} onJump={jumpTo} />
 
       <div ref={containerRef} className="relative z-10">
         {acts.map((act, i) => (

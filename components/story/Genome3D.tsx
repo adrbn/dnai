@@ -35,11 +35,12 @@ const STRAND_RADIUS = 1.2;
 // Static cosmetic tilt of the whole helix group (radians).
 const HELIX_TILT_X = -0.18;
 const HELIX_TILT_Z = 0.12;
-// Shift the helix out of the center so the scrolling text panel on the right
-// never occludes it. The camera still looks at the world origin, which pushes
-// the helix into the left third of the viewport. Kept modest so that
-// close-up poses don't push the helix all the way to the screen edge.
-const HELIX_X_OFFSET = -3.2;
+// Shift the helix slightly off-center so the scrolling text panel on the
+// right (ActPanel) doesn't occlude it, but keep the offset small so close-up
+// poses don't push the helix to the screen edge. The left side of the
+// viewport is fully empty now (no TimelineRibbon), so we can keep the helix
+// closer to center than before.
+const HELIX_X_OFFSET = -2.2;
 // Fade the top ~18% and bottom ~18% of the helix out so it looks infinite.
 const FADE_MARGIN = 0.18;
 
