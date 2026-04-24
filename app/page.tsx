@@ -387,10 +387,12 @@ export default function Home() {
   const { setStatus, setProgress, setData, setError, reset, status } = useAnalysis();
   const [lang, setLang] = useLang();
   const inputRef = useRef<HTMLInputElement>(null);
+  const lastFileRef = useRef<File | null>(null);
   const busy = status === "running";
 
   const onFile = useCallback(
     async (file: File) => {
+      lastFileRef.current = file;
       reset();
       setStatus("running");
       try {
@@ -404,6 +406,16 @@ export default function Home() {
     },
     [reset, setStatus, setProgress, setData, setError, router],
   );
+
+  const handleRetry = useCallback(() => {
+    const f = lastFileRef.current;
+    if (f) onFile(f);
+  }, [onFile]);
+
+  const handleDismiss = useCallback(() => {
+    reset();
+    lastFileRef.current = null;
+  }, [reset]);
 
   // ——— Consent gate : must acknowledge disclaimer before any analysis runs
   const { accepted, hydrated, hydrate } = useConsent();
@@ -470,7 +482,10 @@ export default function Home() {
       }}
       onDrop={onDrop}
     >
-      <ProgressOverlay />
+      <ProgressOverlay
+        onRetry={lastFileRef.current ? handleRetry : undefined}
+        onDismiss={handleDismiss}
+      />
 
       {/* hidden file input drives the CTA buttons */}
       <input

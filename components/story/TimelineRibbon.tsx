@@ -74,6 +74,9 @@ export function TimelineRibbon({ acts, active, onJump }: TimelineRibbonProps) {
   if (!act) return null;
   const chr = chromosomeFor(act);
   const gene = geneFor(act);
+  // The ActPanel on the right already shows the chapter title and body.
+  // The left ribbon's job is orientation only: "where am I in the story,
+  // which locus is on screen, how do I jump around".
   const pct = acts.length > 1 ? ((active + 1) / acts.length) * 100 : 0;
 
   return (
@@ -81,43 +84,38 @@ export function TimelineRibbon({ acts, active, onJump }: TimelineRibbonProps) {
       className="pointer-events-none fixed left-0 top-1/2 z-20 hidden -translate-y-1/2 pl-4 lg:block"
       aria-live="polite"
     >
-      <div className="pointer-events-auto w-[220px] rounded-sm border border-paper/12 bg-[#1a1613]/65 px-4 py-3.5 backdrop-blur-md">
+      <div className="pointer-events-auto w-[190px] rounded-sm border border-paper/12 bg-[#1a1613]/65 px-3.5 py-3 backdrop-blur-md">
         <div className="flex items-baseline justify-between">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-paper/55">
-            Chapitre
+          <span className="text-[9px] font-semibold uppercase tracking-[0.24em] text-paper/45">
+            {kindLabel(act.kind)}
           </span>
-          <span className="font-mono text-[11px] tabular-nums text-paper/70">
+          <span className="font-mono text-[10px] tabular-nums text-paper/55">
             {active + 1}/{acts.length}
           </span>
         </div>
-        <div
-          className="mt-2 font-serif text-[17px] font-medium leading-tight tracking-[-0.01em] text-paper"
-        >
-          {kindLabel(act.kind)}
-        </div>
-        <div className="mt-3 space-y-1 text-[11px] leading-relaxed text-paper/65">
-          {chr && (
-            <div>
-              <span className="text-paper/40">Chromosome</span> <span className="font-mono tabular-nums text-paper/90">{chr}</span>
-            </div>
-          )}
-          {gene && (
-            <div>
-              <span className="text-paper/40">Locus</span>{" "}
-              <span className="font-mono text-paper/90">{gene}</span>
-            </div>
-          )}
-          {!chr && !gene && (
-            <div className="italic text-paper/45">Vue d&apos;ensemble</div>
-          )}
-        </div>
-        <div className="mt-3 h-0.5 w-full overflow-hidden rounded-full bg-paper/10">
+        {(chr || gene) && (
+          <div className="mt-2.5 space-y-0.5 text-[11px] leading-relaxed">
+            {chr && (
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-[9px] uppercase tracking-wider text-paper/35">Chr.</span>
+                <span className="font-mono tabular-nums text-paper/90">{chr}</span>
+              </div>
+            )}
+            {gene && (
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-[9px] uppercase tracking-wider text-paper/35">Locus</span>
+                <span className="font-mono text-paper/90">{gene}</span>
+              </div>
+            )}
+          </div>
+        )}
+        <div className="mt-2.5 h-0.5 w-full overflow-hidden rounded-full bg-paper/10">
           <div
             className="h-full bg-gradient-to-r from-[#7c9cff] to-[#c7b2ff] transition-[width] duration-500 ease-out"
             style={{ width: `${pct}%` }}
           />
         </div>
-        <div className="mt-3 flex gap-[3px]">
+        <div className="mt-2.5 flex gap-[2px]">
           {acts.map((_, i) => (
             <button
               key={i}

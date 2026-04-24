@@ -37,8 +37,9 @@ const HELIX_TILT_X = -0.18;
 const HELIX_TILT_Z = 0.12;
 // Shift the helix out of the center so the scrolling text panel on the right
 // never occludes it. The camera still looks at the world origin, which pushes
-// the helix into the left third of the viewport.
-const HELIX_X_OFFSET = -5;
+// the helix into the left third of the viewport. Kept modest so that
+// close-up poses don't push the helix all the way to the screen edge.
+const HELIX_X_OFFSET = -3.2;
 // Fade the top ~18% and bottom ~18% of the helix out so it looks infinite.
 const FADE_MARGIN = 0.18;
 

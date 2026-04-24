@@ -1,4 +1,3 @@
-import { gunzipSync, strFromU8 } from "fflate";
 import { isBase, normalize } from "../genotype";
 import { DnaSource, GenotypeMap, NOCALL } from "../types";
 import { DENSITY_BIN_SIZE, DensityMap, ParseOptions, ParseOutput, PositionIndex } from "./myheritage";
@@ -12,15 +11,98 @@ function detectBuild(headerLines: string[]): string {
   return "GRCh38"; // modern WGS default
 }
 
+interface ParserState {
+  genotypes: GenotypeMap;
+  positions: PositionIndex;
+  density: DensityMap;
+  noCalls: number;
+  kept: number;
+  sampleIdx: number;
+}
+
+function newState(): ParserState {
+  return {
+    genotypes: new Map(),
+    positions: {},
+    density: {},
+    noCalls: 0,
+    kept: 0,
+    sampleIdx: 9,
+  };
+}
+
+function processDataLine(line: string, state: ParserState): void {
+  if (!line || line.charCodeAt(0) === 35 /* # */) return;
+  const cols = line.split("\t");
+  if (cols.length < state.sampleIdx + 1) return;
+
+  const chrRaw = cols[0];
+  const posN = parseInt(cols[1], 10);
+  const rsid = cols[2];
+  const ref = cols[3]?.toUpperCase();
+  const altField = cols[4]?.toUpperCase();
+  const filter = cols[6];
+  const format = cols[8];
+  const sample = cols[state.sampleIdx];
+
+  if (!ref || !altField || !format || !sample) return;
+  if (filter && filter !== "PASS" && filter !== ".") return;
+  if (ref.length !== 1 || !isBase(ref)) return;
+  const alt = altField.split(",")[0];
+  if (alt.length !== 1 || !isBase(alt)) return;
+  if (!rsid || rsid === ".") return;
+
+  const formatFields = format.split(":");
+  const gtFieldPos = formatFields.indexOf("GT");
+  if (gtFieldPos < 0) return;
+
+  const sampleFields = sample.split(":");
+  const gt = sampleFields[gtFieldPos];
+  if (!gt) return;
+
+  const alleles = gt.split(GT_FIELD_RE);
+  if (alleles.length !== 2) return;
+
+  if (alleles[0] === "." || alleles[1] === ".") {
+    state.genotypes.set(rsid, NOCALL);
+    state.noCalls++;
+  } else {
+    const a1Idx = parseInt(alleles[0], 10);
+    const a2Idx = parseInt(alleles[1], 10);
+    if (Number.isNaN(a1Idx) || Number.isNaN(a2Idx)) return;
+    const a1Letter = a1Idx === 0 ? ref : alt;
+    const a2Letter = a2Idx === 0 ? ref : alt;
+    state.genotypes.set(rsid, normalize(`${a1Letter}${a2Letter}`));
+  }
+
+  if (!Number.isNaN(posN)) {
+    const chr = chrRaw.replace(/^chr/i, "").toUpperCase();
+    state.positions[rsid] = { chr, pos: posN };
+    const bin = Math.floor(posN / DENSITY_BIN_SIZE);
+    const arr = state.density[chr] ?? (state.density[chr] = []);
+    arr[bin] = (arr[bin] ?? 0) + 1;
+  }
+  state.kept++;
+}
+
+function finalize(state: ParserState, build: string): ParseOutput {
+  const source: DnaSource = state.kept > 2_000_000 ? "wgs" : "unknown";
+  return {
+    genotypes: state.genotypes,
+    positions: state.positions,
+    density: state.density,
+    meta: { totalSNPs: state.kept, noCalls: state.noCalls, build, source },
+  };
+}
+
 /**
- * Streaming-light VCF parser.
+ * In-memory VCF parser for tests and small files.
  *
- * Supports: single-sample VCFs (first sample column), plain or .vcf.gz files,
- * SNVs only (ref and alt must be single ACGT bases). Multi-allelic, indels,
- * structural variants, and non-PASS filters are skipped.
- *
- * The GT field is split on `|` or `/`, and mapped back to letters using REF/ALT.
- * Phased vs. unphased is irrelevant here: we only care about the pair.
+ * Supports: single-sample VCFs (first sample column), SNVs only (ref and alt
+ * must be single ACGT bases). Multi-allelic, indels, structural variants, and
+ * non-PASS filters are skipped. For large files (>100 MB uncompressed) use
+ * parseVcfFile which streams via DecompressionStream and never materializes
+ * the full text.
  */
 export async function parseVcfText(
   text: string,
@@ -29,16 +111,10 @@ export async function parseVcfText(
   const normalized = text.replace(/\r\n/g, "\n");
   const lines = normalized.split("\n");
   const total = lines.length;
-
-  const genotypes: GenotypeMap = new Map();
-  const positions: PositionIndex = {};
-  const density: DensityMap = {};
-  let noCalls = 0;
-  let kept = 0;
+  const state = newState();
 
   // Header parsing
   const headerMeta: string[] = [];
-  let sampleIdx = -1;
   let dataStart = -1;
   for (let i = 0; i < total; i++) {
     const line = lines[i];
@@ -49,9 +125,8 @@ export async function parseVcfText(
     }
     if (line.startsWith("#CHROM")) {
       const cols = line.split("\t");
-      // Required columns: CHROM POS ID REF ALT QUAL FILTER INFO FORMAT SAMPLE[...]
       if (cols.length < 10) throw new Error("VCF sans colonne d'échantillon");
-      sampleIdx = 9;
+      state.sampleIdx = 9;
       dataStart = i + 1;
       break;
     }
@@ -61,84 +136,95 @@ export async function parseVcfText(
   const build = detectBuild(headerMeta);
 
   for (let i = dataStart; i < total; i++) {
-    const line = lines[i];
-    if (!line || line.startsWith("#")) continue;
-    const cols = line.split("\t");
-    if (cols.length < sampleIdx + 1) continue;
-
-    const chrRaw = cols[0];
-    const posN = parseInt(cols[1], 10);
-    const rsid = cols[2];
-    const ref = cols[3]?.toUpperCase();
-    const altField = cols[4]?.toUpperCase();
-    const filter = cols[6];
-    const format = cols[8];
-    const sample = cols[sampleIdx];
-
-    if (!ref || !altField || !format || !sample) continue;
-    if (filter && filter !== "PASS" && filter !== ".") continue;
-    if (ref.length !== 1 || !isBase(ref)) continue;
-    // Skip multi-allelic by taking only first ALT; skip indel ALTs
-    const alt = altField.split(",")[0];
-    if (alt.length !== 1 || !isBase(alt)) continue;
-    if (!rsid || rsid === ".") continue;
-
-    const formatFields = format.split(":");
-    const gtFieldPos = formatFields.indexOf("GT");
-    if (gtFieldPos < 0) continue;
-
-    const sampleFields = sample.split(":");
-    const gt = sampleFields[gtFieldPos];
-    if (!gt) continue;
-
-    const alleles = gt.split(GT_FIELD_RE);
-    if (alleles.length !== 2) continue;
-
-    let a1Letter: string;
-    let a2Letter: string;
-    if (alleles[0] === "." || alleles[1] === ".") {
-      genotypes.set(rsid, NOCALL);
-      noCalls++;
-    } else {
-      const a1Idx = parseInt(alleles[0], 10);
-      const a2Idx = parseInt(alleles[1], 10);
-      if (Number.isNaN(a1Idx) || Number.isNaN(a2Idx)) continue;
-      a1Letter = a1Idx === 0 ? ref : alt;
-      a2Letter = a2Idx === 0 ? ref : alt;
-      const g = normalize(`${a1Letter}${a2Letter}`);
-      genotypes.set(rsid, g);
-    }
-
-    if (!Number.isNaN(posN)) {
-      const chr = chrRaw.replace(/^chr/i, "").toUpperCase();
-      positions[rsid] = { chr, pos: posN };
-      const bin = Math.floor(posN / DENSITY_BIN_SIZE);
-      const arr = density[chr] ?? (density[chr] = []);
-      arr[bin] = (arr[bin] ?? 0) + 1;
-    }
-    kept++;
-
-    if (opts.onProgress && i % 50_000 === 0) {
-      opts.onProgress(i / total);
-    }
+    processDataLine(lines[i], state);
+    if (opts.onProgress && i % 50_000 === 0) opts.onProgress(i / total);
   }
   opts.onProgress?.(1);
 
-  const source: DnaSource = kept > 2_000_000 ? "wgs" : "unknown";
-
-  return {
-    genotypes,
-    positions,
-    density,
-    meta: { totalSNPs: kept, noCalls, build, source },
-  };
+  return finalize(state, build);
 }
 
+/**
+ * Async line iterator over a Blob. If the filename ends in `.gz` we pipe the
+ * byte stream through `DecompressionStream('gzip')` — unlike fflate's
+ * `gunzipSync`, DecompressionStream natively handles multi-member gzip
+ * (a.k.a. bgzip), which is what samtools/bcftools produce for WGS VCFs.
+ */
+async function* readLines(blob: Blob, filename: string): AsyncGenerator<string> {
+  const isGz = filename.toLowerCase().endsWith(".gz");
+  let stream: ReadableStream<Uint8Array> = blob.stream() as ReadableStream<Uint8Array>;
+  if (isGz) {
+    if (typeof DecompressionStream === "undefined") {
+      throw new Error("Votre navigateur ne supporte pas la décompression native (.gz). Décompressez le fichier avant import.");
+    }
+    stream = stream.pipeThrough(new DecompressionStream("gzip") as unknown as ReadableWritablePair<Uint8Array, Uint8Array>);
+  }
+  const reader = stream.getReader();
+  const decoder = new TextDecoder();
+  let buf = "";
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buf += decoder.decode(value, { stream: true });
+    let nl: number;
+    while ((nl = buf.indexOf("\n")) >= 0) {
+      const line = buf.charCodeAt(nl - 1) === 13 /* \r */ ? buf.slice(0, nl - 1) : buf.slice(0, nl);
+      yield line;
+      buf = buf.slice(nl + 1);
+    }
+  }
+  buf += decoder.decode();
+  if (buf.length) {
+    const line = buf.endsWith("\r") ? buf.slice(0, -1) : buf;
+    yield line;
+  }
+}
+
+/**
+ * Streaming VCF parser. Never materializes the full decompressed text, so it
+ * scales to WGS-sized .vcf.gz files that would otherwise blow past V8's
+ * ~512 MB string cap.
+ */
 export async function parseVcfFile(file: File | Blob, opts: ParseOptions = {}): Promise<ParseOutput> {
   const name = ((file as File).name ?? opts.filename ?? "").toLowerCase();
-  const buf = new Uint8Array(await file.arrayBuffer());
-  const text = name.endsWith(".gz") ? strFromU8(gunzipSync(buf)) : new TextDecoder().decode(buf);
-  return parseVcfText(text, opts);
+  const state = newState();
+  const headerMeta: string[] = [];
+  let headerDone = false;
+  let totalBytes = (file as File).size || 0;
+  let bytesSeen = 0;
+  let linesSeen = 0;
+
+  for await (const line of readLines(file, name)) {
+    bytesSeen += line.length + 1;
+    linesSeen++;
+    if (!headerDone) {
+      if (line.startsWith("##")) {
+        headerMeta.push(line);
+        continue;
+      }
+      if (line.startsWith("#CHROM")) {
+        const cols = line.split("\t");
+        if (cols.length < 10) throw new Error("VCF sans colonne d'échantillon");
+        state.sampleIdx = 9;
+        headerDone = true;
+        continue;
+      }
+      if (!line) continue;
+      // Data line before #CHROM → not a valid VCF
+      throw new Error("VCF invalide : header #CHROM introuvable");
+    }
+    processDataLine(line, state);
+    if (opts.onProgress && (linesSeen & 0x3fff) === 0) {
+      // bgzip ratios typically ~4x, so bytesSeen / (totalBytes * 4) is a rough
+      // percent. Fall back to line count when size is unknown.
+      const pct = totalBytes > 0 ? Math.min(0.99, bytesSeen / (totalBytes * 4)) : Math.min(0.99, linesSeen / 40_000_000);
+      opts.onProgress(pct);
+    }
+  }
+  if (!headerDone) throw new Error("VCF invalide : header #CHROM introuvable");
+
+  opts.onProgress?.(1);
+  return finalize(state, detectBuild(headerMeta));
 }
 
 export function looksLikeVcf(filename: string, firstBytes?: string): boolean {
