@@ -2,10 +2,10 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 export const metadata = {
-  title: "Mentions légales — DNAI",
+  title: "Legal — DNAI",
 };
 
-export default function LegalLayout({ children }: { children: ReactNode }) {
+export default function LegalEnLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-paper text-ink">
       <header className="border-b border-ink/10">
@@ -15,14 +15,14 @@ export default function LegalLayout({ children }: { children: ReactNode }) {
           </Link>
           <div className="flex items-center gap-6">
             <nav className="flex gap-5 text-[12px] uppercase tracking-[0.18em] text-ink/60">
-              <Link href="/legal/terms" className="hover:text-ink">Conditions</Link>
-              <Link href="/legal/privacy" className="hover:text-ink">Confidentialité</Link>
-              <Link href="/legal/notice" className="hover:text-ink">Mentions</Link>
+              <Link href="/legal/en/terms" className="hover:text-ink">Terms</Link>
+              <Link href="/legal/en/privacy" className="hover:text-ink">Privacy</Link>
+              <Link href="/legal/en/notice" className="hover:text-ink">Notice</Link>
             </nav>
             <div className="flex items-center gap-1 text-[11px] uppercase tracking-[0.18em]">
-              <span className="text-ink">FR</span>
+              <Link href="/legal/terms" className="text-ink/45 hover:text-ink">FR</Link>
               <span className="text-ink/25">·</span>
-              <Link href="/legal/en/terms" className="text-ink/45 hover:text-ink">EN</Link>
+              <span className="text-ink">EN</span>
             </div>
           </div>
         </div>
@@ -33,11 +33,10 @@ export default function LegalLayout({ children }: { children: ReactNode }) {
       <footer className="border-t border-ink/10">
         <div className="mx-auto max-w-5xl px-6 py-10 text-[12px] leading-relaxed text-ink/55">
           <p>
-            <strong className="text-ink/75">DNAI — outil éducatif, pas un dispositif médical.</strong> Les
-            informations affichées par DNAI sont issues de bases publiques (ClinVar, CPIC, DPWG, PGS Catalog) et
-            présentées à titre d&apos;information générale. Elles ne constituent ni un diagnostic, ni une
-            recommandation thérapeutique, et ne remplacent pas une consultation médicale ni un test génétique
-            clinique accrédité.
+            <strong className="text-ink/75">DNAI — educational tool, not a medical device.</strong> Information
+            displayed by DNAI comes from public databases (ClinVar, CPIC, DPWG, PGS Catalog) and is presented for
+            general informational purposes. It does not constitute a diagnosis or a therapeutic recommendation, and
+            does not replace a medical consultation or an accredited clinical genetic test.
           </p>
         </div>
       </footer>
