@@ -24,6 +24,7 @@ const SEV_COLOR: Record<Severity, string> = {
 };
 
 import type { Lang } from "@/lib/i18n/lang";
+import { SectionDisclaimer } from "@/components/SectionDisclaimer";
 
 interface CompareProps {
   result: AnalysisResult;
@@ -31,7 +32,66 @@ interface CompareProps {
   lang?: Lang;
 }
 
-export function CompareSection({ result, genotypes, lang: _lang = "fr" }: CompareProps) {
+const COMPARE_COPY: Record<Lang, {
+  ctaTitle: string;
+  ctaSubtitle: string;
+  loading: string;
+  fallbackError: string;
+  hostedLocally: string;
+  comparison: string;
+  removeB: string;
+  clinvarTitle: string;
+  clinvarSubtitleTpl: (a: number, b: number, s: number) => string;
+  noClinvarDiff: string;
+  pharmaTitle: string;
+  pharmaSubtitleTpl: (n: number) => string;
+  pharmaEquivalent: string;
+  genoTitle: string;
+  genoSubtitleTpl: (d: number, t: number) => string;
+  genoIdentical: string;
+  onlySide: (side: "A" | "B") => string;
+}> = {
+  fr: {
+    ctaTitle: "Comparer un second fichier",
+    ctaSubtitle: "Glissez le fichier d'une autre personne (parent, frère/sœur, enfant) pour comparer génotypes, variants ClinVar et profils pharmacogénomiques.",
+    loading: "Analyse en cours…",
+    fallbackError: "Échec de l'analyse",
+    hostedLocally: "Le second fichier est traité uniquement dans votre navigateur, comme le premier.",
+    comparison: "Comparaison",
+    removeB: "✕ Retirer B",
+    clinvarTitle: "ClinVar · divergences",
+    clinvarSubtitleTpl: (a, b, s) => `${a} propres à A · ${b} propres à B · ${s} partagés`,
+    noClinvarDiff: "Aucune divergence ClinVar entre les deux fichiers.",
+    pharmaTitle: "Pharmaco · écarts de sévérité",
+    pharmaSubtitleTpl: (n) => `${n} changement${n > 1 ? "s" : ""} de sévérité par médicament`,
+    pharmaEquivalent: "Profils pharmacogénomiques équivalents.",
+    genoTitle: "Génotypes · différences sur les rsIDs cliniquement pertinents",
+    genoSubtitleTpl: (d, t) => `${d} SNPs divergents · sur ${t} rsIDs communs évalués (ClinVar + PGx)`,
+    genoIdentical: "Génotypes identiques sur tous les rsIDs communs évalués.",
+    onlySide: (s) => `seulement ${s}`,
+  },
+  en: {
+    ctaTitle: "Compare a second file",
+    ctaSubtitle: "Drop another person's file (parent, sibling, child) to compare genotypes, ClinVar variants and pharmacogenomic profiles.",
+    loading: "Analysing…",
+    fallbackError: "Analysis failed",
+    hostedLocally: "The second file is processed only in your browser, just like the first.",
+    comparison: "Comparison",
+    removeB: "✕ Remove B",
+    clinvarTitle: "ClinVar · divergences",
+    clinvarSubtitleTpl: (a, b, s) => `${a} unique to A · ${b} unique to B · ${s} shared`,
+    noClinvarDiff: "No ClinVar divergence between the two files.",
+    pharmaTitle: "Pharma · severity shifts",
+    pharmaSubtitleTpl: (n) => `${n} severity change${n > 1 ? "s" : ""} per drug`,
+    pharmaEquivalent: "Equivalent pharmacogenomic profiles.",
+    genoTitle: "Genotypes · differences on clinically relevant rsIDs",
+    genoSubtitleTpl: (d, t) => `${d} divergent SNPs · over ${t} shared evaluated rsIDs (ClinVar + PGx)`,
+    genoIdentical: "Identical genotypes on all shared evaluated rsIDs.",
+    onlySide: (s) => `only ${s}`,
+  },
+};
+
+export function CompareSection({ result, genotypes, lang = "fr" }: CompareProps) {
   const { compareResult, compareGenotypes, setCompare } = useAnalysis();
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -47,47 +107,50 @@ export function CompareSection({ result, genotypes, lang: _lang = "fr" }: Compar
       });
       setCompare(data);
     } catch (e: unknown) {
-      setErr(e instanceof Error ? e.message : "Échec de l'analyse");
+      setErr(e instanceof Error ? e.message : COMPARE_COPY[lang].fallbackError);
     } finally {
       setLoading(false);
     }
   };
 
+  const c = COMPARE_COPY[lang];
   if (!compareResult || !compareGenotypes) {
     return (
-      <Card>
-        <CardHeader
-          title="Comparer un second fichier"
-          subtitle="Glissez le fichier MyHeritage d'une autre personne (parent, frère/sœur, enfant) pour comparer génotypes, variants ClinVar et profils pharmacogénomiques."
-        />
-        <div className="mt-2">
-          <FileDropper onFile={onFile} />
-          {loading && (
-            <div className="mt-4 text-xs text-fg-muted">
-              Analyse en cours… {progress > 0 && `${progress}%`}
+      <>
+        <SectionDisclaimer kind="compare" lang={lang} />
+        <Card>
+          <CardHeader title={c.ctaTitle} subtitle={c.ctaSubtitle} />
+          <div className="mt-2">
+            <FileDropper onFile={onFile} />
+            {loading && (
+              <div className="mt-4 text-xs text-fg-muted">
+                {c.loading} {progress > 0 && `${progress}%`}
+              </div>
+            )}
+            {err && (
+              <div className="mt-4 rounded-lg border border-danger/40 bg-danger/10 p-3 text-xs text-danger">
+                {err}
+              </div>
+            )}
+            <div className="mt-3 text-xs text-fg-muted">
+              <span className="opacity-70">{c.hostedLocally}</span>
             </div>
-          )}
-          {err && (
-            <div className="mt-4 rounded-lg border border-danger/40 bg-danger/10 p-3 text-xs text-danger">
-              {err}
-            </div>
-          )}
-          <div className="mt-3 text-xs text-fg-muted">
-            <span className="opacity-70">
-              Le second fichier est traité uniquement dans votre navigateur, comme le premier.
-            </span>
           </div>
-        </div>
-      </Card>
+        </Card>
+      </>
     );
   }
 
   return (
-    <CompareContent
-      a={{ result, genotypes }}
-      b={{ result: compareResult, genotypes: compareGenotypes }}
-      onSwap={() => setCompare(null)}
-    />
+    <>
+      <SectionDisclaimer kind="compare" lang={lang} />
+      <CompareContent
+        a={{ result, genotypes }}
+        b={{ result: compareResult, genotypes: compareGenotypes }}
+        onSwap={() => setCompare(null)}
+        lang={lang}
+      />
+    </>
   );
 }
 
@@ -100,11 +163,15 @@ function CompareContent({
   a,
   b,
   onSwap,
+  lang,
 }: {
   a: Side;
   b: Side;
   onSwap: () => void;
+  lang: Lang;
 }) {
+  const c = COMPARE_COPY[lang];
+  const numLocale = lang === "en" ? "en-US" : "fr-FR";
   const clinvarDiff = useMemo(() => diffClinVar(a.result.clinvar, b.result.clinvar), [a, b]);
   const pharmaDiff = useMemo(() => diffPharma(a.result.pharma.byDrug, b.result.pharma.byDrug), [a, b]);
   const genoDiff = useMemo(
@@ -117,12 +184,12 @@ function CompareContent({
       <Card className="md:col-span-12">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <div className="text-sm font-semibold text-fg">Comparaison</div>
+            <div className="text-sm font-semibold text-fg">{c.comparison}</div>
             <div className="mt-0.5 text-xs text-fg-muted">
               <span className="text-accent">A</span> {a.result.meta.filename} (
-              {a.result.meta.totalSNPs.toLocaleString("fr-FR")} SNPs) ·{" "}
+              {a.result.meta.totalSNPs.toLocaleString(numLocale)} SNPs) ·{" "}
               <span className="text-accent-2">B</span> {b.result.meta.filename} (
-              {b.result.meta.totalSNPs.toLocaleString("fr-FR")} SNPs)
+              {b.result.meta.totalSNPs.toLocaleString(numLocale)} SNPs)
             </div>
           </div>
           <button
@@ -130,15 +197,15 @@ function CompareContent({
             onClick={onSwap}
             className="rounded-lg border border-border bg-surface px-3 py-1.5 text-xs text-fg-muted hover:border-danger hover:text-danger"
           >
-            ✕ Retirer B
+            {c.removeB}
           </button>
         </div>
       </Card>
 
       <Card className="md:col-span-6">
         <CardHeader
-          title="ClinVar · divergences"
-          subtitle={`${clinvarDiff.onlyA.length} propres à A · ${clinvarDiff.onlyB.length} propres à B · ${clinvarDiff.shared.length} partagés`}
+          title={c.clinvarTitle}
+          subtitle={c.clinvarSubtitleTpl(clinvarDiff.onlyA.length, clinvarDiff.onlyB.length, clinvarDiff.shared.length)}
         />
         <div className="space-y-2">
           {clinvarDiff.onlyA.slice(0, 20).map((f) => (
@@ -150,6 +217,7 @@ function CompareContent({
               right="—"
               tone="danger"
               side="A"
+              lang={lang}
             />
           ))}
           {clinvarDiff.onlyB.slice(0, 20).map((f) => (
@@ -161,20 +229,19 @@ function CompareContent({
               right={f.observed}
               tone="danger"
               side="B"
+              lang={lang}
             />
           ))}
           {clinvarDiff.onlyA.length === 0 && clinvarDiff.onlyB.length === 0 && (
-            <div className="py-4 text-center text-xs text-fg-muted">
-              Aucune divergence ClinVar entre les deux fichiers.
-            </div>
+            <div className="py-4 text-center text-xs text-fg-muted">{c.noClinvarDiff}</div>
           )}
         </div>
       </Card>
 
       <Card className="md:col-span-6">
         <CardHeader
-          title="Pharmaco · écarts de sévérité"
-          subtitle={`${pharmaDiff.changed.length} changement(s) de sévérité par médicament`}
+          title={c.pharmaTitle}
+          subtitle={c.pharmaSubtitleTpl(pharmaDiff.changed.length)}
         />
         <div className="space-y-2">
           {pharmaDiff.changed.slice(0, 20).map((c) => (
@@ -196,17 +263,15 @@ function CompareContent({
             </div>
           ))}
           {pharmaDiff.changed.length === 0 && (
-            <div className="py-4 text-center text-xs text-fg-muted">
-              Profils pharmacogénomiques équivalents.
-            </div>
+            <div className="py-4 text-center text-xs text-fg-muted">{c.pharmaEquivalent}</div>
           )}
         </div>
       </Card>
 
       <Card className="md:col-span-12">
         <CardHeader
-          title="Génotypes · différences sur les rsIDs cliniquement pertinents"
-          subtitle={`${genoDiff.differing.length} SNPs divergents · sur ${genoDiff.total} rsIDs communs évalués (ClinVar + PGx)`}
+          title={c.genoTitle}
+          subtitle={c.genoSubtitleTpl(genoDiff.differing.length, genoDiff.total)}
         />
         <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
           {genoDiff.differing.slice(0, 40).map((g) => (
@@ -226,9 +291,7 @@ function CompareContent({
             </div>
           ))}
           {genoDiff.differing.length === 0 && (
-            <div className="col-span-full py-4 text-center text-xs text-fg-muted">
-              Génotypes identiques sur tous les rsIDs communs évalués.
-            </div>
+            <div className="col-span-full py-4 text-center text-xs text-fg-muted">{c.genoIdentical}</div>
           )}
         </div>
       </Card>
@@ -243,6 +306,7 @@ function DiffRow({
   right,
   tone,
   side,
+  lang,
 }: {
   label: string;
   rs: string;
@@ -250,6 +314,7 @@ function DiffRow({
   right: string;
   tone: "danger" | "warn";
   side: "A" | "B";
+  lang: Lang;
 }) {
   const badge = tone === "danger" ? "danger" : "warn";
   return (
@@ -259,7 +324,7 @@ function DiffRow({
         <span className="ml-2 font-mono text-[11px] text-fg-muted">{rs}</span>
       </div>
       <div className="flex items-center gap-2 text-xs">
-        <Badge variant={badge}>seulement {side}</Badge>
+        <Badge variant={badge}>{COMPARE_COPY[lang].onlySide(side)}</Badge>
         <span className="font-mono text-[11px]">
           A <span className="text-fg">{left}</span> · B <span className="text-fg">{right}</span>
         </span>
