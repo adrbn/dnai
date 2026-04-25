@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { DensityMap } from "@/lib/types";
+import type { Lang } from "@/lib/i18n/lang";
 
 type Cyto = {
   chromosomes: { chr: string; length: number; centromere: [number, number] }[];
@@ -10,6 +11,7 @@ type Cyto = {
 interface DensityHeatmapProps {
   density: DensityMap;
   binSizeMb?: number;
+  lang?: Lang;
 }
 
 const ORDER = [
@@ -17,7 +19,7 @@ const ORDER = [
   "13","14","15","16","17","18","19","20","21","22","X","Y",
 ];
 
-export function DensityHeatmap({ density, binSizeMb = 1 }: DensityHeatmapProps) {
+export function DensityHeatmap({ density, binSizeMb = 1, lang = "fr" }: DensityHeatmapProps) {
   const [cyto, setCyto] = useState<Cyto | null>(null);
 
   useEffect(() => {
@@ -91,14 +93,18 @@ export function DensityHeatmap({ density, binSizeMb = 1 }: DensityHeatmapProps) 
           );
         })}
       </svg>
-      <div className="mt-2 flex items-center gap-3 text-xs text-fg-muted">
-        <span>Densité de SNPs par {binSizeMb} Mb</span>
+      <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-fg-muted">
+        <span className="whitespace-nowrap">
+          {lang === "en" ? `SNP density / ${binSizeMb} Mb` : `Densité / ${binSizeMb} Mb`}
+        </span>
         <span className="flex items-center gap-1">
-          <span className="inline-block h-2 w-2 rounded-sm" style={{ background: colorFor(0) }} />0
-          <span className="inline-block h-2 w-8" style={{
-            background: `linear-gradient(to right, ${colorFor(1)}, ${colorFor(maxCount)})`,
-          }} />
-          {maxCount}
+          <span className="inline-block h-2 w-2 rounded-sm" style={{ background: colorFor(0) }} />
+          <span>0</span>
+          <span
+            className="inline-block h-2 w-10"
+            style={{ background: `linear-gradient(to right, ${colorFor(1)}, ${colorFor(maxCount)})` }}
+          />
+          <span>{maxCount}</span>
         </span>
       </div>
     </div>

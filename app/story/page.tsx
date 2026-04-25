@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useAnalysis } from "@/lib/store/analysis";
+import { useApoeConsent } from "@/lib/store/apoe-consent";
 import { buildStory, type Act } from "@/lib/story/acts";
 import { frameForAct, type StoryFrame } from "@/lib/story/poses";
 import { GenomeStage } from "@/components/story/GenomeStage";
@@ -17,12 +18,20 @@ export default function StoryPage() {
   const { result, positions } = useAnalysis();
   const router = useRouter();
   const { unlocked, hydrated } = useUnlockGate();
+  const { accepted: apoeOptIn, hydrate: hydrateApoe } = useApoeConsent();
+
+  useEffect(() => {
+    hydrateApoe();
+  }, [hydrateApoe]);
 
   useEffect(() => {
     if (!result) router.replace("/");
   }, [result, router]);
 
-  const acts: Act[] = useMemo(() => (result ? buildStory(result, positions) : []), [result, positions]);
+  const acts: Act[] = useMemo(
+    () => (result ? buildStory(result, positions, { apoeOptIn }) : []),
+    [result, positions, apoeOptIn],
+  );
   const frames: StoryFrame[] = useMemo(() => acts.map(frameForAct), [acts]);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -119,7 +128,7 @@ export default function StoryPage() {
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#1a1613]/55 via-transparent to-[#1a1613]/75" />
       </div>
 
-      <header className="fixed top-0 left-0 right-0 z-30 border-b border-paper/10 bg-[#1a1613]/80 backdrop-blur-md">
+      <header className="fixed top-[34px] left-0 right-0 z-30 border-b border-paper/10 bg-[#1a1613]/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
           <Link href="/" className="group flex items-baseline gap-2 rounded-sm px-2 py-1 hover:bg-paper/5">
             <span className="font-serif text-[20px] font-medium tracking-[-0.02em] text-paper">
@@ -164,7 +173,7 @@ export default function StoryPage() {
 function Progress({ total, active }: { total: number; active: number }) {
   const pct = total > 1 ? (active / (total - 1)) * 100 : 0;
   return (
-    <div className="fixed top-[52px] left-0 right-0 z-20 h-0.5 bg-white/5">
+    <div className="fixed top-[86px] left-0 right-0 z-20 h-0.5 bg-white/5">
       <div
         className="h-0.5 bg-gradient-to-r from-[#7c9cff] to-[#c7b2ff] transition-[width] duration-500 ease-out"
         style={{ width: `${pct}%` }}

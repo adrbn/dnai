@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useState } from "react";
 import Link from "next/link";
 import type { Act } from "@/lib/story/acts";
 import { WorldAncestryMap } from "./WorldAncestryMap";
@@ -578,119 +579,191 @@ function CarriersBody({ act }: { act: Extract<Act, { kind: "carriers" }> }) {
 
 function FunBody({ act }: { act: Extract<Act, { kind: "fun" }> }) {
   const f = act.fun;
-  const centroid = "100 100";
   return (
     <>
-      <h2 className="font-serif text-[28px] font-medium tracking-[-0.01em] sm:text-[34px]">
+      <h2 className="font-serif text-[28px] font-medium tracking-[-0.01em] sm:text-[32px]">
         Votre ADN créatif
       </h2>
-      <p className="mt-3 text-sm text-ink/70">
-        Trois signatures visuelles et sonores, générées déterministiquement depuis
-        l&apos;empreinte SHA-256 de votre fichier ADN. Deux fichiers identiques
-        donnent les mêmes signatures ; un seul octet changé produit trois œuvres
-        différentes.
-      </p>
-      <p className="mt-2 text-xs italic text-ink/55">
-        Le but : rappeler que votre ADN, même réduit à un hash, peut produire
-        quelque chose d&apos;unique et de joli — sans aucun lien avec un
-        phénotype ou un risque médical.
+      <p className="mt-2 text-[13px] leading-relaxed text-ink/70">
+        Trois signatures — sonore, visuelle, culturelle — dérivées du
+        hash SHA-256 de votre fichier. Déterministes : mêmes octets = mêmes
+        sorties ; un seul bit changé = trois œuvres différentes. Aucun lien avec
+        un phénotype, partageable sans trahir vos variants.
       </p>
 
-      <div className="mt-6 rounded-lg border border-ink/10 bg-ink/[0.03] p-5">
-        <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink/55">
-          Votre mélodie
-        </div>
-        <p className="mt-1 text-[11px] text-ink/55">
-          16 notes tirées de votre hash, mappées sur une gamme diatonique. Chaque
-          barre = une hauteur ; le tempo et la tonalité sont eux-mêmes dérivés du
-          même hash.
-        </p>
-        <div className="mt-4 flex items-end gap-1.5">
-          {f.music.notes.map((n, i) => {
-            const height = ((n - 55) / 30) * 48 + 8;
-            return (
-              <div
-                key={i}
-                className="w-2.5 rounded-sm"
-                style={{
-                  height: `${Math.max(6, height)}px`,
-                  background: `hsl(${210 + (i * 8) % 150} 70% ${50 + (i % 3) * 8}%)`,
-                }}
-              />
-            );
-          })}
-        </div>
-        <div className="mt-3 font-mono text-[11px] text-ink/60">
-          {f.music.key} · {f.music.tempo} BPM · 16 notes
-        </div>
+      {/* Compact 2-col layout: mélodie + sigil */}
+      <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_auto]">
+        <MelodyCard music={f.music} />
+        <SigilCard art={f.art} />
       </div>
 
-      <div className="mt-4 grid gap-4 sm:grid-cols-[auto_1fr]">
-        <div className="rounded-lg border border-ink/10 bg-ink/[0.03] p-4">
-          <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink/55">
-            Sigil ADN
-          </div>
-          <p className="mt-1 text-[11px] text-ink/55">
-            Un glyphe abstrait dessiné depuis votre hash.
-          </p>
-          <svg viewBox="0 0 200 200" className="mt-3 h-32 w-32">
-            <defs>
-              <radialGradient id={`gfun-${f.art.seed}`}>
-                <stop offset="0%" stopColor={f.art.palette[0]} />
-                <stop offset="100%" stopColor={f.art.palette[3]} />
-              </radialGradient>
-            </defs>
-            <circle cx="100" cy="100" r="80" fill={`url(#gfun-${f.art.seed})`} opacity="0.3" />
-            <path d={f.art.shapes} fill={f.art.palette[1]} opacity="0.65" />
-            <path d={f.art.shapes} fill="none" stroke={f.art.palette[2]} strokeWidth="1.2" />
-            <circle cx={centroid.split(" ")[0]} cy={centroid.split(" ")[1]} r="3" fill="#fff" />
-          </svg>
-          <div className="mt-2 flex gap-1">
-            {f.art.palette.map((c, i) => (
-              <span
-                key={i}
-                className="h-3 w-3 rounded-sm border border-ink/10"
-                style={{ background: c }}
-                title={c}
-              />
-            ))}
-          </div>
-        </div>
-
-        <div className="rounded-lg border border-ink/10 bg-ink/[0.03] p-4">
+      {/* Twins compact list below */}
+      <div className="mt-3 rounded-lg border border-ink/10 bg-ink/[0.03] p-3">
+        <div className="flex items-baseline justify-between">
           <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink/55">
             Jumeaux historiques
           </div>
-          <p className="mt-1 text-[11px] text-ink/55">
-            Personnages célèbres dont le nom, modulé par votre hash, ressort avec
-            la similarité affichée. <em>Totalement fictif</em> — aucun vrai lien
-            génétique.
-          </p>
-          <div className="mt-3 space-y-2">
-            {f.twins.map((t) => (
-              <div key={t.name} className="rounded-md bg-ink/[0.04] px-2.5 py-1.5">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-sm font-medium text-ink/90">{t.name}</span>
-                  <span className="font-mono text-xs text-ink/65 tabular-nums">
-                    {t.similarity.toFixed(0)}%
-                  </span>
-                </div>
-                <div className="mt-0.5 text-[10px] text-ink/50">{t.era}</div>
-                {t.note && (
-                  <div className="mt-1 text-[10px] text-ink/60">{t.note}</div>
-                )}
+          <div className="text-[10px] italic text-ink/45">Fictif — clin d&apos;œil ludique</div>
+        </div>
+        <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3">
+          {f.twins.map((t) => (
+            <div key={t.name} className="rounded-md bg-ink/[0.04] px-2 py-1.5">
+              <div className="flex items-center justify-between gap-1.5">
+                <span className="truncate text-[12px] font-medium text-ink/90">{t.name}</span>
+                <span className="font-mono text-[10px] text-ink/65 tabular-nums">
+                  {t.similarity.toFixed(0)}%
+                </span>
               </div>
-            ))}
-          </div>
+              <div className="mt-0.5 text-[9px] text-ink/45">{t.era}</div>
+            </div>
+          ))}
         </div>
       </div>
 
-      <p className="mt-4 text-[11px] italic text-ink/50">
-        Signatures déterministes dérivées de SHA-256 — purement ludique, aucune
-        valeur biologique ni médicale. Partageable sans risque : le hash ne
-        laisse pas deviner les variants.
+      <p className="mt-2 text-[10px] italic text-ink/45">
+        Purement ludique. SHA-256 est à sens unique : le hash ne permet pas de
+        retrouver les variants.
       </p>
     </>
+  );
+}
+
+function MelodyCard({ music }: { music: { notes: number[]; tempo: number; key: string } }) {
+  const [playing, setPlaying] = useState(false);
+  const ctxRef = useRef<AudioContext | null>(null);
+  const stopRef = useRef<(() => void) | null>(null);
+
+  const play = () => {
+    if (playing) {
+      stopRef.current?.();
+      return;
+    }
+    const AC = typeof window !== "undefined"
+      ? (window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext)
+      : null;
+    if (!AC) return;
+    if (!ctxRef.current) ctxRef.current = new AC();
+    const ctx = ctxRef.current;
+    if (ctx.state === "suspended") void ctx.resume();
+
+    setPlaying(true);
+    const beat = 60 / music.tempo; // seconds per beat
+    const now = ctx.currentTime + 0.05;
+    const master = ctx.createGain();
+    master.gain.value = 0.18;
+    master.connect(ctx.destination);
+
+    const oscs: OscillatorNode[] = [];
+    music.notes.forEach((midi, i) => {
+      const t = now + i * beat;
+      const freq = 440 * Math.pow(2, (midi - 69) / 12);
+      const osc = ctx.createOscillator();
+      osc.type = "triangle";
+      osc.frequency.value = freq;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.9, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + beat * 0.9);
+      osc.connect(g).connect(master);
+      osc.start(t);
+      osc.stop(t + beat);
+      oscs.push(osc);
+    });
+
+    const totalMs = music.notes.length * beat * 1000 + 200;
+    const timer = setTimeout(() => {
+      setPlaying(false);
+      stopRef.current = null;
+    }, totalMs);
+
+    stopRef.current = () => {
+      clearTimeout(timer);
+      oscs.forEach((o) => {
+        try { o.stop(); } catch { /* ignore */ }
+      });
+      master.disconnect();
+      setPlaying(false);
+      stopRef.current = null;
+    };
+  };
+
+  return (
+    <div className="rounded-lg border border-ink/10 bg-ink/[0.03] p-3">
+      <div className="flex items-center justify-between gap-2">
+        <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink/55">
+          Votre mélodie
+        </div>
+        <button
+          type="button"
+          onClick={play}
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-sm border border-ink/20 bg-paper px-2.5 py-1 text-[11px] font-medium text-ink transition hover:bg-ink hover:text-paper"
+          aria-label={playing ? "Arrêter la mélodie" : "Écouter la mélodie"}
+        >
+          {playing ? (
+            <>
+              <svg width="9" height="9" viewBox="0 0 10 10" fill="currentColor"><rect x="1" y="1" width="3" height="8" /><rect x="6" y="1" width="3" height="8" /></svg>
+              Stop
+            </>
+          ) : (
+            <>
+              <svg width="9" height="9" viewBox="0 0 10 10" fill="currentColor"><polygon points="2,1 9,5 2,9" /></svg>
+              Écouter
+            </>
+          )}
+        </button>
+      </div>
+      <div className="mt-2 flex h-14 items-end gap-[3px]">
+        {music.notes.map((n, i) => {
+          const height = ((n - 55) / 30) * 44 + 6;
+          return (
+            <div
+              key={i}
+              className="flex-1 rounded-sm transition-all"
+              style={{
+                height: `${Math.max(4, height)}px`,
+                background: `hsl(${210 + (i * 8) % 150} 70% ${50 + (i % 3) * 8}%)`,
+                opacity: playing ? 0.95 : 0.7,
+              }}
+            />
+          );
+        })}
+      </div>
+      <div className="mt-2 font-mono text-[10px] text-ink/55">
+        {music.key} · {music.tempo} BPM · {music.notes.length} notes · synth triangle
+      </div>
+    </div>
+  );
+}
+
+function SigilCard({ art }: { art: { seed: string; palette: string[]; shapes: string } }) {
+  return (
+    <div className="flex flex-col items-center rounded-lg border border-ink/10 bg-ink/[0.03] p-3">
+      <div className="self-start text-[10px] font-semibold uppercase tracking-[0.22em] text-ink/55">
+        Sigil
+      </div>
+      <svg viewBox="0 0 200 200" className="mt-1 h-24 w-24">
+        <defs>
+          <radialGradient id={`gfun-${art.seed}`}>
+            <stop offset="0%" stopColor={art.palette[0]} />
+            <stop offset="100%" stopColor={art.palette[3]} />
+          </radialGradient>
+        </defs>
+        <circle cx="100" cy="100" r="80" fill={`url(#gfun-${art.seed})`} opacity="0.3" />
+        <path d={art.shapes} fill={art.palette[1]} opacity="0.65" />
+        <path d={art.shapes} fill="none" stroke={art.palette[2]} strokeWidth="1.2" />
+        <circle cx="100" cy="100" r="3" fill="#fff" />
+      </svg>
+      <div className="mt-1.5 flex gap-1">
+        {art.palette.map((c, i) => (
+          <span
+            key={i}
+            className="h-2.5 w-2.5 rounded-sm border border-ink/10"
+            style={{ background: c }}
+            title={c}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
 

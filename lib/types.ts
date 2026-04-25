@@ -136,8 +136,12 @@ export type PRSRuleSNP = {
 export type PRSRule = {
   id: string;
   trait: string;
+  /** Optional English trait name (falls back to `trait` if absent). */
+  traitEn?: string;
   category: "metabolic" | "cardio" | "neuro" | "cancer" | "anthropometric" | "longevity";
   description: string;
+  /** Optional English description (falls back to `description` if absent). */
+  descriptionEn?: string;
   source: string;
   units: string; // "log-OR" or "effect size (SD)"
   emoji?: string;

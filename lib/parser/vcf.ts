@@ -1,3 +1,4 @@
+import { Gunzip } from "fflate";
 import { isBase, normalize } from "../genotype";
 import { DnaSource, GenotypeMap, NOCALL } from "../types";
 import { DENSITY_BIN_SIZE, DensityMap, ParseOptions, ParseOutput, PositionIndex } from "./myheritage";
@@ -145,13 +146,80 @@ export async function parseVcfText(
 }
 
 /**
- * Async line iterator over a Blob. If the filename ends in `.gz` we pipe the
- * byte stream through `DecompressionStream('gzip')` — unlike fflate's
- * `gunzipSync`, DecompressionStream natively handles multi-member gzip
- * (a.k.a. bgzip), which is what samtools/bcftools produce for WGS VCFs.
+ * Detect BGZF (bcftools/samtools block-gzip) by sniffing the gzip header.
+ * BGZF files are a sequence of small gzip members each carrying an FEXTRA
+ * subfield with subfield-ID "BC". Native `DecompressionStream('gzip')` in
+ * Chromium errors out on the second member ("Junk found after end of
+ * compressed data"), so we detect this upfront and route those files through
+ * fflate's streaming `Gunzip`, which is multi-member aware.
+ */
+async function isBgzf(blob: Blob): Promise<boolean> {
+  if (blob.size < 18) return false;
+  const head = new Uint8Array(await blob.slice(0, 18).arrayBuffer());
+  // gzip magic
+  if (head[0] !== 0x1f || head[1] !== 0x8b) return false;
+  // FLG.FEXTRA must be set
+  if ((head[3] & 0x04) === 0) return false;
+  // XLEN at offset 10..12, then subfield ID at 12..14 must be "BC"
+  return head[12] === 0x42 && head[13] === 0x43;
+}
+
+/**
+ * Async line iterator over a Blob. Gzip path:
+ *   - BGZF → fflate `Gunzip` (handles multi-member)
+ *   - Plain gzip → native `DecompressionStream('gzip')` (fast)
+ * The text is never fully materialized; lines are yielded as they complete.
  */
 async function* readLines(blob: Blob, filename: string): AsyncGenerator<string> {
   const isGz = filename.toLowerCase().endsWith(".gz");
+  const decoder = new TextDecoder();
+
+  if (isGz && (await isBgzf(blob))) {
+    // BGZF path: feed chunks to fflate's streaming Gunzip which supports
+    // multi-member gzip. We yield lines as the inflated chunks come back.
+    const outChunks: { data: Uint8Array; final: boolean }[] = [];
+    let outErr: unknown = null;
+    const gunzip = new Gunzip((chunk, final) => {
+      outChunks.push({ data: chunk, final });
+    });
+
+    const reader = (blob.stream() as ReadableStream<Uint8Array>).getReader();
+    let buf = "";
+    let done = false;
+    try {
+      while (!done) {
+        const { done: rd, value } = await reader.read();
+        if (rd) {
+          try { gunzip.push(new Uint8Array(0), true); } catch (e) { outErr = e; }
+          done = true;
+        } else if (value) {
+          try { gunzip.push(value, false); } catch (e) { outErr = e; done = true; }
+        }
+        if (outErr) break;
+        // drain inflated chunks
+        while (outChunks.length) {
+          const c = outChunks.shift()!;
+          buf += decoder.decode(c.data, { stream: !c.final });
+          let nl: number;
+          while ((nl = buf.indexOf("\n")) >= 0) {
+            const line = buf.charCodeAt(nl - 1) === 13 ? buf.slice(0, nl - 1) : buf.slice(0, nl);
+            yield line;
+            buf = buf.slice(nl + 1);
+          }
+        }
+      }
+    } finally {
+      try { reader.releaseLock(); } catch { /* ignore */ }
+    }
+    if (outErr) {
+      throw new Error(`Décompression bgzip échouée : ${(outErr as Error).message ?? outErr}`);
+    }
+    buf += decoder.decode();
+    if (buf.length) yield buf.endsWith("\r") ? buf.slice(0, -1) : buf;
+    return;
+  }
+
+  // Plain gzip or uncompressed: use native streaming.
   let stream: ReadableStream<Uint8Array> = blob.stream() as ReadableStream<Uint8Array>;
   if (isGz) {
     if (typeof DecompressionStream === "undefined") {
@@ -160,7 +228,6 @@ async function* readLines(blob: Blob, filename: string): AsyncGenerator<string> 
     stream = stream.pipeThrough(new DecompressionStream("gzip") as unknown as ReadableWritablePair<Uint8Array, Uint8Array>);
   }
   const reader = stream.getReader();
-  const decoder = new TextDecoder();
   let buf = "";
   for (;;) {
     const { done, value } = await reader.read();

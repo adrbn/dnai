@@ -5,8 +5,10 @@ import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { DrugSunburst } from "@/components/viz/DrugSunburst";
 import { ProteinViewer } from "@/components/viz/ProteinViewer";
+import { SectionDisclaimer } from "@/components/SectionDisclaimer";
 import { uniprotForGene } from "@/lib/gene-uniprot";
 import type { PharmaByDrug, Severity } from "@/lib/types";
+import { S, tr, trTpl } from "@/lib/i18n/strings";
 import type { Lang } from "@/lib/i18n/lang";
 
 interface PharmaSectionProps {
@@ -20,13 +22,13 @@ const SEV_VARIANT: Record<Severity, "ok" | "warn" | "danger"> = {
   high: "danger",
 };
 
-const SEV_LABEL: Record<Severity, string> = {
-  low: "Pertinence faible",
-  medium: "Pertinence modérée",
-  high: "Pertinence haute",
-};
+function sevLabel(s: Severity, lang: Lang): string {
+  if (s === "high") return tr(S.pharma.sevHigh, lang);
+  if (s === "medium") return tr(S.pharma.sevMed, lang);
+  return tr(S.pharma.sevLow, lang);
+}
 
-export function PharmaSection({ byDrug, lang: _lang = "fr" }: PharmaSectionProps) {
+export function PharmaSection({ byDrug, lang = "fr" }: PharmaSectionProps) {
   const [selected, setSelected] = useState<string | null>(null);
   const [openGene, setOpenGene] = useState<string | null>(null);
 
@@ -39,31 +41,31 @@ export function PharmaSection({ byDrug, lang: _lang = "fr" }: PharmaSectionProps
     return (
       <Card>
         <CardHeader
-          title="Pharmacogénomique"
-          subtitle="Aucune règle PGx déclenchée avec votre génotype"
+          title={tr(S.pharma.title, lang)}
+          subtitle={tr(S.pharma.emptySubtitle, lang)}
         />
-        <p className="text-sm text-fg-muted">
-          Votre génotype est 'référence' sur l'ensemble des variants PGx couverts. Cela
-          n'exclut pas d'autres interactions non listées dans cette base v1.
-        </p>
+        <p className="text-sm text-fg-muted">{tr(S.pharma.emptyBody, lang)}</p>
       </Card>
     );
   }
 
   return (
     <div className="grid gap-6 md:grid-cols-12">
+      <div className="md:col-span-12">
+        <SectionDisclaimer kind="pharma" lang={lang} />
+      </div>
       <Card className="md:col-span-5">
         <CardHeader
-          title="Vue radiale"
-          subtitle="Chaque secteur = un médicament affecté. Cliquez pour détailler."
+          title={tr(S.pharma.radialTitle, lang)}
+          subtitle={tr(S.pharma.radialSubtitle, lang)}
         />
         <div className="flex justify-center">
           <DrugSunburst byDrug={byDrug} onSelect={setSelected} />
         </div>
         <div className="mt-4 flex justify-center gap-4 text-xs">
-          <LegendDot color="rgb(247 110 110)" label="Pertinence haute" />
-          <LegendDot color="rgb(236 196 92)" label="Pertinence modérée" />
-          <LegendDot color="rgb(120 220 160)" label="Pertinence faible" />
+          <LegendDot color="rgb(247 110 110)" label={tr(S.pharma.legendHigh, lang)} />
+          <LegendDot color="rgb(236 196 92)" label={tr(S.pharma.legendMed, lang)} />
+          <LegendDot color="rgb(120 220 160)" label={tr(S.pharma.legendLow, lang)} />
         </div>
       </Card>
 
@@ -74,7 +76,7 @@ export function PharmaSection({ byDrug, lang: _lang = "fr" }: PharmaSectionProps
           right={
             selectedDrug && (
               <Badge variant={SEV_VARIANT[selectedDrug.severity]}>
-                {SEV_LABEL[selectedDrug.severity]}
+                {sevLabel(selectedDrug.severity, lang)}
               </Badge>
             )
           }
@@ -83,7 +85,7 @@ export function PharmaSection({ byDrug, lang: _lang = "fr" }: PharmaSectionProps
           <>
             <p className="mb-4 text-sm leading-relaxed text-fg first-letter:uppercase">{selectedDrug.effect}</p>
             <div className="mb-2 text-xs uppercase tracking-wider text-fg-muted">
-              Contributeurs génétiques
+              {tr(S.pharma.contributorsTitle, lang)}
             </div>
             <ul className="space-y-2 text-sm">
               {selectedDrug.contributors.map((c, i) => {
@@ -115,7 +117,9 @@ export function PharmaSection({ byDrug, lang: _lang = "fr" }: PharmaSectionProps
                             }
                             className="text-xs text-accent hover:underline"
                           >
-                            {openGene === c.gene ? "Masquer 3D" : "3D"}
+                            {openGene === c.gene
+                              ? tr(S.pharma.link3dClose, lang)
+                              : tr(S.pharma.link3dOpen, lang)}
                           </button>
                         )}
                       </div>
@@ -134,15 +138,18 @@ export function PharmaSection({ byDrug, lang: _lang = "fr" }: PharmaSectionProps
       </Card>
 
       <Card className="md:col-span-12">
-        <CardHeader title="Tous les médicaments" subtitle={`${byDrug.length} au total`} />
+        <CardHeader
+          title={tr(S.pharma.allDrugsTitle, lang)}
+          subtitle={trTpl(S.pharma.allDrugsSubtitleTpl, lang, byDrug.length)}
+        />
         <div className="max-h-[420px] overflow-y-auto">
           <table className="w-full table-fixed text-sm">
             <thead className="sticky top-0 bg-surface text-xs uppercase tracking-wider text-fg-muted">
               <tr>
-                <th className="w-[40%] py-2 text-left sm:w-auto">Médicament</th>
-                <th className="hidden text-left sm:table-cell">Classe</th>
-                <th className="hidden text-left sm:table-cell">Effet</th>
-                <th className="w-[35%] sm:w-auto">Gravité</th>
+                <th className="w-[40%] py-2 text-left sm:w-auto">{tr(S.pharma.colDrug, lang)}</th>
+                <th className="hidden text-left sm:table-cell">{tr(S.pharma.colClass, lang)}</th>
+                <th className="hidden text-left sm:table-cell">{tr(S.pharma.colEffect, lang)}</th>
+                <th className="w-[35%] sm:w-auto">{tr(S.pharma.colSeverity, lang)}</th>
               </tr>
             </thead>
             <tbody>
@@ -158,7 +165,7 @@ export function PharmaSection({ byDrug, lang: _lang = "fr" }: PharmaSectionProps
                   <td className="hidden text-fg-muted first-letter:uppercase sm:table-cell">{d.drug_class ?? "—"}</td>
                   <td className="hidden max-w-[360px] truncate text-fg-muted first-letter:uppercase sm:table-cell">{d.effect}</td>
                   <td className="text-center">
-                    <Badge variant={SEV_VARIANT[d.severity]}>{SEV_LABEL[d.severity]}</Badge>
+                    <Badge variant={SEV_VARIANT[d.severity]}>{sevLabel(d.severity, lang)}</Badge>
                   </td>
                 </tr>
               ))}

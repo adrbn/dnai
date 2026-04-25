@@ -1,36 +1,39 @@
 "use client";
 
 import type { ROHResult } from "@/lib/types";
+import { S, tr } from "@/lib/i18n/strings";
+import type { Lang } from "@/lib/i18n/lang";
 
 interface Props {
   roh: ROHResult;
+  lang?: Lang;
 }
 
-export function ROHCard({ roh }: Props) {
+export function ROHCard({ roh, lang = "fr" }: Props) {
   const fPct = roh.fRoh * 100;
   const level =
     roh.fRoh < 0.0156
       ? {
-          label: "Standard",
+          label: tr(S.roh.levelStandard, lang),
           tone: "ok",
-          hint: "Valeur normale — rien à signaler. Aucun signe d'apparentement entre vos parents biologiques.",
+          hint: tr(S.roh.levelStandardHint, lang),
         }
       : roh.fRoh < 0.03125
         ? {
-            label: "Légèrement élevé",
+            label: tr(S.roh.levelAncient, lang),
             tone: "warn",
-            hint: "Cousinage ancien possible. Fréquent dans les populations endogames (isolats géographiques, certaines communautés).",
+            hint: tr(S.roh.levelAncientHint, lang),
           }
         : roh.fRoh < 0.0625
           ? {
-              label: "Notable",
+              label: tr(S.roh.levelDistant, lang),
               tone: "warn",
-              hint: "Équivalent à des cousins éloignés dans la généalogie — pas inhabituel selon les origines.",
+              hint: tr(S.roh.levelDistantHint, lang),
             }
           : {
-              label: "Élevé",
+              label: tr(S.roh.levelClose, lang),
               tone: "danger",
-              hint: "Compatible avec des parents apparentés au 1ᵉʳ ou 2ᵉ degré (cousins germains, oncle-nièce…).",
+              hint: tr(S.roh.levelCloseHint, lang),
             };
 
   const toneBg =
@@ -68,15 +71,15 @@ export function ROHCard({ roh }: Props) {
           </div>
           <div className="text-right text-xs text-fg-muted">
             <div>
-              <span className="tabular-nums text-fg">{roh.totalSegments}</span> segments
+              <span className="tabular-nums text-fg">{roh.totalSegments}</span> {tr(S.roh.segments, lang)}
             </div>
             <div>
               <span className="tabular-nums text-fg">
                 {(roh.totalBp / 1e6).toFixed(1)}
               </span>{" "}
-              Mb homozygotes
+              Mb {tr(S.roh.homozygous, lang)}
             </div>
-            <div className="text-[10px] opacity-70">seuil 1 Mb / 30 SNPs</div>
+            <div className="text-[10px] opacity-70">{S.roh.thresholdTpl[lang](1, 30)}</div>
           </div>
         </div>
       </div>
@@ -111,11 +114,7 @@ export function ROHCard({ roh }: Props) {
       </div>
 
       <div className="rounded-lg border border-border bg-surface-2/40 p-3 text-[11px] text-fg-muted">
-        <strong className="text-fg">Segments homozygotes (ROH)</strong> : régions où toutes les
-        positions génotypées sont homozygotes. Leur longueur totale divisée par le génome
-        autosomique (~2,88 Gb) donne un estimateur de consanguinité F<sub>ROH</sub>.
-        Signal brut : la plupart des segments proviennent simplement de déséquilibres de liaison
-        dans la population, non d&apos;un apparentement parental.
+        <strong className="text-fg">{tr(S.roh.explainerTitle, lang)}</strong> : {tr(S.roh.explainerBody, lang)}
       </div>
     </div>
   );

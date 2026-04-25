@@ -196,10 +196,23 @@ function sourcePrimer(source: string, totalSNPs: number): string {
   return `${fmt} positions précises lues sur votre génome.`;
 }
 
+export interface BuildStoryOptions {
+  /**
+   * When false (default), the APOE ε4 Alzheimer finding is stripped from the
+   * story timeline. APOE is a highly predictive genotype with significant
+   * psychosocial impact — NSGC (2019) recommends explicit opt-in before
+   * surfacing it to consumers. Set to true only after the user has acknowledged
+   * a dedicated APOE consent modal.
+   */
+  apoeOptIn?: boolean;
+}
+
 export function buildStory(
   result: AnalysisResult,
   positions: PositionIndex | null | undefined,
+  options: BuildStoryOptions = {},
 ): Act[] {
+  const { apoeOptIn = false } = options;
   const acts: Act[] = [];
   const pos = positions ?? {};
 
@@ -272,7 +285,10 @@ export function buildStory(
   }
 
   if (result.actionable && result.actionable.length > 0) {
-    const interesting = result.actionable.filter((a) => a.risk !== "neutral");
+    const gated = apoeOptIn
+      ? result.actionable
+      : result.actionable.filter((a) => a.id !== "apoe");
+    const interesting = gated.filter((a) => a.risk !== "neutral");
     if (interesting.length > 0) {
       acts.push({
         id: "actionable",

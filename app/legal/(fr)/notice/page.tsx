@@ -17,7 +17,6 @@ export default function NoticePage() {
         DNAI est un projet personnel, opéré à titre individuel, non commercial à ce stade.
       </p>
       <ul className="ml-5 list-disc space-y-1">
-        <li>Responsable éditorial : Adrien Bianca</li>
         <li>Contact : contact@dnai.health</li>
       </ul>
 

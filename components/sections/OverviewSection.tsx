@@ -6,8 +6,9 @@ import { Karyogram } from "@/components/viz/Karyogram";
 import { DensityHeatmap } from "@/components/viz/DensityHeatmap";
 import { ROHCard } from "@/components/viz/ROHCard";
 import type { AnalysisResult, PharmaByDrug, PositionIndex } from "@/lib/types";
-import { S, tr } from "@/lib/i18n/strings";
+import { S, tr, trTpl } from "@/lib/i18n/strings";
 import type { Lang } from "@/lib/i18n/lang";
+import { prsTraitName } from "@/lib/prs-label";
 
 interface OverviewSectionProps {
   result: AnalysisResult;
@@ -75,6 +76,7 @@ export function OverviewSection({ result, positions, lang = "fr" }: OverviewSect
             tag: f.entry.sig === "P" ? "P" : "LP",
           }))}
           overflow={result.clinvar.length - topClinvar.length}
+          lang={lang}
         />
 
         <TopFindingsCard
@@ -95,6 +97,7 @@ export function OverviewSection({ result, positions, lang = "fr" }: OverviewSect
             tag: severityTag(d.severity),
           }))}
           overflow={result.pharma.byDrug.length - topPharma.length}
+          lang={lang}
         />
 
         <TopFindingsCard
@@ -105,8 +108,8 @@ export function OverviewSection({ result, positions, lang = "fr" }: OverviewSect
           total={result.prs.length}
           emptyLabel={tr(S.overview.prsEmpty, lang)}
           items={topPrs.map((p) => ({
-            key: p.rule.trait,
-            primary: p.rule.trait,
+            key: p.rule.id,
+            primary: prsTraitName(p, lang),
             secondary: `z = ${p.zScore.toFixed(2)} · ${p.matched}/${p.total} SNPs`,
             level:
               p.percentile >= 90
@@ -119,12 +122,13 @@ export function OverviewSection({ result, positions, lang = "fr" }: OverviewSect
             tag: `P${p.percentile.toFixed(0)}`,
           }))}
           overflow={Math.max(0, result.prs.length - topPrs.length)}
+          lang={lang}
         />
       </div>
 
-      <FileStrip result={result} />
+      <FileStrip result={result} lang={lang} />
       {result.imputation && result.imputation.imputed > 0 && (
-        <ImputationNote imputation={result.imputation} />
+        <ImputationNote imputation={result.imputation} lang={lang} />
       )}
 
       <Card>
@@ -141,14 +145,14 @@ export function OverviewSection({ result, positions, lang = "fr" }: OverviewSect
             title={tr(S.overview.densityTitle, lang)}
             subtitle={tr(S.overview.densitySubtitle, lang)}
           />
-          <DensityHeatmap density={result.density} />
+          <DensityHeatmap density={result.density} lang={lang} />
         </Card>
         <Card>
           <CardHeader
             title={tr(S.overview.rohTitle, lang)}
             subtitle={tr(S.overview.rohSubtitle, lang)}
           />
-          <ROHCard roh={result.roh} />
+          <ROHCard roh={result.roh} lang={lang} />
         </Card>
       </div>
     </div>
@@ -174,6 +178,7 @@ function TopFindingsCard({
   items,
   emptyLabel,
   overflow,
+  lang,
 }: {
   tone: "danger" | "warn" | "accent";
   icon: React.ReactNode;
@@ -183,6 +188,7 @@ function TopFindingsCard({
   items: FindingItem[];
   emptyLabel: string;
   overflow: number;
+  lang: Lang;
 }) {
   const toneText =
     tone === "danger" ? "text-danger" : tone === "warn" ? "text-warn" : "text-accent";
@@ -222,7 +228,7 @@ function TopFindingsCard({
           ))}
           {overflow > 0 && (
             <li className="pt-1 text-[11px] text-fg-muted/70">
-              et {overflow} autre{overflow > 1 ? "s" : ""}…
+              {trTpl(S.overview.othersTpl, lang, overflow)}
             </li>
           )}
         </ul>
@@ -261,27 +267,28 @@ function FindingRow({ item }: { item: FindingItem }) {
   );
 }
 
-function FileStrip({ result }: { result: AnalysisResult }) {
+function FileStrip({ result, lang }: { result: AnalysisResult; lang: Lang }) {
   const callRate =
     result.meta.totalSNPs === 0 ? 0 : 1 - result.meta.noCalls / result.meta.totalSNPs;
+  const locale = lang === "en" ? "en-US" : "fr-FR";
   const items = [
-    { label: "Fichier", value: result.meta.filename, mono: true },
-    { label: "Build", value: result.meta.build },
-    { label: "SNPs", value: result.meta.totalSNPs.toLocaleString("fr-FR") },
+    { label: tr(S.overview.stripFile, lang), value: result.meta.filename, mono: true },
+    { label: tr(S.overview.stripBuild, lang), value: result.meta.build },
+    { label: tr(S.overview.stripSnps, lang), value: result.meta.totalSNPs.toLocaleString(locale) },
     {
-      label: "Call rate",
+      label: tr(S.overview.stripCallRate, lang),
       value: `${(callRate * 100).toFixed(2)}%`,
-      extra: `${result.meta.noCalls.toLocaleString("fr-FR")} nocall`,
+      extra: `${result.meta.noCalls.toLocaleString(locale)} ${tr(S.overview.stripNocall, lang)}`,
     },
     {
-      label: "Parsé",
-      value: new Date(result.meta.parsedAt).toLocaleString("fr-FR", {
+      label: tr(S.overview.stripParsed, lang),
+      value: new Date(result.meta.parsedAt).toLocaleString(locale, {
         dateStyle: "short",
         timeStyle: "short",
       }),
     },
     {
-      label: "Empreinte",
+      label: tr(S.overview.stripHash, lang),
       value: `${result.meta.fileHash.slice(0, 10)}…`,
       mono: true,
     },
@@ -351,22 +358,19 @@ function IconActivity() {
 
 function ImputationNote({
   imputation,
+  lang,
 }: {
   imputation: NonNullable<AnalysisResult["imputation"]>;
+  lang: Lang;
 }) {
   const imputed = imputation.entries.filter((e) => e.source === "imputed");
   return (
     <Card className="border-accent/30 bg-accent/5">
       <CardHeader
-        title="Imputation LD (proxies)"
-        subtitle={`${imputation.imputed} variant(s) reconstitué(s) via tag SNPs en LD serrée (r² ≥ 0.85)`}
+        title={tr(S.overview.imputationTitle, lang)}
+        subtitle={trTpl(S.overview.imputationSubtitleTpl, lang, imputation.imputed)}
       />
-      <p className="text-sm text-fg-muted">
-        Certains variants absents de votre chip ont été <em>imputés</em> depuis un
-        SNP voisin en déséquilibre de liaison (référence EUR). C&apos;est une
-        approximation honnête — utile pour ne pas perdre un trait à cause d&apos;une
-        puce incomplète, mais moins fiable qu&apos;un génotypage direct.
-      </p>
+      <p className="text-sm text-fg-muted">{tr(S.overview.imputationLead, lang)}</p>
       {imputed.length > 0 && (
         <ul className="mt-3 space-y-1 font-mono text-[11px] text-fg/80">
           {imputed.map((e) => (

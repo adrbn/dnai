@@ -4,8 +4,10 @@ import { useState } from "react";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { ProteinViewer } from "@/components/viz/ProteinViewer";
+import { SectionDisclaimer } from "@/components/SectionDisclaimer";
 import { uniprotForGene } from "@/lib/gene-uniprot";
 import type { ClinVarFinding } from "@/lib/types";
+import { S, tr } from "@/lib/i18n/strings";
 import type { Lang } from "@/lib/i18n/lang";
 
 interface HealthSectionProps {
@@ -13,30 +15,28 @@ interface HealthSectionProps {
   lang?: Lang;
 }
 
-const SIG_LABEL: Record<string, string> = {
-  P: "Pathogène",
-  LP: "Probablement path.",
-  "P/LP": "P / LP",
-};
-
 const STARS = ["—", "✱", "✱✱", "✱✱✱", "✱✱✱✱"];
 
-export function HealthSection({ findings, lang: _lang = "fr" }: HealthSectionProps) {
+function sigLabel(sig: string, lang: Lang): string {
+  if (sig === "P") return tr(S.health.sigP, lang);
+  if (sig === "LP") return tr(S.health.sigLP, lang);
+  if (sig === "P/LP") return tr(S.health.sigPLP, lang);
+  return sig;
+}
+
+export function HealthSection({ findings, lang = "fr" }: HealthSectionProps) {
   const [openGene, setOpenGene] = useState<string | null>(null);
 
   if (findings.length === 0) {
     return (
       <Card>
         <CardHeader
-          title="Aucune variante cliniquement significative détectée"
-          subtitle="Parmi la base ClinVar curée (P/LP, review ≥ 2 étoiles). Absence ≠ garantie — la base v1 est limitée."
+          title={tr(S.health.emptyTitle, lang)}
+          subtitle={tr(S.health.emptySubtitle, lang)}
         />
         <div className="rounded-xl border border-ok/30 bg-ok/5 p-8 text-center">
           <div className="text-5xl">✅</div>
-          <p className="mt-3 text-sm text-fg-muted">
-            Votre génotype ne correspond à aucune des variantes pathogènes de la base seed.
-            Une analyse étendue (ClinVar complète) est prévue en v2.
-          </p>
+          <p className="mt-3 text-sm text-fg-muted">{tr(S.health.emptyBody, lang)}</p>
         </div>
       </Card>
     );
@@ -44,13 +44,12 @@ export function HealthSection({ findings, lang: _lang = "fr" }: HealthSectionPro
 
   return (
     <div className="space-y-4">
+      <SectionDisclaimer kind="health" lang={lang} />
       <div className="rounded-xl border border-warn/30 bg-warn/5 p-4 text-sm">
-        <div className="mb-1 flex items-center gap-2 font-semibold text-warn">⚠ À lire impérativement</div>
-        <p className="text-fg-muted">
-          Ces variantes sont classées pathogènes ou probablement pathogènes par ClinVar, mais
-          elles ne valent <em>pas diagnostic</em>. Un test génétique clinique est nécessaire pour
-          confirmer. Consultez un professionnel.
-        </p>
+        <div className="mb-1 flex items-center gap-2 font-semibold text-warn">
+          {tr(S.health.mustRead, lang)}
+        </div>
+        <p className="text-fg-muted">{tr(S.health.mustReadBody, lang)}</p>
       </div>
 
       {findings.map((f) => (
@@ -60,17 +59,19 @@ export function HealthSection({ findings, lang: _lang = "fr" }: HealthSectionPro
             subtitle={f.entry.condition}
             right={
               <div className="flex gap-2">
-                <Badge variant="danger">{SIG_LABEL[f.entry.sig] ?? f.entry.sig}</Badge>
+                <Badge variant="danger">{sigLabel(f.entry.sig, lang)}</Badge>
                 <Badge variant={f.zygosity === "alt/alt" ? "danger" : "warn"}>
-                  {f.zygosity === "alt/alt" ? "Homozygote" : "Hétérozygote"}
+                  {f.zygosity === "alt/alt"
+                    ? tr(S.health.zygHom, lang)
+                    : tr(S.health.zygHet, lang)}
                 </Badge>
               </div>
             }
           />
           <div className="grid gap-3 text-sm md:grid-cols-3">
-            <Info label="rsID" value={f.entry.rs} mono />
+            <Info label={tr(S.health.labelRsid, lang)} value={f.entry.rs} mono />
             <Info
-              label="Génotype observé"
+              label={tr(S.health.labelObserved, lang)}
               value={f.observed}
               mono
               right={
@@ -80,7 +81,7 @@ export function HealthSection({ findings, lang: _lang = "fr" }: HealthSectionPro
               }
             />
             <Info
-              label="Qualité review"
+              label={tr(S.health.labelReview, lang)}
               value={STARS[Math.min(f.entry.rev, 4)]}
               right={<span className="text-xs text-fg-muted">({f.entry.rev}/4)</span>}
             />
@@ -96,7 +97,7 @@ export function HealthSection({ findings, lang: _lang = "fr" }: HealthSectionPro
                 rel="noreferrer"
                 className="text-accent hover:underline"
               >
-                → Fiche ClinVar
+                {tr(S.health.linkClinvar, lang)}
               </a>
             )}
             {uniprotForGene(f.entry.gene) && (
@@ -107,7 +108,9 @@ export function HealthSection({ findings, lang: _lang = "fr" }: HealthSectionPro
                 }
                 className="text-accent hover:underline"
               >
-                {openGene === f.entry.gene ? "Masquer la structure 3D" : "→ Structure 3D (AlphaFold)"}
+                {openGene === f.entry.gene
+                  ? tr(S.health.link3dClose, lang)
+                  : tr(S.health.link3dOpen, lang)}
               </button>
             )}
           </div>

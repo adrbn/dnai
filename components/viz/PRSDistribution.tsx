@@ -13,6 +13,9 @@
  * - No library: pure SVG, matches the existing minimal viz style
  */
 
+import { S, tr, trTpl } from "@/lib/i18n/strings";
+import type { Lang } from "@/lib/i18n/lang";
+
 interface PRSDistributionProps {
   zScore: number;
   percentile: number;
@@ -20,6 +23,7 @@ interface PRSDistributionProps {
   label?: string;
   width?: number;
   height?: number;
+  lang?: Lang;
 }
 
 // Standard normal PDF — unnormalized is fine since we rescale by max.
@@ -31,10 +35,12 @@ export function PRSDistribution({
   zScore,
   percentile,
   color,
-  label = "Vous",
+  label,
   width = 360,
   height = 120,
+  lang = "fr",
 }: PRSDistributionProps) {
+  const resolvedLabel = label ?? tr(S.prs.distYou, lang);
   const zMin = -3.2;
   const zMax = 3.2;
   const padX = 6;
@@ -70,7 +76,7 @@ export function PRSDistribution({
     : "";
 
   const userX = xFor(clampedZ);
-  const markerLabel = `${Math.round(percentile)}ᵉ percentile`;
+  const markerLabel = trTpl(S.prs.percentileOrdinalTpl, lang, Math.round(percentile));
   const offLeft = clampedZ < -2.3;
   const offRight = clampedZ > 2.3;
 
@@ -81,7 +87,7 @@ export function PRSDistribution({
       height={height}
       className="block w-full"
       role="img"
-      aria-label={`Position relative à la population : ${markerLabel}`}
+      aria-label={`${tr(S.prs.distYou, lang)} · ${markerLabel}`}
     >
       {/* Axis line */}
       <line
@@ -125,7 +131,7 @@ export function PRSDistribution({
             textAnchor="middle"
             style={{ fontSize: 9, fill: "rgba(26,22,19,0.5)" }}
           >
-            {z === 0 ? "moyenne" : `${z > 0 ? "+" : ""}${z}σ`}
+            {z === 0 ? tr(S.prs.distMean, lang) : `${z > 0 ? "+" : ""}${z}σ`}
           </text>
         </g>
       ))}
@@ -145,7 +151,7 @@ export function PRSDistribution({
         textAnchor={offLeft ? "start" : offRight ? "end" : "middle"}
         style={{ fontSize: 10, fontWeight: 600, fill: color }}
       >
-        {label} · {markerLabel}
+        {resolvedLabel} · {markerLabel}
       </text>
     </svg>
   );

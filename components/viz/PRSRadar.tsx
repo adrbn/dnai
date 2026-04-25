@@ -1,10 +1,13 @@
 "use client";
 
 import type { PRSFinding } from "@/lib/types";
+import { S, tr } from "@/lib/i18n/strings";
+import type { Lang } from "@/lib/i18n/lang";
 
 interface PRSRadarProps {
   findings: PRSFinding[];
   size?: number;
+  lang?: Lang;
 }
 
 const CATEGORY_COLOR: Record<PRSFinding["rule"]["category"], string> = {
@@ -21,7 +24,7 @@ const CATEGORY_COLOR: Record<PRSFinding["rule"]["category"], string> = {
  * center encodes percentile. A dashed median ring at 50% gives a "you vs
  * population" reference at a glance.
  */
-export function PRSRadar({ findings, size = 320 }: PRSRadarProps) {
+export function PRSRadar({ findings, size = 320, lang = "fr" }: PRSRadarProps) {
   if (findings.length < 3) return null;
   // Pad room for the label ring (we place labels at 1.18 × r) plus a little
   // slack so long trait names like "Longévité exceptionnelle" don't get clipped.
@@ -122,7 +125,7 @@ export function PRSRadar({ findings, size = 320 }: PRSRadarProps) {
                 letterSpacing: 0.2,
               }}
             >
-              {truncate(f.rule.trait, 14)}
+              {truncate(traitFor(f, lang), 14)}
             </text>
           </g>
         );
@@ -142,7 +145,7 @@ export function PRSRadar({ findings, size = 320 }: PRSRadarProps) {
         textAnchor="middle"
         style={{ fontSize: 9, fill: "rgba(26,22,19,0.35)" }}
       >
-        médiane
+        {tr(S.prs.radarMedian, lang)}
       </text>
     </svg>
   );
@@ -150,4 +153,10 @@ export function PRSRadar({ findings, size = 320 }: PRSRadarProps) {
 
 function truncate(s: string, n: number): string {
   return s.length <= n ? s : `${s.slice(0, n - 1)}…`;
+}
+
+type RuleI18n = PRSFinding["rule"] & { traitEn?: string };
+function traitFor(f: PRSFinding, lang: Lang): string {
+  const r = f.rule as RuleI18n;
+  return lang === "en" && r.traitEn ? r.traitEn : r.trait;
 }

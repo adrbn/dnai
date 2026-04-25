@@ -10,15 +10,6 @@ import type { PRSFinding } from "@/lib/types";
 import { S, tr, trTpl } from "@/lib/i18n/strings";
 import type { Lang } from "@/lib/i18n/lang";
 
-const CATEGORY_LABEL: Record<PRSFinding["rule"]["category"], string> = {
-  metabolic: "Métabolique",
-  cardio: "Cardio",
-  neuro: "Neuro",
-  cancer: "Cancer",
-  anthropometric: "Morpho",
-  longevity: "Longévité",
-};
-
 const CATEGORY_COLOR: Record<PRSFinding["rule"]["category"], string> = {
   metabolic: "rgb(236 196 92)",
   cardio: "rgb(247 110 110)",
@@ -49,7 +40,7 @@ export function PRSSection({ findings, lang = "fr" }: PRSProps) {
     return (
       <Card>
         <div className="py-4 text-center text-sm text-fg-muted">
-          Aucun score polygénique calculé.
+          {tr(S.prs.empty, lang)}
         </div>
       </Card>
     );
@@ -63,7 +54,7 @@ export function PRSSection({ findings, lang = "fr" }: PRSProps) {
             title={tr(S.prs.radarTitle, lang)}
             subtitle={trTpl(S.prs.radarSubtitleTpl, lang, sorted.length)}
           />
-          <PRSRadar findings={sorted} />
+          <PRSRadar findings={sorted} lang={lang} />
         </Card>
       )}
 
@@ -71,19 +62,19 @@ export function PRSSection({ findings, lang = "fr" }: PRSProps) {
         <div className="rounded-xl border border-warn/30 bg-warn/5 p-4 text-sm">
           <div className="font-semibold text-warn">{tr(S.prs.disclaimerTitle, lang)}</div>
           <p className="mt-1 text-fg-muted">
-            {tr(S.prs.disclaimerBody, lang)} Les percentiles se lisent{" "}
-            <span className="text-fg">par rapport à une population de référence</span>{" "}
-            (HWE + fréquences alléliques européennes).
+            {tr(S.prs.disclaimerBody, lang)}{" "}
+            <span className="text-fg">{tr(S.prs.disclaimerReference, lang)}</span>
           </p>
         </div>
       </Card>
 
       {sorted.map((f) => {
-        const exp = explainPRS(f);
+        const exp = explainPRS(f, lang);
+        const trait = traitLabel(f, lang);
         return (
         <Card key={f.rule.id} className="md:col-span-6">
           <CardHeader
-            title={<span>{f.rule.trait}</span>}
+            title={<span>{trait}</span>}
             right={
               <div className="flex flex-wrap items-center gap-2">
                 <span
@@ -94,9 +85,9 @@ export function PRSSection({ findings, lang = "fr" }: PRSProps) {
                     background: `${CATEGORY_COLOR[f.rule.category]}12`,
                   }}
                 >
-                  {CATEGORY_LABEL[f.rule.category]}
+                  {tr(S.prs.categories[f.rule.category], lang)}
                 </span>
-                <RiskBadge p={f.percentile} />
+                <RiskBadge p={f.percentile} lang={lang} />
               </div>
             }
           />
@@ -106,13 +97,13 @@ export function PRSSection({ findings, lang = "fr" }: PRSProps) {
               zScore={f.zScore}
               percentile={f.percentile}
               color={CATEGORY_COLOR[f.rule.category]}
+              lang={lang}
             />
             <div className="mt-1 px-1 text-[10px] text-fg-muted">
-              Courbe = distribution du score dans la population de référence.
-              Votre position relative est marquée.
+              {tr(S.prs.distCaption, lang)}
             </div>
           </div>
-          <PercentileBar percentile={f.percentile} color={CATEGORY_COLOR[f.rule.category]} />
+          <PercentileBar percentile={f.percentile} color={CATEGORY_COLOR[f.rule.category]} lang={lang} />
           <div
             className="mt-4 rounded-lg border p-3 text-sm"
             style={{
@@ -121,7 +112,7 @@ export function PRSSection({ findings, lang = "fr" }: PRSProps) {
             }}
           >
             <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">
-              Ce que ça veut dire pour vous
+              {tr(S.prs.meansForYou, lang)}
             </div>
             <p className="mt-1 text-fg">{exp.meaning}</p>
             {exp.note && (
@@ -129,48 +120,44 @@ export function PRSSection({ findings, lang = "fr" }: PRSProps) {
             )}
           </div>
           <div className="mt-3 grid grid-cols-3 gap-2 text-[11px] text-fg-muted">
-            <Stat label="Percentile" value={`${f.percentile.toFixed(1)}%`} />
-            <Stat label="Z-score" value={f.zScore.toFixed(2)} />
+            <Stat label={tr(S.prs.statPercentile, lang)} value={`${f.percentile.toFixed(1)}%`} />
+            <Stat label={tr(S.prs.statZ, lang)} value={f.zScore.toFixed(2)} />
             <Stat
-              label="Couverture"
+              label={tr(S.prs.statCoverage, lang)}
               value={`${f.matched}/${f.total}`}
               tone={f.coverage < 0.5 ? "warn" : "ok"}
             />
           </div>
           <details className="mt-3 text-xs text-fg-muted">
             <summary className="cursor-pointer select-none text-accent hover:underline">
-              Détails techniques
+              {tr(S.prs.techDetails, lang)}
             </summary>
             <p className="mt-2">
-              <span className="text-fg-muted">Loci mesurés :</span> {f.rule.description}
+              <span className="text-fg-muted">{tr(S.prs.lociMeasured, lang)}</span>{" "}
+              {descriptionLabel(f, lang)}
             </p>
             <p className="mt-1">
-              <span className="text-fg-muted">Source :</span> {f.rule.source} ·{" "}
-              <span className="text-fg-muted">Unités :</span> {f.rule.units}
+              <span className="text-fg-muted">{tr(S.prs.sourceLabel, lang)}</span> {f.rule.source} ·{" "}
+              <span className="text-fg-muted">{tr(S.prs.unitsLabel, lang)}</span> {f.rule.units}
             </p>
-            <p className="mt-1">
-              Le <strong>z-score</strong> = écart standardisé par rapport à la moyenne
-              de la population ; le <strong>percentile</strong> traduit ce z en
-              classement sur 100. <strong>Couverture</strong> = SNPs du score
-              effectivement présents sur votre chip.
-            </p>
+            <p className="mt-1">{tr(S.prs.techExplain, lang)}</p>
           </details>
           <button
             type="button"
             onClick={() => setOpenId(openId === f.rule.id ? null : f.rule.id)}
             className="mt-3 text-xs text-accent hover:underline"
           >
-            {openId === f.rule.id ? "− Masquer les SNPs" : "+ Détail par SNP"}
+            {openId === f.rule.id ? tr(S.prs.hideSnps, lang) : tr(S.prs.showSnps, lang)}
           </button>
           {openId === f.rule.id && (
             <div className="mt-3 space-y-1 rounded-lg border border-border bg-surface-2/40 p-3 text-xs">
               <div className="grid grid-cols-12 gap-2 border-b border-border/50 pb-1 text-[10px] uppercase tracking-wider text-fg-muted">
-                <div className="col-span-3">rsID</div>
-                <div className="col-span-2">Effect</div>
-                <div className="col-span-2">Poids</div>
-                <div className="col-span-2">Observé</div>
-                <div className="col-span-1">Dose</div>
-                <div className="col-span-2 text-right">Contrib.</div>
+                <div className="col-span-3">{tr(S.prs.snpRsid, lang)}</div>
+                <div className="col-span-2">{tr(S.prs.snpEffect, lang)}</div>
+                <div className="col-span-2">{tr(S.prs.snpWeight, lang)}</div>
+                <div className="col-span-2">{tr(S.prs.snpObserved, lang)}</div>
+                <div className="col-span-1">{tr(S.prs.snpDose, lang)}</div>
+                <div className="col-span-2 text-right">{tr(S.prs.snpContrib, lang)}</div>
               </div>
               {f.contributors.map((c) => (
                 <div
@@ -195,7 +182,7 @@ export function PRSSection({ findings, lang = "fr" }: PRSProps) {
                 </div>
               ))}
               <div className="mt-2 pt-2 border-t border-border/50 text-[10px] text-fg-muted">
-                {f.rule.units} · source: {f.rule.source}
+                {f.rule.units} · {tr(S.prs.sourceLabel, lang)} {f.rule.source}
               </div>
             </div>
           )}
@@ -206,6 +193,21 @@ export function PRSSection({ findings, lang = "fr" }: PRSProps) {
   );
 }
 
+// Lookup helpers: PRS rules loaded from JSON may carry optional EN fields.
+type RuleWithI18n = PRSFinding["rule"] & { traitEn?: string; descriptionEn?: string };
+
+function traitLabel(f: PRSFinding, lang: Lang): string {
+  const rule = f.rule as RuleWithI18n;
+  if (lang === "en" && rule.traitEn) return rule.traitEn;
+  return rule.trait;
+}
+
+function descriptionLabel(f: PRSFinding, lang: Lang): string {
+  const rule = f.rule as RuleWithI18n;
+  if (lang === "en" && rule.descriptionEn) return rule.descriptionEn;
+  return rule.description;
+}
+
 function riskRank(p: number): number {
   if (p >= 90) return 3;
   if (p >= 75) return 2;
@@ -213,12 +215,12 @@ function riskRank(p: number): number {
   return 0;
 }
 
-function RiskBadge({ p }: { p: number }) {
-  if (p >= 90) return <Badge variant="danger">Très élevé</Badge>;
-  if (p >= 75) return <Badge variant="warn">Au-dessus moy.</Badge>;
-  if (p >= 25) return <Badge variant="neutral">Moyenne</Badge>;
-  if (p >= 10) return <Badge variant="ok">En dessous moy.</Badge>;
-  return <Badge variant="ok">Très bas</Badge>;
+function RiskBadge({ p, lang }: { p: number; lang: Lang }) {
+  if (p >= 90) return <Badge variant="danger">{tr(S.prs.bucketVeryHigh, lang)}</Badge>;
+  if (p >= 75) return <Badge variant="warn">{tr(S.prs.bucketAboveMean, lang)}</Badge>;
+  if (p >= 25) return <Badge variant="neutral">{tr(S.prs.bucketAverage, lang)}</Badge>;
+  if (p >= 10) return <Badge variant="ok">{tr(S.prs.bucketBelowMean, lang)}</Badge>;
+  return <Badge variant="ok">{tr(S.prs.bucketVeryLow, lang)}</Badge>;
 }
 
 function Stat({
@@ -242,9 +244,11 @@ function Stat({
 function PercentileBar({
   percentile,
   color,
+  lang,
 }: {
   percentile: number;
   color: string;
+  lang: Lang;
 }) {
   const p = Math.min(100, Math.max(0, percentile));
   return (
@@ -264,7 +268,7 @@ function PercentileBar({
         <div
           className="absolute inset-y-0 w-px bg-fg/40"
           style={{ left: "50%" }}
-          title="Médiane population"
+          title={tr(S.prs.medianPopulation, lang)}
         />
       </div>
       <div className="mt-1 flex justify-between text-[9px] uppercase tracking-wider text-fg-muted">

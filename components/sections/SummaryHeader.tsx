@@ -2,13 +2,17 @@
 
 import type { AnalysisResult } from "@/lib/types";
 import { sourceBadge, sourcePrimer } from "@/lib/source-copy";
+import { prsTraitName } from "@/lib/prs-label";
+import { S, tr, trTpl } from "@/lib/i18n/strings";
+import type { Lang } from "@/lib/i18n/lang";
 
 interface Props {
   result: AnalysisResult;
   active?: "overview" | "health" | "pharma" | "risk" | "traits" | "lookup" | "compare";
+  lang?: Lang;
 }
 
-export function SummaryHeader({ result, active }: Props) {
+export function SummaryHeader({ result, active, lang = "fr" }: Props) {
   const callRate =
     result.meta.totalSNPs === 0 ? 0 : 1 - result.meta.noCalls / result.meta.totalSNPs;
   const highRisk = result.prs.filter((p) => p.percentile >= 75).length;
@@ -28,48 +32,48 @@ export function SummaryHeader({ result, active }: Props) {
     fRoh: result.roh.fRoh,
   };
   const isOverview = active === "overview" || active === undefined;
-  const scopedPoints = isOverview ? [] : scopedConclusionPoints(stats, result, active);
+  const scopedPoints = isOverview ? [] : scopedConclusionPoints(stats, result, active, lang);
 
   const items: Item[] = [
     {
       key: "snps",
-      label: "SNPs",
+      label: tr(S.summary.tileSnps, lang),
       value: formatInt(result.meta.totalSNPs),
-      sub: `${(callRate * 100).toFixed(1)}% call`,
+      sub: `${(callRate * 100).toFixed(1)}% ${tr(S.summary.tileCall, lang)}`,
     },
     {
       key: "health",
-      label: "Santé (ClinVar)",
+      label: tr(S.summary.tileHealth, lang),
       value: result.clinvar.length,
       sub: "P / LP",
       tone: result.clinvar.length > 0 ? "danger" : "muted",
     },
     {
       key: "pharma",
-      label: "Pharmaco",
+      label: tr(S.summary.tilePharma, lang),
       value: result.pharma.byDrug.length,
-      sub: `${result.pharma.findings.length} règles`,
+      sub: `${result.pharma.findings.length} ${tr(S.summary.tilePharmaRules, lang)}`,
       tone: result.pharma.byDrug.length > 0 ? "warn" : "muted",
     },
     {
       key: "risk",
-      label: "PRS élevés",
+      label: tr(S.summary.tileRiskHigh, lang),
       value: highRisk,
-      sub: `${result.prs.length} évalués`,
+      sub: `${result.prs.length} ${tr(S.summary.tileRiskEval, lang)}`,
       tone: highRisk > 0 ? "warn" : "muted",
     },
     {
       key: "traits",
-      label: "Traits",
+      label: tr(S.summary.tileTraits, lang),
       value: `${traitsOk}/${result.traits.length}`,
-      sub: "déterminés",
+      sub: tr(S.summary.tileTraitsDet, lang),
       tone: "accent",
     },
     {
       key: "roh",
-      label: "F_ROH",
+      label: tr(S.summary.tileRoh, lang),
       value: `${(result.roh.fRoh * 100).toFixed(2)}%`,
-      sub: `${result.roh.totalSegments} segs`,
+      sub: `${result.roh.totalSegments} ${tr(S.summary.tileRohSegs, lang)}`,
       tone: result.roh.fRoh > 0.03 ? "warn" : "muted",
     },
   ];
@@ -89,27 +93,27 @@ export function SummaryHeader({ result, active }: Props) {
       >
         <ul className="space-y-1.5 text-sm">
           {scopedPoints.map((p, i) => (
-            <PointRow key={i} point={p} />
+            <PointRow key={i} point={p} lang={lang} />
           ))}
         </ul>
       </div>
     );
   }
 
-  const conclusion = overallConclusion(stats, result);
+  const conclusion = overallConclusion(stats, result, lang);
 
   return (
     <div className="mb-6 space-y-4">
       <div className="flex flex-wrap items-start justify-between gap-3 rounded-2xl border border-border bg-surface/50 px-4 py-3">
         <div className="flex-1 min-w-[240px] space-y-1">
           <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">
-            Votre fichier
+            {tr(S.summary.yourFile, lang)}
           </div>
           <div className="text-sm font-semibold text-fg">
-            {sourceBadge(result.meta.source, result.meta.totalSNPs)}
+            {sourceBadge(result.meta.source, result.meta.totalSNPs, lang)}
           </div>
           <p className="text-xs leading-relaxed text-fg-muted">
-            {sourcePrimer(result.meta.source, result.meta.totalSNPs)}
+            {sourcePrimer(result.meta.source, result.meta.totalSNPs, lang)}
           </p>
         </div>
       </div>
@@ -134,7 +138,7 @@ export function SummaryHeader({ result, active }: Props) {
           >
             {conclusion.headline}
           </div>
-          <div className="text-[10px] text-fg-muted/70">lecture par profane</div>
+          <div className="text-[10px] text-fg-muted/70">{tr(S.summary.laypersonRead, lang)}</div>
         </div>
         {conclusion.points.length === 0 && conclusion.fallback && (
           <p className="mt-2 text-sm leading-relaxed text-fg">{conclusion.fallback}</p>
@@ -142,13 +146,13 @@ export function SummaryHeader({ result, active }: Props) {
         {conclusion.points.length > 0 && (
           <ul className="mt-2.5 space-y-1.5 text-sm">
             {conclusion.points.map((p, i) => (
-              <PointRow key={i} point={p} />
+              <PointRow key={i} point={p} lang={lang} />
             ))}
           </ul>
         )}
         {conclusion.cta && (
           <p className="mt-3 border-t border-current/10 pt-2.5 text-sm leading-relaxed text-fg-muted">
-            <span className="font-semibold text-fg">À faire : </span>
+            <span className="font-semibold text-fg">{tr(S.summary.toDo, lang)} </span>
             {conclusion.cta}
           </p>
         )}
@@ -195,7 +199,7 @@ interface Conclusion {
   cta?: string;
 }
 
-function overallConclusion(s: Stats, result: AnalysisResult): Conclusion {
+function overallConclusion(s: Stats, result: AnalysisResult, lang: Lang): Conclusion {
   const hasClinvar = s.clinvar > 0;
   const hasCritical = s.criticalDrugs > 0;
   const hasRohHigh = s.fRoh >= 0.0625;
@@ -213,18 +217,19 @@ function overallConclusion(s: Stats, result: AnalysisResult): Conclusion {
   const criticalDrugs = criticalDrugsAll.slice(0, MAX);
   const prsVeryHigh = result.prs
     .filter((p) => p.percentile >= 90)
-    .map((p) => p.rule.trait);
+    .map((p) => prsTraitName(p, lang));
   const prsMild = result.prs
     .filter((p) => p.percentile >= 75 && p.percentile < 90)
-    .map((p) => p.rule.trait);
+    .map((p) => prsTraitName(p, lang));
 
   const points: ConclusionPoint[] = [];
+  const fRohStr = `${(s.fRoh * 100).toFixed(1)}%`;
 
   if (hasClinvar) {
     points.push({
       tone: "danger",
-      label: "Santé",
-      prefix: `${s.clinvar} variante${s.clinvar > 1 ? "s" : ""} pathogène${s.clinvar > 1 ? "s" : ""} —`,
+      label: tr(S.summary.labelHealth, lang),
+      prefix: trTpl(S.summary.pathogenicTpl, lang, s.clinvar),
       entities: clinvarNames,
       extraCount: clinvarAll.length - clinvarNames.length,
     });
@@ -233,16 +238,16 @@ function overallConclusion(s: Stats, result: AnalysisResult): Conclusion {
   if (hasCritical) {
     points.push({
       tone: "danger",
-      label: "Pharmaco",
-      prefix: "réaction critique à",
+      label: tr(S.summary.labelPharma, lang),
+      prefix: tr(S.summary.criticalReactionTo, lang),
       entities: criticalDrugs,
       extraCount: criticalDrugsAll.length - criticalDrugs.length,
     });
   } else if (hasPharmaMild) {
     points.push({
       tone: "warn",
-      label: "Pharmaco",
-      prefix: `${s.drugs} médicament${s.drugs > 1 ? "s" : ""} cité${s.drugs > 1 ? "s" : ""} dans la littérature`,
+      label: tr(S.summary.labelPharma, lang),
+      prefix: trTpl(S.summary.drugsCitedTpl, lang, s.drugs),
       entities: [],
     });
   }
@@ -250,15 +255,15 @@ function overallConclusion(s: Stats, result: AnalysisResult): Conclusion {
   if (hasPrsVeryHigh) {
     points.push({
       tone: "warn",
-      label: "Risque",
-      prefix: "score polygénique très élevé pour",
+      label: tr(S.summary.labelRisk, lang),
+      prefix: tr(S.summary.prsVeryHighFor, lang),
       entities: prsVeryHigh,
     });
   } else if (hasPrsMild) {
     points.push({
       tone: "warn",
-      label: "Risque",
-      prefix: "légèrement au-dessus de la moyenne pour",
+      label: tr(S.summary.labelRisk, lang),
+      prefix: tr(S.summary.prsMildFor, lang),
       entities: prsMild,
     });
   }
@@ -266,27 +271,27 @@ function overallConclusion(s: Stats, result: AnalysisResult): Conclusion {
   if (hasRohHigh) {
     points.push({
       tone: "danger",
-      label: "Parenté",
-      prefix: `parents probablement apparentés (F_ROH ${(s.fRoh * 100).toFixed(1)}%)`,
+      label: tr(S.summary.labelParente, lang),
+      prefix: trTpl(S.summary.rohHighTpl, lang, fRohStr),
       entities: [],
     });
   } else if (hasRohMid) {
     points.push({
       tone: "warn",
-      label: "Parenté",
-      prefix: `signal léger de cousinage dans la lignée (F_ROH ${(s.fRoh * 100).toFixed(1)}%)`,
+      label: tr(S.summary.labelParente, lang),
+      prefix: trTpl(S.summary.rohMildTpl, lang, fRohStr),
       entities: [],
     });
   }
 
   if (hasClinvar || hasCritical || hasRohHigh) {
     const ctas: string[] = [];
-    if (hasClinvar) ctas.push("consulter un généticien pour les variantes dominantes");
-    if (hasCritical) ctas.push("montrer la liste pharmaco à votre médecin avant prescription");
-    if (hasRohHigh) ctas.push("évoquer le F_ROH avec un médecin");
+    if (hasClinvar) ctas.push(tr(S.summary.ctaGenetic, lang));
+    if (hasCritical) ctas.push(tr(S.summary.ctaPharma, lang));
+    if (hasRohHigh) ctas.push(tr(S.summary.ctaRoh, lang));
     return {
       tone: "danger",
-      headline: "Points à discuter avec un médecin",
+      headline: tr(S.summary.headlineTalkToDoc, lang),
       points,
       cta: ctas.join(" · "),
     };
@@ -295,23 +300,22 @@ function overallConclusion(s: Stats, result: AnalysisResult): Conclusion {
   if (hasPrsVeryHigh || hasPharmaMild || hasPrsMild || hasRohMid) {
     return {
       tone: "warn",
-      headline: "Quelques points d'attention",
+      headline: tr(S.summary.headlineWatch, lang),
       points,
       cta: hasPrsVeryHigh
-        ? "ouvrir l'onglet Risque : chaque carte rouge détaille ce qu'il faut surveiller au quotidien"
+        ? tr(S.summary.ctaPrsHigh, lang)
         : hasPharmaMild
-          ? "mentionner cette liste à votre pharmacien/médecin lors d'une prescription concernée"
+          ? tr(S.summary.ctaPharmaMild, lang)
           : undefined,
     };
   }
 
   return {
     tone: "ok",
-    headline: "Bilan rassurant",
+    headline: tr(S.summary.headlineReassuring, lang),
     points: [],
-    fallback:
-      "Aucune variante pathogène, aucune alerte médicamenteuse, scores de risque dans la moyenne et pas de signe d'apparentement parental.",
-    cta: "rien de particulier à signaler — continuez d'entretenir votre santé",
+    fallback: tr(S.summary.fallbackOk, lang),
+    cta: tr(S.summary.ctaReassuring, lang),
   };
 }
 
@@ -326,7 +330,7 @@ function cleanLabel(raw: string): string {
   return trimmed;
 }
 
-function PointRow({ point }: { point: ConclusionPoint }) {
+function PointRow({ point, lang }: { point: ConclusionPoint; lang: Lang }) {
   const tagStyle =
     point.tone === "danger"
       ? "border-danger/40 bg-danger/10 text-danger"
@@ -342,7 +346,7 @@ function PointRow({ point }: { point: ConclusionPoint }) {
       </span>
       <span className="text-fg-muted">{point.prefix}</span>
       {point.entities.length > 0 && (
-        <span className="break-words font-semibold text-fg">{joinFr(point.entities)}</span>
+        <span className="break-words font-semibold text-fg">{joinList(point.entities, lang)}</span>
       )}
       {point.extraCount && point.extraCount > 0 ? (
         <span className="text-fg-muted/70">(+{point.extraCount})</span>
@@ -352,17 +356,19 @@ function PointRow({ point }: { point: ConclusionPoint }) {
   );
 }
 
-function joinFr(items: string[]): string {
+function joinList(items: string[], lang: Lang): string {
   if (items.length === 0) return "";
   if (items.length === 1) return items[0];
-  if (items.length === 2) return `${items[0]} et ${items[1]}`;
-  return `${items.slice(0, -1).join(", ")} et ${items[items.length - 1]}`;
+  const conj = lang === "en" ? "and" : "et";
+  if (items.length === 2) return `${items[0]} ${conj} ${items[1]}`;
+  return `${items.slice(0, -1).join(", ")} ${conj} ${items[items.length - 1]}`;
 }
 
 function scopedConclusionPoints(
   s: Stats,
   result: AnalysisResult,
   scope: Props["active"],
+  lang: Lang,
 ): ConclusionPoint[] {
   const MAX = 4;
   switch (scope) {
@@ -371,18 +377,21 @@ function scopedConclusionPoints(
         return [
           {
             tone: "accent",
-            label: "Santé",
-            prefix: "aucune variante pathogène dans la base curée",
+            label: tr(S.summary.labelHealth, lang),
+            prefix: tr(S.summary.noneInCuratedDb, lang),
             entities: [],
           },
         ];
       const names = result.clinvar.map((f) => cleanLabel(f.entry.condition || f.entry.gene));
       const shown = names.slice(0, MAX);
+      const prefix = lang === "en"
+        ? `${s.clinvar} P/LP variant${s.clinvar > 1 ? "s" : ""} for`
+        : `${s.clinvar} variante${s.clinvar > 1 ? "s" : ""} P/LP pour`;
       return [
         {
           tone: "danger",
-          label: "Santé",
-          prefix: `${s.clinvar} variante${s.clinvar > 1 ? "s" : ""} P/LP pour`,
+          label: tr(S.summary.labelHealth, lang),
+          prefix,
           entities: shown,
           extraCount: names.length - shown.length,
         },
@@ -393,8 +402,8 @@ function scopedConclusionPoints(
         return [
           {
             tone: "accent",
-            label: "Pharmaco",
-            prefix: "aucune alerte CPIC / DPWG",
+            label: tr(S.summary.labelPharma, lang),
+            prefix: tr(S.summary.noneCpicDpwg, lang),
             entities: [],
           },
         ];
@@ -406,11 +415,11 @@ function scopedConclusionPoints(
         const shown = critical.slice(0, MAX);
         points.push({
           tone: "danger",
-          label: "Pertinence haute",
-          prefix: "sensibilité documentée à",
+          label: tr(S.summary.labelHighRel, lang),
+          prefix: tr(S.summary.documentedSensitivityTo, lang),
           entities: shown,
           extraCount: critical.length - shown.length,
-          suffix: "— information à partager avec votre médecin",
+          suffix: tr(S.summary.shareWithDoctor, lang),
         });
       }
       const mild = result.pharma.byDrug
@@ -418,10 +427,13 @@ function scopedConclusionPoints(
         .map((d) => d.drug.toLowerCase());
       if (mild.length > 0) {
         const shown = mild.slice(0, MAX);
+        const prefix = lang === "en"
+          ? `${mild.length} drug${mild.length > 1 ? "s" : ""} cited in the literature:`
+          : `${mild.length} médicament${mild.length > 1 ? "s" : ""} cité${mild.length > 1 ? "s" : ""} dans la littérature :`;
         points.push({
           tone: "warn",
-          label: "Pertinence faible",
-          prefix: `${mild.length} médicament${mild.length > 1 ? "s" : ""} cité${mild.length > 1 ? "s" : ""} dans la littérature :`,
+          label: tr(S.summary.labelLowRel, lang),
+          prefix,
           entities: shown,
           extraCount: mild.length - shown.length,
         });
@@ -432,24 +444,24 @@ function scopedConclusionPoints(
       if (s.prsTotal === 0) return [];
       const veryHigh = result.prs
         .filter((p) => p.percentile >= 90)
-        .map((p) => p.rule.trait);
+        .map((p) => prsTraitName(p, lang));
       const mild = result.prs
         .filter((p) => p.percentile >= 75 && p.percentile < 90)
-        .map((p) => p.rule.trait);
+        .map((p) => prsTraitName(p, lang));
       const points: ConclusionPoint[] = [];
       if (veryHigh.length > 0) {
         points.push({
           tone: "warn",
-          label: "Top 10%",
-          prefix: "risque élevé pour",
+          label: tr(S.summary.labelTop10, lang),
+          prefix: tr(S.summary.prsHighRiskFor, lang),
           entities: veryHigh,
         });
       }
       if (mild.length > 0) {
         points.push({
           tone: "warn",
-          label: "> moyenne",
-          prefix: "légèrement élevé pour",
+          label: tr(S.summary.labelAboveAvg, lang),
+          prefix: tr(S.summary.prsMildHighFor, lang),
           entities: mild,
         });
       }
@@ -457,8 +469,8 @@ function scopedConclusionPoints(
         return [
           {
             tone: "accent",
-            label: "Risque",
-            prefix: `${s.prsTotal} scores dans la moyenne`,
+            label: tr(S.summary.labelRisk, lang),
+            prefix: trTpl(S.summary.prsInMeanTpl, lang, s.prsTotal),
             entities: [],
           },
         ];
@@ -470,8 +482,8 @@ function scopedConclusionPoints(
       return [
         {
           tone: "accent",
-          label: "Traits",
-          prefix: `${s.traitsOk}/${s.traitsTotal} déterminés${undetermined > 0 ? ` · ${undetermined} non-déterminés (SNPs absents de la puce)` : ""}`,
+          label: tr(S.summary.labelTraits, lang),
+          prefix: S.summary.traitsDeterminedTpl[lang](s.traitsOk, s.traitsTotal, undetermined),
           entities: [],
         },
       ];

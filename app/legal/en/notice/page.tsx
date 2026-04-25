@@ -17,7 +17,6 @@ export default function NoticeEnPage() {
         DNAI is a personal, non-commercial project operated by an individual.
       </p>
       <ul className="ml-5 list-disc space-y-1">
-        <li>Editorial lead: Adrien Bianca</li>
         <li>Contact: contact@dnai.health</li>
       </ul>
 

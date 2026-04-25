@@ -35,11 +35,11 @@ body {
   background: rgb(var(--accent) / 0.3);
 }
 
-/* Scrollbars */
-::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-track { background: rgb(var(--bg)); }
-::-webkit-scrollbar-thumb { background: rgb(var(--surface-2)); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: rgb(var(--border)); }
+/* Scrollbars — hidden (scrolling still works) */
+html { scrollbar-width: none; -ms-overflow-style: none; }
+*::-webkit-scrollbar { width: 0; height: 0; background: transparent; }
+*::-webkit-scrollbar-track,
+*::-webkit-scrollbar-thumb { background: transparent; }
 
 /* Clinical paper card (was "glass" — kept class name for compat) */
 .glass {

@@ -18,10 +18,12 @@ import {
   type PdfUserInfo,
 } from "@/components/ui/PdfOptionsModal";
 import { useAnalysis } from "@/lib/store/analysis";
+import { fullReset } from "@/lib/store/full-reset";
 import { exportJson } from "@/lib/export";
 import { DnaMark } from "@/components/ui/DnaMark";
 import { Paywall, useUnlockGate } from "@/components/Paywall";
 import { MedicalDisclaimerBanner } from "@/components/MedicalDisclaimerBanner";
+import { DataSourcesStrip } from "@/components/DataSourcesStrip";
 import { useLang, type Lang } from "@/lib/i18n/lang";
 
 type Tab = "overview" | "health" | "pharma" | "traits" | "risk" | "lookup" | "compare";
@@ -60,7 +62,7 @@ const CHROME: Record<Lang, {
 };
 
 export default function ReportPage() {
-  const { result, positions, genotypes, reset } = useAnalysis();
+  const { result, positions, genotypes } = useAnalysis();
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("overview");
   const [pdfModalOpen, setPdfModalOpen] = useState(false);
@@ -91,7 +93,7 @@ export default function ReportPage() {
   return (
     <main className="min-h-screen overflow-x-hidden bg-grid">
       <div className="no-print">
-        <MedicalDisclaimerBanner />
+        <MedicalDisclaimerBanner lang={lang} />
       </div>
       <nav className="sticky top-[34px] z-30 border-b border-border bg-paper/90 backdrop-blur-md no-print">
         <div className="mx-auto max-w-6xl px-4 py-3 sm:px-6">
@@ -132,7 +134,7 @@ export default function ReportPage() {
               <button
                 type="button"
                 onClick={() => {
-                  reset();
+                  fullReset();
                   router.push("/");
                 }}
                 className="inline-flex items-center whitespace-nowrap rounded-sm border border-border bg-surface px-3.5 py-2.5 text-xs text-ink/70 transition hover:border-oxblood hover:text-oxblood sm:px-4"
@@ -149,7 +151,7 @@ export default function ReportPage() {
       </nav>
 
       <div className="mx-auto max-w-6xl px-4 py-6 no-print sm:px-6 sm:py-8">
-        <SummaryHeader result={result} active={tab} />
+        <SummaryHeader result={result} active={tab} lang={lang} />
         <div className="animate-fade-in">
           {tab === "overview" && <OverviewSection result={result} positions={positions} lang={lang} />}
           {tab === "health" && <HealthSection findings={result.clinvar} lang={lang} />}
@@ -159,6 +161,7 @@ export default function ReportPage() {
           {tab === "lookup" && <LookupSection genotypes={genotypes} positions={positions} lang={lang} />}
           {tab === "compare" && <CompareSection result={result} genotypes={genotypes} lang={lang} />}
         </div>
+        <DataSourcesStrip lang={lang} />
       </div>
       <div className="print-only">
         <PrintReport result={result} info={pdfInfo} />
