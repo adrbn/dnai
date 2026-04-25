@@ -210,6 +210,17 @@ export const S = {
       fr: (n: number) => `${n} trait(s) indéterminé(s) — rsID manquant ou génotype non reconnu`,
       en: (n: number) => `${n} indeterminate trait(s) — rsID missing or genotype not recognised`,
     },
+    confHigh: { fr: "Fiable", en: "Reliable" },
+    confMedium: { fr: "Moyen", en: "Medium" },
+    confLow: { fr: "Indicatif", en: "Indicative" },
+    avatarBody: {
+      fr: "L'avatar combine six traits : couleur des yeux (HERC2), pilosité MC1R, tendance aux taches de rousseur, type de cérumen (ABCC11), perception savonneuse de la coriandre (OR6A2) et sensibilité aux amers (TAS2R38).",
+      en: "The avatar combines six traits: eye colour (HERC2), MC1R hair pigment, freckle propensity, earwax type (ABCC11), soapy-cilantro perception (OR6A2) and bitter-taste sensitivity (TAS2R38).",
+    },
+    avatarCaveat: {
+      fr: "Les variants affichés sont probabilistes — la couleur des yeux et la rousseur dépendent de dizaines d'autres loci. Cet avatar est une illustration, pas une prédiction médicale.",
+      en: "Displayed variants are probabilistic — eye colour and red hair depend on dozens of other loci. This avatar is an illustration, not a medical prediction.",
+    },
   },
 
   // Lookup

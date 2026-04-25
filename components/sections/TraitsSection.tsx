@@ -71,14 +71,18 @@ const APPEARANCE_IDS = new Set([
   "male_pattern_baldness_proxy",
 ]);
 
-function TraitCard({ f }: { f: TraitFinding }) {
+function TraitCard({ f, lang }: { f: TraitFinding; lang: Lang }) {
+  const confLabel =
+    f.rule.confidence === "high"
+      ? tr(S.traits.confHigh, lang)
+      : f.rule.confidence === "medium"
+        ? tr(S.traits.confMedium, lang)
+        : tr(S.traits.confLow, lang);
   return (
     <Card className="group transition hover:-translate-y-0.5 hover:border-accent/40">
       <div className="flex items-start justify-between gap-3">
         <div className="text-3xl">{EMOJI_BY_ID[f.rule.id] ?? "🧬"}</div>
-        <Badge variant={CONFIDENCE_VAR[f.rule.confidence]}>
-          {f.rule.confidence === "high" ? "Fiable" : f.rule.confidence === "medium" ? "Moyen" : "Indicatif"}
-        </Badge>
+        <Badge variant={CONFIDENCE_VAR[f.rule.confidence]}>{confLabel}</Badge>
       </div>
       <h3 className="mt-3 text-base font-semibold tracking-tight">{f.rule.title}</h3>
       <div className="mt-1 text-xs font-mono text-fg-muted">{f.rule.gene}</div>
@@ -116,16 +120,8 @@ export function TraitsSection({ findings, lang = "fr" }: TraitsSectionProps) {
           <div className="mt-2 grid items-center gap-6 md:grid-cols-[auto_1fr]">
             <TraitsAvatar findings={determined} />
             <div className="text-sm text-fg-muted">
-              <p>
-                L&apos;avatar combine six traits : couleur des yeux (HERC2), pilosité MC1R,
-                tendance aux taches de rousseur, type de cérumen (ABCC11), perception
-                savonneuse de la coriandre (OR6A2) et sensibilité aux amers (TAS2R38).
-              </p>
-              <p className="mt-2 text-xs">
-                Les variants affichés sont probabilistes — la couleur des yeux et la rousseur
-                dépendent de dizaines d&apos;autres loci. Cet avatar est une illustration,
-                pas une prédiction médicale.
-              </p>
+              <p>{tr(S.traits.avatarBody, lang)}</p>
+              <p className="mt-2 text-xs">{tr(S.traits.avatarCaveat, lang)}</p>
             </div>
           </div>
         </Card>
@@ -139,7 +135,7 @@ export function TraitsSection({ findings, lang = "fr" }: TraitsSectionProps) {
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {appearance.map((f) => (
-              <TraitCard key={f.rule.id} f={f} />
+              <TraitCard key={f.rule.id} f={f} lang={lang} />
             ))}
           </div>
         </div>
@@ -153,7 +149,7 @@ export function TraitsSection({ findings, lang = "fr" }: TraitsSectionProps) {
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {nutrition.map((f) => (
-              <TraitCard key={f.rule.id} f={f} />
+              <TraitCard key={f.rule.id} f={f} lang={lang} />
             ))}
           </div>
         </div>
@@ -167,7 +163,7 @@ export function TraitsSection({ findings, lang = "fr" }: TraitsSectionProps) {
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {other.map((f) => (
-              <TraitCard key={f.rule.id} f={f} />
+              <TraitCard key={f.rule.id} f={f} lang={lang} />
             ))}
           </div>
         </div>
