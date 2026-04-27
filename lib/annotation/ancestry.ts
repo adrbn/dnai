@@ -52,6 +52,18 @@ const REGION_LABEL: Record<AncestryComponent["region"], string> = {
   AMR: "Amériques",
 };
 
+export const REGION_LABEL_I18N: Record<AncestryComponent["region"], { fr: string; en: string }> = {
+  AFR: { fr: "Afrique sub-saharienne", en: "Sub-Saharan Africa" },
+  EUR: { fr: "Europe", en: "Europe" },
+  EAS: { fr: "Asie de l'Est", en: "East Asia" },
+  SAS: { fr: "Asie du Sud", en: "South Asia" },
+  AMR: { fr: "Amériques", en: "Americas" },
+};
+
+export function regionLabel(region: AncestryComponent["region"], lang: "fr" | "en"): string {
+  return REGION_LABEL_I18N[region][lang];
+}
+
 function dosage(a1: Base, a2: Base, alt: Base): number {
   return (a1 === alt ? 1 : 0) + (a2 === alt ? 1 : 0);
 }

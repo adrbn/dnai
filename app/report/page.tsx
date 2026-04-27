@@ -122,25 +122,25 @@ export default function ReportPage() {
               <TabList tabs={tabs} active={tab} onSelect={setTab} />
             </div>
 
-            <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+            <div className="flex shrink-0 items-center gap-1 sm:gap-2">
               <LangToggle lang={lang} onChange={setLang} />
               <Link
                 href="/story"
-                className="inline-flex items-center whitespace-nowrap rounded-sm border border-ink bg-ink px-3.5 py-2.5 text-xs font-medium text-paper transition hover:bg-ink/90 sm:px-4"
+                className="inline-flex items-center whitespace-nowrap rounded-sm border border-ink bg-ink px-2.5 py-2 text-[11px] font-medium text-paper transition hover:bg-ink/90 sm:px-4 sm:py-2.5 sm:text-xs"
               >
                 {chrome.story}
               </Link>
               <button
                 type="button"
                 onClick={() => exportJson(result)}
-                className="inline-flex items-center whitespace-nowrap rounded-sm border border-border bg-surface px-3.5 py-2.5 text-xs text-ink/70 transition hover:border-ink hover:text-ink sm:px-4"
+                className="hidden sm:inline-flex items-center whitespace-nowrap rounded-sm border border-border bg-surface px-3.5 py-2.5 text-xs text-ink/70 transition hover:border-ink hover:text-ink sm:px-4"
               >
                 JSON
               </button>
               <button
                 type="button"
                 onClick={() => setPdfModalOpen(true)}
-                className="inline-flex items-center whitespace-nowrap rounded-sm border border-border bg-surface px-3.5 py-2.5 text-xs text-ink/70 transition hover:border-ink hover:text-ink sm:px-4"
+                className="inline-flex items-center whitespace-nowrap rounded-sm border border-border bg-surface px-2.5 py-2 text-[11px] text-ink/70 transition hover:border-ink hover:text-ink sm:px-4 sm:py-2.5 sm:text-xs"
               >
                 PDF
               </button>
@@ -151,7 +151,8 @@ export default function ReportPage() {
                   fullReset();
                   router.push("/");
                 }}
-                className="inline-flex items-center whitespace-nowrap rounded-sm border border-border bg-surface px-3.5 py-2.5 text-xs text-ink/70 transition hover:border-oxblood hover:text-oxblood sm:px-4"
+                className="hidden sm:inline-flex items-center whitespace-nowrap rounded-sm border border-border bg-surface px-3.5 py-2.5 text-xs text-ink/70 transition hover:border-oxblood hover:text-oxblood sm:px-4"
+                aria-label={chrome.reset}
               >
                 {chrome.reset}
               </button>

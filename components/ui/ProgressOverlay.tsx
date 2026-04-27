@@ -74,7 +74,7 @@ export function ProgressOverlay({ onRetry, onDismiss }: ProgressOverlayProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-bg/85 backdrop-blur-lg">
+    <div className="fixed inset-0 z-[70] flex min-h-screen min-h-[100dvh] w-screen items-center justify-center bg-bg/85 backdrop-blur-lg">
       <div className="glass w-[min(90vw,460px)] rounded-2xl p-8 text-center">
         <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center">
           <span className="relative flex h-3 w-3">

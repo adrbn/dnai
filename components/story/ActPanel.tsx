@@ -8,6 +8,7 @@ import { HaplogroupTree } from "./HaplogroupTree";
 import { AncestryTree3D } from "./AncestryTree3D";
 import { ClinicalNote } from "@/components/ClinicalNote";
 import { explainClinVarFinding, prettyCondition } from "@/lib/annotation/clinvar-explain";
+import { regionLabel } from "@/lib/annotation/ancestry";
 import type { Lang } from "@/lib/i18n/lang";
 
 const DRUG_EN: Record<string, string> = {
@@ -783,12 +784,12 @@ function AncestryBody({ act, lang }: { act: Extract<Act, { kind: "ancestry" }>; 
     <>
       <h2 className="font-serif text-[28px] font-medium tracking-[-0.01em] sm:text-[34px]">{c.title}</h2>
       <p className="mt-2 text-[13px] leading-relaxed text-ink/70">
-        {c.bodyTpl(a.total, a.matched, coveragePct, top.label, top.percent.toFixed(1))}{" "}
-        <strong className="text-ink">{top.label}</strong>
-        {c.bodyTail(top.label, top.percent.toFixed(1))}
+        {c.bodyTpl(a.total, a.matched, coveragePct, regionLabel(top.region, lang), top.percent.toFixed(1))}{" "}
+        <strong className="text-ink">{regionLabel(top.region, lang)}</strong>
+        {c.bodyTail(regionLabel(top.region, lang), top.percent.toFixed(1))}
       </p>
 
-      <WorldAncestryMap ancestry={a} />
+      <WorldAncestryMap ancestry={a} lang={lang} />
 
       {/* Contextual detail block */}
       <div className="mt-4 rounded-sm border border-ink/10 bg-ink/[0.03] p-4 text-[12.5px] leading-relaxed text-ink/75">
@@ -801,7 +802,7 @@ function AncestryBody({ act, lang }: { act: Extract<Act, { kind: "ancestry" }>; 
             {c.secondaryLabel}{" "}
             {secondary.map((s, i) => (
               <span key={s.region}>
-                <strong className="text-ink">{s.label}</strong> ({s.percent.toFixed(1)}%)
+                <strong className="text-ink">{regionLabel(s.region, lang)}</strong> ({s.percent.toFixed(1)}%)
                 {i < secondary.length - 1 ? ", " : ""}
               </span>
             ))}

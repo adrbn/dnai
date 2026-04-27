@@ -5,6 +5,8 @@ import { geoEqualEarth, geoPath, geoGraticule10 } from "d3-geo";
 import { feature } from "topojson-client";
 import worldTopo from "world-atlas/countries-110m.json";
 import type { AncestryComponent, AncestryResult } from "@/lib/types";
+import { regionLabel } from "@/lib/annotation/ancestry";
+import type { Lang } from "@/lib/i18n/lang";
 
 type Region = AncestryComponent["region"];
 
@@ -50,7 +52,7 @@ const REGION_COLOR: Record<Region, string> = {
   AMR: "#3a7d52",
 };
 
-export function WorldAncestryMap({ ancestry }: { ancestry: AncestryResult }) {
+export function WorldAncestryMap({ ancestry, lang = "fr" }: { ancestry: AncestryResult; lang?: Lang }) {
   const ordered = useMemo(
     () => [...ancestry.components].sort((a, b) => a.percent - b.percent),
     [ancestry.components],
@@ -74,7 +76,7 @@ export function WorldAncestryMap({ ancestry }: { ancestry: AncestryResult }) {
         className="block h-auto w-full"
         xmlns="http://www.w3.org/2000/svg"
         role="img"
-        aria-label={`Carte des origines — ${top.label} ${top.percent.toFixed(1)}%`}
+        aria-label={`${lang === "en" ? "Ancestry map" : "Carte des origines"} — ${regionLabel(top.region, lang)} ${top.percent.toFixed(1)}%`}
       >
         <defs>
           {(Object.keys(REGION_COLOR) as Region[]).map((r) => (
@@ -170,7 +172,7 @@ export function WorldAncestryMap({ ancestry }: { ancestry: AncestryResult }) {
                 fontSize="9"
                 fill="rgba(26,22,19,0.6)"
               >
-                {top.label.toUpperCase()}
+                {regionLabel(top.region, lang).toUpperCase()}
               </text>
             </g>
           );
@@ -186,7 +188,7 @@ export function WorldAncestryMap({ ancestry }: { ancestry: AncestryResult }) {
                 className="inline-block h-2.5 w-2.5 rounded-full"
                 style={{ background: REGION_COLOR[c.region] }}
               />
-              <span className="text-ink/75">{c.label}</span>
+              <span className="text-ink/75">{regionLabel(c.region, lang)}</span>
             </div>
             <span className="font-mono tabular-nums text-ink/90">{c.percent.toFixed(1)}%</span>
           </div>
