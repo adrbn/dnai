@@ -3,6 +3,7 @@
 import type { AnalysisResult } from "@/lib/types";
 import { sourceBadge, sourcePrimer } from "@/lib/source-copy";
 import { prsTraitName } from "@/lib/prs-label";
+import { drugName } from "@/lib/drug-label";
 import { S, tr, trTpl } from "@/lib/i18n/strings";
 import type { Lang } from "@/lib/i18n/lang";
 
@@ -382,7 +383,13 @@ function scopedConclusionPoints(
             entities: [],
           },
         ];
-      const names = result.clinvar.map((f) => cleanLabel(f.entry.condition || f.entry.gene));
+      const names = result.clinvar.map((f) =>
+        cleanLabel(
+          (lang === "en" ? f.entry.condition_en : f.entry.condition) ||
+            f.entry.condition ||
+            f.entry.gene,
+        ),
+      );
       const shown = names.slice(0, MAX);
       const prefix = lang === "en"
         ? `${s.clinvar} P/LP variant${s.clinvar > 1 ? "s" : ""} for`
@@ -411,7 +418,7 @@ function scopedConclusionPoints(
       if (s.criticalDrugs > 0) {
         const critical = result.pharma.byDrug
           .filter((d) => d.severity === "high")
-          .map((d) => d.drug.toLowerCase());
+          .map((d) => drugName(d.drug.toLowerCase(), lang));
         const shown = critical.slice(0, MAX);
         points.push({
           tone: "danger",
@@ -424,7 +431,7 @@ function scopedConclusionPoints(
       }
       const mild = result.pharma.byDrug
         .filter((d) => d.severity !== "high")
-        .map((d) => d.drug.toLowerCase());
+        .map((d) => drugName(d.drug.toLowerCase(), lang));
       if (mild.length > 0) {
         const shown = mild.slice(0, MAX);
         const prefix = lang === "en"

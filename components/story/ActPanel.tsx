@@ -11,60 +11,7 @@ import { explainClinVarFinding, prettyCondition } from "@/lib/annotation/clinvar
 import { regionLabel } from "@/lib/annotation/ancestry";
 import type { Lang } from "@/lib/i18n/lang";
 
-const DRUG_EN: Record<string, string> = {
-  "abacavir": "abacavir",
-  "acide folique": "folic acid",
-  "acénocoumarol": "acenocoumarol",
-  "allopurinol": "allopurinol",
-  "atazanavir": "atazanavir",
-  "atorvastatine": "atorvastatin",
-  "azathioprine": "azathioprine",
-  "caféine": "caffeine",
-  "capécitabine": "capecitabine",
-  "carbamazépine": "carbamazepine",
-  "citalopram": "citalopram",
-  "clopidogrel": "clopidogrel",
-  "clozapine": "clozapine",
-  "codéine": "codeine",
-  "contraceptifs œstroprogestatifs": "combined oral contraceptives",
-  "célécoxib": "celecoxib",
-  "dapsone": "dapsone",
-  "escitalopram": "escitalopram",
-  "flucloxacilline": "flucloxacillin",
-  "fluorouracile": "fluorouracil",
-  "irinotécan": "irinotecan",
-  "isoniazide": "isoniazid",
-  "lévodopa": "levodopa",
-  "mercaptopurine": "mercaptopurine",
-  "morphine": "morphine",
-  "méthotrexate": "methotrexate",
-  "métoprolol": "metoprolol",
-  "naltrexone": "naltrexone",
-  "nortriptyline": "nortriptyline",
-  "oméprazole": "omeprazole",
-  "oxcarbazépine": "oxcarbazepine",
-  "paroxétine": "paroxetine",
-  "phénytoïne": "phenytoin",
-  "primaquine": "primaquine",
-  "péginterféron α / ribavirine": "peginterferon α / ribavirin",
-  "rasburicase": "rasburicase",
-  "rosuvastatine": "rosuvastatin",
-  "simvastatine": "simvastatin",
-  "sulfaméthoxazole": "sulfamethoxazole",
-  "sulfasalazine": "sulfasalazine",
-  "tacrolimus": "tacrolimus",
-  "tamoxifène": "tamoxifen",
-  "théophylline": "theophylline",
-  "traitement hormonal ménopause": "menopausal hormone therapy",
-  "tramadol": "tramadol",
-  "voriconazole": "voriconazole",
-  "warfarine": "warfarin",
-};
-
-function drugName(drug: string, lang: Lang): string {
-  if (lang === "fr") return drug;
-  return DRUG_EN[drug.toLowerCase()] ?? drug;
-}
+import { drugName } from "@/lib/drug-label";
 
 const SEV_COLOR = {
   high: "text-oxblood border-oxblood/40 bg-oxblood/8",

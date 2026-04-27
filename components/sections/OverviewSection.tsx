@@ -9,6 +9,7 @@ import type { AnalysisResult, PharmaByDrug, PositionIndex } from "@/lib/types";
 import { S, tr, trTpl } from "@/lib/i18n/strings";
 import type { Lang } from "@/lib/i18n/lang";
 import { prsTraitName } from "@/lib/prs-label";
+import { drugName } from "@/lib/drug-label";
 
 interface OverviewSectionProps {
   result: AnalysisResult;
@@ -70,7 +71,7 @@ export function OverviewSection({ result, positions, lang = "fr" }: OverviewSect
           emptyLabel={tr(S.overview.healthEmpty, lang)}
           items={topClinvar.map((f) => ({
             key: f.entry.rs,
-            primary: cleanLabel(f.entry.condition) || f.entry.gene,
+            primary: cleanLabel((lang === "en" ? f.entry.condition_en : f.entry.condition) || f.entry.condition) || f.entry.gene,
             secondary: `${f.entry.gene} · ${f.entry.rs} · ${f.observed}`,
             level: f.entry.sig === "P" ? "critical" : "high",
             tag: f.entry.sig === "P" ? "P" : "LP",
@@ -88,7 +89,7 @@ export function OverviewSection({ result, positions, lang = "fr" }: OverviewSect
           emptyLabel={tr(S.overview.pharmaEmpty, lang)}
           items={topPharma.map((d) => ({
             key: d.drug,
-            primary: d.drug,
+            primary: drugName(d.drug, lang),
             secondary: d.contributors
               .map((c) => `${c.gene} ${c.phenotype}`)
               .slice(0, 2)
