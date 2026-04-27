@@ -106,6 +106,14 @@ export const S = {
       fr: "régions où toutes les positions génotypées sont homozygotes. Leur longueur totale divisée par le génome autosomique (~2,88 Gb) donne un estimateur de consanguinité F_ROH. Signal brut : la plupart des segments proviennent simplement de déséquilibres de liaison dans la population, non d'un apparentement parental.",
       en: "regions where all genotyped positions are homozygous. Their total length divided by the autosomal genome (~2.88 Gb) gives an inbreeding estimator F_ROH. Raw signal: most segments simply come from linkage disequilibrium in the population, not parental relatedness.",
     },
+    consanguinityTitle: {
+      fr: "Ce que ça veut dire en clair",
+      en: "What this actually means",
+    },
+    consanguinityBody: {
+      fr: "F_ROH mesure la fraction de votre génome où les deux copies (paternelle et maternelle) sont identiques sur de longs segments — c'est-à-dire héritées d'un ancêtre commun par vos deux parents. Plus la valeur est haute, plus vos parents biologiques sont génétiquement apparentés (consanguinité). Repères : ≈ 1,56 % pour des cousins au 3ᵉ degré, ≈ 3,1 % pour des cousins au 2ᵉ degré, ≈ 6,25 % pour des cousins germains (1ᵉʳ degré). En dessous de 1,5 %, le signal s'explique surtout par le passé démographique de votre population, pas par un apparentement entre vos parents.",
+      en: "F_ROH measures the fraction of your genome where both copies (paternal and maternal) are identical across long stretches — meaning inherited from a common ancestor through both parents. The higher it is, the more genetically related your biological parents are (consanguinity). Reference points: ≈ 1.56% for third cousins, ≈ 3.1% for second cousins, ≈ 6.25% for first cousins. Below 1.5%, the signal mostly reflects your population's demographic history, not parental relatedness.",
+    },
   },
 
   // Density heatmap

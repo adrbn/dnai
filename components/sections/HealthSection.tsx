@@ -5,6 +5,10 @@ import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { ProteinViewer } from "@/components/viz/ProteinViewer";
 import { SectionDisclaimer } from "@/components/SectionDisclaimer";
+import { SectionPrimer } from "@/components/SectionPrimer";
+import { ClinicalNote } from "@/components/ClinicalNote";
+import { HealthFindingExplain } from "@/components/HealthFindingExplain";
+import { prettyCondition } from "@/lib/annotation/clinvar-explain";
 import { uniprotForGene } from "@/lib/gene-uniprot";
 import type { ClinVarFinding } from "@/lib/types";
 import { S, tr } from "@/lib/i18n/strings";
@@ -44,6 +48,7 @@ export function HealthSection({ findings, lang = "fr" }: HealthSectionProps) {
 
   return (
     <div className="space-y-4">
+      <SectionPrimer kind="health" lang={lang} />
       <SectionDisclaimer kind="health" lang={lang} />
       <div className="rounded-xl border border-warn/30 bg-warn/5 p-4 text-sm">
         <div className="mb-1 flex items-center gap-2 font-semibold text-warn">
@@ -56,7 +61,7 @@ export function HealthSection({ findings, lang = "fr" }: HealthSectionProps) {
         <Card key={f.entry.rs}>
           <CardHeader
             title={f.entry.gene}
-            subtitle={f.entry.condition}
+            subtitle={prettyCondition(lang === "en" ? f.entry.condition_en ?? f.entry.condition : f.entry.condition, lang)}
             right={
               <div className="flex gap-2">
                 <Badge variant="danger">{sigLabel(f.entry.sig, lang)}</Badge>
@@ -87,8 +92,15 @@ export function HealthSection({ findings, lang = "fr" }: HealthSectionProps) {
             />
           </div>
           {f.entry.note && (
-            <p className="mt-3 text-sm text-fg-muted">{f.entry.note}</p>
+            <div className="mt-3">
+              <ClinicalNote
+                text={lang === "en" ? f.entry.note_en ?? f.entry.note : f.entry.note}
+                bodyClassName="text-sm text-fg-muted"
+                lang={lang}
+              />
+            </div>
           )}
+          <HealthFindingExplain finding={f} lang={lang} />
           <div className="mt-3 flex flex-wrap gap-3 text-xs">
             {f.entry.href && (
               <a

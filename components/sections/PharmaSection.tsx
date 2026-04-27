@@ -1,11 +1,15 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { DrugSunburst } from "@/components/viz/DrugSunburst";
 import { ProteinViewer } from "@/components/viz/ProteinViewer";
+import { MoleculeViewer } from "@/components/viz/MoleculeViewer";
 import { SectionDisclaimer } from "@/components/SectionDisclaimer";
+import { SectionPrimer } from "@/components/SectionPrimer";
+import { ClinicalNote } from "@/components/ClinicalNote";
+import { splitClinicalNote } from "@/lib/disclaimer-split";
 import { uniprotForGene } from "@/lib/gene-uniprot";
 import type { PharmaByDrug, Severity } from "@/lib/types";
 import { S, tr, trTpl } from "@/lib/i18n/strings";
@@ -31,11 +35,18 @@ function sevLabel(s: Severity, lang: Lang): string {
 export function PharmaSection({ byDrug, lang = "fr" }: PharmaSectionProps) {
   const [selected, setSelected] = useState<string | null>(null);
   const [openGene, setOpenGene] = useState<string | null>(null);
+  const [showMolecule, setShowMolecule] = useState(false);
 
   const selectedDrug = useMemo(
     () => byDrug.find((d) => d.drug === selected) ?? byDrug[0] ?? null,
     [byDrug, selected],
   );
+
+  // Close the molecule viewer when the user picks a different drug.
+  // Otherwise the iframe re-renders for the new INN but the toggle UX feels stale.
+  useEffect(() => {
+    setShowMolecule(false);
+  }, [selectedDrug?.drug]);
 
   if (byDrug.length === 0) {
     return (
@@ -52,6 +63,7 @@ export function PharmaSection({ byDrug, lang = "fr" }: PharmaSectionProps) {
   return (
     <div className="grid gap-6 md:grid-cols-12">
       <div className="md:col-span-12">
+        <SectionPrimer kind="pharma" lang={lang} />
         <SectionDisclaimer kind="pharma" lang={lang} />
       </div>
       <Card className="md:col-span-5">
@@ -72,18 +84,46 @@ export function PharmaSection({ byDrug, lang = "fr" }: PharmaSectionProps) {
       <Card className="md:col-span-7">
         <CardHeader
           title={selectedDrug?.drug ?? "—"}
-          subtitle={selectedDrug?.drug_class ?? ""}
+          subtitle={
+            (lang === "en"
+              ? selectedDrug?.drug_class_en ?? selectedDrug?.drug_class
+              : selectedDrug?.drug_class) ?? ""
+          }
           right={
             selectedDrug && (
-              <Badge variant={SEV_VARIANT[selectedDrug.severity]}>
-                {sevLabel(selectedDrug.severity, lang)}
-              </Badge>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowMolecule((v) => !v)}
+                  className="rounded-md border border-border bg-surface px-2 py-1 text-[11px] font-medium text-accent hover:border-accent hover:bg-accent/10"
+                  title={lang === "en" ? "View 3D molecule" : "Voir la molécule en 3D"}
+                >
+                  {showMolecule ? "✕ 3D" : "🧪 3D"}
+                </button>
+                <Badge variant={SEV_VARIANT[selectedDrug.severity]}>
+                  {sevLabel(selectedDrug.severity, lang)}
+                </Badge>
+              </div>
             )
           }
         />
+        {selectedDrug && showMolecule && (
+          <div className="mb-4">
+            <MoleculeViewer
+              drug={selectedDrug.drug}
+              onClose={() => setShowMolecule(false)}
+            />
+          </div>
+        )}
         {selectedDrug && (
           <>
-            <p className="mb-4 text-sm leading-relaxed text-fg first-letter:uppercase">{selectedDrug.effect}</p>
+            <div className="mb-4">
+              <ClinicalNote
+                text={lang === "en" ? selectedDrug.effect_en ?? selectedDrug.effect : selectedDrug.effect}
+                bodyClassName="text-sm leading-relaxed text-fg first-letter:uppercase"
+                lang={lang}
+              />
+            </div>
             <div className="mb-2 text-xs uppercase tracking-wider text-fg-muted">
               {tr(S.pharma.contributorsTitle, lang)}
             </div>
@@ -95,7 +135,7 @@ export function PharmaSection({ byDrug, lang = "fr" }: PharmaSectionProps) {
                     <div className="flex items-center justify-between">
                       <div>
                         <span className="font-mono text-accent">{c.gene}</span>
-                        <span className="ml-2 text-fg-muted">{c.phenotype}</span>
+                        <span className="ml-2 text-fg-muted">{lang === "en" ? c.phenotype_en ?? c.phenotype : c.phenotype}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Badge
@@ -162,8 +202,8 @@ export function PharmaSection({ byDrug, lang = "fr" }: PharmaSectionProps) {
                   }`}
                 >
                   <td className="py-2 pr-2 font-medium capitalize break-words">{d.drug}</td>
-                  <td className="hidden text-fg-muted first-letter:uppercase sm:table-cell">{d.drug_class ?? "—"}</td>
-                  <td className="hidden max-w-[360px] truncate text-fg-muted first-letter:uppercase sm:table-cell">{d.effect}</td>
+                  <td className="hidden text-fg-muted first-letter:uppercase sm:table-cell">{(lang === "en" ? d.drug_class_en ?? d.drug_class : d.drug_class) ?? "—"}</td>
+                  <td className="hidden max-w-[360px] truncate text-fg-muted first-letter:uppercase sm:table-cell">{splitClinicalNote(lang === "en" ? d.effect_en ?? d.effect : d.effect, lang).body}</td>
                   <td className="text-center">
                     <Badge variant={SEV_VARIANT[d.severity]}>{sevLabel(d.severity, lang)}</Badge>
                   </td>

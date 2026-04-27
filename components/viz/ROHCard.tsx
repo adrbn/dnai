@@ -58,6 +58,14 @@ export function ROHCard({ roh, lang = "fr" }: Props) {
 
   return (
     <div className="space-y-4">
+      <div className="rounded-lg border-l-4 border-accent/60 bg-surface-2/40 px-4 py-3">
+        <div className="text-xs font-semibold uppercase tracking-wider text-fg">
+          {tr(S.roh.consanguinityTitle, lang)}
+        </div>
+        <p className="mt-1.5 text-[12.5px] leading-relaxed text-fg-muted">
+          {tr(S.roh.consanguinityBody, lang)}
+        </p>
+      </div>
       <div className={`rounded-xl border border-border bg-gradient-to-br ${toneBg} to-transparent p-4`}>
         <div className="flex items-center justify-between gap-4">
           <div>

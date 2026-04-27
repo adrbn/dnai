@@ -43,7 +43,7 @@ export interface IntroAct extends BaseAct {
   filename: string;
   sourceLabel: string;
   totalSNPs: number;
-  primer: string;
+  primer: { fr: string; en: string };
 }
 
 export interface HealthIntroAct extends BaseAct {
@@ -91,7 +91,7 @@ export interface ROHAct extends BaseAct {
   kind: "roh";
   fRoh: number;
   segments: number;
-  interpretation: string;
+  interpretation: { fr: string; en: string };
 }
 
 export interface OutroAct extends BaseAct {
@@ -169,13 +169,28 @@ function severityRank(s: "high" | "medium" | "low"): number {
   return s === "high" ? 0 : s === "medium" ? 1 : 2;
 }
 
-function interpretFRoh(fRoh: number): string {
+function interpretFRoh(fRoh: number): { fr: string; en: string } {
   // Thresholds aligned with ROHCard: <1.56% = standard, <3.125% = cousinage
   // ancien, <6.25% = cousins éloignés, sinon parents apparentés au 1er/2e degré.
-  if (fRoh < 0.0156) return "Niveau standard — attendu dans toute population humaine, rien à signaler.";
-  if (fRoh < 0.03125) return "Léger excès d'homozygotie, compatible avec des ancêtres communs lointains (cousinage ancien, fréquent).";
-  if (fRoh < 0.0625) return "Homozygotie notable — équivalent à des cousins éloignés dans la généalogie.";
-  return "Consanguinité marquée — parents biologiques probablement apparentés au 1ᵉʳ ou 2ᵉ degré.";
+  if (fRoh < 0.0156)
+    return {
+      fr: "Niveau standard — attendu dans toute population humaine, rien à signaler.",
+      en: "Standard level — expected in any human population, nothing to flag.",
+    };
+  if (fRoh < 0.03125)
+    return {
+      fr: "Léger excès d'homozygotie, compatible avec des ancêtres communs lointains (cousinage ancien, fréquent).",
+      en: "Slight excess of homozygosity, consistent with distant common ancestors (ancient cousinage, common).",
+    };
+  if (fRoh < 0.0625)
+    return {
+      fr: "Homozygotie notable — équivalent à des cousins éloignés dans la généalogie.",
+      en: "Notable homozygosity — comparable to distant cousins in the family tree.",
+    };
+  return {
+    fr: "Consanguinité marquée — parents biologiques probablement apparentés au 1ᵉʳ ou 2ᵉ degré.",
+    en: "Marked consanguinity — biological parents are likely 1st- or 2nd-degree relatives.",
+  };
 }
 
 function sourceLabel(source: string, totalSNPs: number): string {
@@ -188,12 +203,19 @@ function sourceLabel(source: string, totalSNPs: number): string {
   return totalSNPs > 2_000_000 ? "VCF (WGS)" : "Puce ADN";
 }
 
-function sourcePrimer(source: string, totalSNPs: number): string {
-  const fmt = totalSNPs.toLocaleString("fr-FR");
+function sourcePrimer(source: string, totalSNPs: number): { fr: string; en: string } {
+  const fmtFr = totalSNPs.toLocaleString("fr-FR");
+  const fmtEn = totalSNPs.toLocaleString("en-US");
   if (source === "wgs" || totalSNPs > 2_000_000) {
-    return `${fmt} variants lus sur votre génome complet.`;
+    return {
+      fr: `${fmtFr} variants lus sur votre génome complet.`,
+      en: `${fmtEn} variants read across your full genome.`,
+    };
   }
-  return `${fmt} positions précises lues sur votre génome.`;
+  return {
+    fr: `${fmtFr} positions précises lues sur votre génome.`,
+    en: `${fmtEn} precise positions read across your genome.`,
+  };
 }
 
 export interface BuildStoryOptions {

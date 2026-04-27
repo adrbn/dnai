@@ -1,11 +1,46 @@
 "use client";
 
+import { useEffect } from "react";
 import { useAnalysis } from "@/lib/store/analysis";
+import { useLang, type Lang } from "@/lib/i18n/lang";
 
-const PHASE_LABEL: Record<string, string> = {
-  fetch: "Chargement des bases",
-  parse: "Lecture de votre ADN",
-  annotate: "Annotation clinique & PGx",
+const COPY: Record<Lang, {
+  phase: Record<string, string>;
+  errorTitle: string;
+  errorBody: string;
+  defaultMessage: string;
+  formatHint: string;
+  retry: string;
+  pickAnother: string;
+}> = {
+  fr: {
+    phase: {
+      fetch: "Chargement des bases",
+      parse: "Lecture de votre ADN",
+      annotate: "Annotation clinique & PGx",
+    },
+    errorTitle: "Échec de l'analyse",
+    errorBody: "Le fichier n'a pas pu être lu.",
+    defaultMessage: "Traitement en cours…",
+    formatHint:
+      "Formats pris en charge : MyHeritage (.csv), 23andMe / AncestryDNA / FTDNA (.txt/.zip), VCF single-sample (.vcf / .vcf.gz). Les VCF bgzipés très volumineux (WGS) peuvent dépasser la capacité mémoire de votre navigateur.",
+    retry: "↻ Réessayer",
+    pickAnother: "Choisir un autre fichier",
+  },
+  en: {
+    phase: {
+      fetch: "Loading databases",
+      parse: "Reading your DNA",
+      annotate: "Clinical & PGx annotation",
+    },
+    errorTitle: "Analysis failed",
+    errorBody: "The file could not be read.",
+    defaultMessage: "Processing…",
+    formatHint:
+      "Supported formats: MyHeritage (.csv), 23andMe / AncestryDNA / FTDNA (.txt/.zip), single-sample VCF (.vcf / .vcf.gz). Very large bgzipped VCFs (WGS) may exceed your browser's memory.",
+    retry: "↻ Retry",
+    pickAnother: "Choose another file",
+  },
 };
 
 interface ProgressOverlayProps {
@@ -15,8 +50,21 @@ interface ProgressOverlayProps {
 
 export function ProgressOverlay({ onRetry, onDismiss }: ProgressOverlayProps) {
   const { status, progress, error, reset } = useAnalysis();
-  if (status === "idle" || status === "done") return null;
+  const [lang] = useLang();
+  const isVisible = status !== "idle" && status !== "done";
 
+  useEffect(() => {
+    if (!isVisible) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [isVisible]);
+
+  if (!isVisible) return null;
+
+  const c = COPY[lang];
   const pct = Math.round((progress?.percent ?? 0) * 100);
   const phase = progress?.phase ?? "parse";
   const isError = status === "error";
@@ -41,10 +89,17 @@ export function ProgressOverlay({ onRetry, onDismiss }: ProgressOverlayProps) {
         <div
           className={`mb-1 text-sm font-medium uppercase tracking-widest ${isError ? "text-danger" : "text-accent"}`}
         >
-          {isError ? "Échec de l’analyse" : PHASE_LABEL[phase]}
+          {isError ? c.errorTitle : c.phase[phase] ?? c.phase.parse}
         </div>
         <div className="mb-4 text-lg font-semibold">
-          {isError ? "Le fichier n’a pas pu être lu." : progress?.message ?? "Traitement en cours…"}
+          {/* Worker emits FR-hardcoded `message`; we ignore it for EN to avoid
+              a mid-overlay language flip. The phase label above already
+              describes the stage. */}
+          {isError
+            ? c.errorBody
+            : lang === "fr"
+              ? progress?.message ?? c.defaultMessage
+              : c.defaultMessage}
         </div>
 
         {!isError && (
@@ -63,11 +118,7 @@ export function ProgressOverlay({ onRetry, onDismiss }: ProgressOverlayProps) {
           <>
             <div className="mt-1 rounded-md border border-danger/40 bg-danger/10 p-3 text-left text-sm text-danger">
               <div className="font-mono text-xs opacity-80">{error}</div>
-              <div className="mt-2 text-xs text-fg-muted">
-                Formats pris en charge : MyHeritage (.csv), 23andMe / AncestryDNA / FTDNA (.txt/.zip),
-                VCF single-sample (.vcf / .vcf.gz). Les VCF bgzipés très volumineux (WGS)
-                peuvent dépasser la capacité mémoire de votre navigateur.
-              </div>
+              <div className="mt-2 text-xs text-fg-muted">{c.formatHint}</div>
             </div>
             <div className="mt-5 flex flex-wrap justify-center gap-2">
               {onRetry && (
@@ -76,7 +127,7 @@ export function ProgressOverlay({ onRetry, onDismiss }: ProgressOverlayProps) {
                   onClick={onRetry}
                   className="inline-flex items-center gap-1.5 rounded-md border border-accent/40 bg-accent/10 px-4 py-2 text-sm font-medium text-accent transition hover:bg-accent/20"
                 >
-                  ↻ Réessayer
+                  {c.retry}
                 </button>
               )}
               <button
@@ -84,7 +135,7 @@ export function ProgressOverlay({ onRetry, onDismiss }: ProgressOverlayProps) {
                 onClick={handleDismiss}
                 className="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface-2 px-4 py-2 text-sm font-medium text-fg transition hover:bg-surface-3"
               >
-                Choisir un autre fichier
+                {c.pickAnother}
               </button>
             </div>
           </>

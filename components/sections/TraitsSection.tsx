@@ -3,6 +3,7 @@
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { TraitsAvatar } from "@/components/viz/TraitsAvatar";
+import { SectionPrimer } from "@/components/SectionPrimer";
 import type { TraitConfidence, TraitFinding } from "@/lib/types";
 import { S, tr, trTpl } from "@/lib/i18n/strings";
 import type { Lang } from "@/lib/i18n/lang";
@@ -84,10 +85,12 @@ function TraitCard({ f, lang }: { f: TraitFinding; lang: Lang }) {
         <div className="text-3xl">{EMOJI_BY_ID[f.rule.id] ?? "🧬"}</div>
         <Badge variant={CONFIDENCE_VAR[f.rule.confidence]}>{confLabel}</Badge>
       </div>
-      <h3 className="mt-3 text-base font-semibold tracking-tight">{f.rule.title}</h3>
+      <h3 className="mt-3 text-base font-semibold tracking-tight">{lang === "en" ? f.rule.title_en ?? f.rule.title : f.rule.title}</h3>
       <div className="mt-1 text-xs font-mono text-fg-muted">{f.rule.gene}</div>
-      <div className="mt-3 text-lg font-semibold text-accent">{f.result?.label}</div>
-      {f.result?.detail && <p className="mt-1 text-sm text-fg-muted">{f.result.detail}</p>}
+      <div className="mt-3 text-lg font-semibold text-accent">{lang === "en" ? f.result?.label_en ?? f.result?.label : f.result?.label}</div>
+      {(lang === "en" ? f.result?.detail_en ?? f.result?.detail : f.result?.detail) && (
+        <p className="mt-1 text-sm text-fg-muted">{lang === "en" ? f.result?.detail_en ?? f.result?.detail : f.result?.detail}</p>
+      )}
       <div className="mt-3 flex flex-wrap gap-1.5 text-[10px] text-fg-muted">
         {Object.entries(f.genotypes_used).map(([rs, g]) => (
           <span key={rs} className="rounded bg-surface-2 px-1.5 py-0.5 font-mono">
@@ -111,6 +114,7 @@ export function TraitsSection({ findings, lang = "fr" }: TraitsSectionProps) {
 
   return (
     <div className="space-y-8">
+      <SectionPrimer kind="traits" lang={lang} />
       {appearance.length >= 2 && (
         <Card>
           <CardHeader
@@ -177,7 +181,7 @@ export function TraitsSection({ findings, lang = "fr" }: TraitsSectionProps) {
           <div className="mt-3 flex flex-wrap gap-2 text-xs">
             {indeterminate.map((f) => (
               <span key={f.rule.id} className="rounded bg-surface-2 px-2 py-1 text-fg-muted">
-                {f.rule.title}
+                {lang === "en" ? f.rule.title_en ?? f.rule.title : f.rule.title}
               </span>
             ))}
           </div>

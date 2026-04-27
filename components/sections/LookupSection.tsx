@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { genotypeToString } from "@/lib/genotype";
+import { SectionPrimer } from "@/components/SectionPrimer";
 import type { GenotypeMap, PositionIndex } from "@/lib/types";
 import { isNoCall } from "@/lib/types";
 import type { Lang } from "@/lib/i18n/lang";
@@ -144,6 +145,7 @@ export function LookupSection({ genotypes, positions, lang = "fr" }: LookupSecti
 
   return (
     <div className="space-y-6">
+      <SectionPrimer kind="lookup" lang={lang} />
       <Card>
         <CardHeader title={c.searchTitle} subtitle={c.searchSubtitle} />
 

@@ -32,8 +32,12 @@ function writeStoredLang(lang: Lang): void {
 /**
  * Persisted language preference, shared across pages via localStorage.
  * Defaults to FR, but honors browser language and the user's last choice.
+ *
+ * Returns [lang, setLang, hydrated]. Pages that want to avoid an FR→EN flash
+ * (or vice-versa) on cross-page navigation should gate their render on the
+ * `hydrated` flag and show a neutral skeleton until then.
  */
-export function useLang(): [Lang, (lang: Lang) => void] {
+export function useLang(): [Lang, (lang: Lang) => void, boolean] {
   const [lang, setLangState] = useState<Lang>("fr");
   const [hydrated, setHydrated] = useState(false);
 
@@ -54,7 +58,8 @@ export function useLang(): [Lang, (lang: Lang) => void] {
     writeStoredLang(next);
   };
 
-  // Return current value; during the first render on the client we start at
-  // "fr" to match SSR, then hydrate to the stored value.
-  return [hydrated ? lang : "fr", setLang];
+  // During SSR / first paint we return "fr" to match the server output;
+  // after the effect runs we surface the stored value. Callers that care
+  // about avoiding the flash should read the `hydrated` flag.
+  return [hydrated ? lang : "fr", setLang, hydrated];
 }

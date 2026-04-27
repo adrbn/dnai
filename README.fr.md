@@ -30,7 +30,7 @@ Un fichier `.csv` ou `.zip` MyHeritage/23andMe/AncestryDNA contient ~600–700 k
 
 ## Confidentialité
 
-**Votre fichier ADN n'est jamais transmis à un serveur.** Le parsing et l'annotation tournent dans un Web Worker, en mémoire du navigateur. Le fichier est libéré à la fermeture de l'onglet. Aucune donnée génétique n'est persistée — seule l'acceptation du disclaimer est stockée en `localStorage`.
+**Votre fichier ADN n'est jamais transmis à un serveur.** Le parsing et l'annotation tournent dans un Web Worker, en mémoire du navigateur. Le fichier brut est libéré dès la fin du parsing. Le rapport structuré (annotations, percentiles, données du récit) est mis en cache **localement dans IndexedDB** sur votre appareil pour qu'un rafraîchissement, une fermeture d'onglet ou un retour le lendemain ne vous obligent pas à ré-importer. Rien ne sort du navigateur — vider les données du navigateur supprime tout.
 
 Vous pouvez couper le wifi juste après le chargement de la page : tout le pipeline continue.
 

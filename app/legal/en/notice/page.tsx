@@ -24,8 +24,9 @@ export default function NoticeEnPage() {
         Hosting
       </h2>
       <p>
-        The static pages of DNAI are hosted by a CDN provider (e.g. Vercel, Cloudflare). DNA files are never
-        transmitted to this host: analysis runs inside the user&apos;s browser.
+        The static pages of DNAI are hosted by Vercel Inc.
+        (440 N Barranca Ave #4133, Covina, CA 91723, USA — vercel.com).
+        DNA files are never transmitted to the host: analysis runs entirely in the user&apos;s browser.
       </p>
 
       <h2 className="mt-8 font-serif text-[24px] font-medium tracking-[-0.01em] text-ink">

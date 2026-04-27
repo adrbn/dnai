@@ -2,12 +2,13 @@
   {
     "id": "lactose",
     "title": "Tolérance au lactose",
+    "title_en": "Lactose tolerance",
     "gene": "MCM6 (cis-regulator of LCT)",
     "rsids": ["rs4988235"],
     "call_rules": [
-      { "when": { "rs4988235": "AA" }, "result": { "label": "Persistance de la lactase", "detail": "Capacité à digérer le lactose à l'âge adulte (variant européen)." } },
-      { "when": { "rs4988235": "AG" }, "result": { "label": "Persistance partielle", "detail": "Digestion du lactose probablement possible, symptômes rares." } },
-      { "when": { "rs4988235": "GG" }, "result": { "label": "Non-persistance de la lactase", "detail": "Intolérance au lactose probable à l'âge adulte — phénotype ancestral mondial." } }
+      { "when": { "rs4988235": "AA" }, "result": { "label": "Persistance de la lactase", "label_en": "Lactase persistence", "detail": "Capacité à digérer le lactose à l'âge adulte (variant européen).", "detail_en": "Able to digest lactose into adulthood (European variant)." } },
+      { "when": { "rs4988235": "AG" }, "result": { "label": "Persistance partielle", "label_en": "Partial persistence", "detail": "Digestion du lactose probablement possible, symptômes rares.", "detail_en": "Lactose digestion likely fine, symptoms uncommon." } },
+      { "when": { "rs4988235": "GG" }, "result": { "label": "Non-persistance de la lactase", "label_en": "Lactase non-persistence", "detail": "Intolérance au lactose probable à l'âge adulte — phénotype ancestral mondial.", "detail_en": "Lactose intolerance likely in adulthood — the global ancestral phenotype." } }
     ],
     "confidence": "high",
     "sources": ["SNPedia rs4988235", "Enattah et al. 2002"]
@@ -15,12 +16,13 @@
   {
     "id": "alcohol_flush",
     "title": "Flush à l'alcool (ALDH2)",
+    "title_en": "Alcohol flush (ALDH2)",
     "gene": "ALDH2",
     "rsids": ["rs671"],
     "call_rules": [
-      { "when": { "rs671": "GG" }, "result": { "label": "Métabolisme normal", "detail": "Aucun déficit ALDH2; tolérance usuelle à l'alcool." } },
-      { "when": { "rs671": "AG" }, "result": { "label": "Déficit partiel", "detail": "Accumulation d'acétaldéhyde — flush, tachycardie; risque accru de cancer œsophagien si consommation régulière." } },
-      { "when": { "rs671": "AA" }, "result": { "label": "Déficit sévère", "detail": "Alcool très mal toléré; risque cancer œsophage ×50 si consommation forte." } }
+      { "when": { "rs671": "GG" }, "result": { "label": "Métabolisme normal", "label_en": "Normal metabolism", "detail": "Aucun déficit ALDH2; tolérance usuelle à l'alcool.", "detail_en": "No ALDH2 deficiency; typical alcohol tolerance." } },
+      { "when": { "rs671": "AG" }, "result": { "label": "Déficit partiel", "label_en": "Partial deficiency", "detail": "Accumulation d'acétaldéhyde — flush, tachycardie; risque accru de cancer œsophagien si consommation régulière.", "detail_en": "Acetaldehyde builds up — flushing, fast heartbeat; higher esophageal cancer risk with regular drinking." } },
+      { "when": { "rs671": "AA" }, "result": { "label": "Déficit sévère", "label_en": "Severe deficiency", "detail": "Alcool très mal toléré; risque cancer œsophage ×50 si consommation forte.", "detail_en": "Alcohol very poorly tolerated; esophageal cancer risk ×50 with heavy drinking." } }
     ],
     "confidence": "high",
     "sources": ["Brooks et al. 2009", "PharmGKB ALDH2"]
@@ -28,12 +30,13 @@
   {
     "id": "caffeine",
     "title": "Métabolisme de la caféine",
+    "title_en": "Caffeine metabolism",
     "gene": "CYP1A2",
     "rsids": ["rs762551"],
     "call_rules": [
-      { "when": { "rs762551": "AA" }, "result": { "label": "Métaboliseur rapide", "detail": "Caféine éliminée rapidement — tolérance souvent plus grande." } },
-      { "when": { "rs762551": "AC" }, "result": { "label": "Métaboliseur intermédiaire", "detail": "Demi-vie standard (~4–5 h)." } },
-      { "when": { "rs762551": "CC" }, "result": { "label": "Métaboliseur lent", "detail": "Caféine éliminée lentement — éviter après 14h; risque cardiovasculaire accru à forte consommation." } }
+      { "when": { "rs762551": "AA" }, "result": { "label": "Métaboliseur rapide", "label_en": "Fast metabolizer", "detail": "Caféine éliminée rapidement — tolérance souvent plus grande.", "detail_en": "Caffeine cleared quickly — often higher tolerance." } },
+      { "when": { "rs762551": "AC" }, "result": { "label": "Métaboliseur intermédiaire", "label_en": "Intermediate metabolizer", "detail": "Demi-vie standard (~4–5 h).", "detail_en": "Standard half-life (~4–5 h)." } },
+      { "when": { "rs762551": "CC" }, "result": { "label": "Métaboliseur lent", "label_en": "Slow metabolizer", "detail": "Caféine éliminée lentement — éviter après 14h; risque cardiovasculaire accru à forte consommation.", "detail_en": "Caffeine cleared slowly — avoid after 2pm; higher cardiovascular risk at heavy intake." } }
     ],
     "confidence": "high",
     "sources": ["Cornelis et al. 2006"]
@@ -41,12 +44,13 @@
   {
     "id": "muscle_fiber_actn3",
     "title": "Fibres musculaires (ACTN3)",
+    "title_en": "Muscle fiber type (ACTN3)",
     "gene": "ACTN3",
     "rsids": ["rs1815739"],
     "call_rules": [
-      { "when": { "rs1815739": "CC" }, "result": { "label": "Profil explosif (R/R)", "detail": "α-actinin-3 fonctionnelle dans les fibres rapides — sprint/force favorisés." } },
-      { "when": { "rs1815739": "CT" }, "result": { "label": "Profil mixte (R/X)", "detail": "Les deux types de performance accessibles." } },
-      { "when": { "rs1815739": "TT" }, "result": { "label": "Profil endurance (X/X)", "detail": "Perte d'α-actinin-3 — potentiel d'endurance favorisé." } }
+      { "when": { "rs1815739": "CC" }, "result": { "label": "Profil explosif (R/R)", "label_en": "Power profile (R/R)", "detail": "α-actinin-3 fonctionnelle dans les fibres rapides — sprint/force favorisés.", "detail_en": "Functional α-actinin-3 in fast-twitch fibers — favors sprint and strength." } },
+      { "when": { "rs1815739": "CT" }, "result": { "label": "Profil mixte (R/X)", "label_en": "Mixed profile (R/X)", "detail": "Les deux types de performance accessibles.", "detail_en": "Both performance types accessible." } },
+      { "when": { "rs1815739": "TT" }, "result": { "label": "Profil endurance (X/X)", "label_en": "Endurance profile (X/X)", "detail": "Perte d'α-actinin-3 — potentiel d'endurance favorisé.", "detail_en": "Loss of α-actinin-3 — favors endurance potential." } }
     ],
     "confidence": "medium",
     "sources": ["Yang et al. 2003"]
@@ -54,11 +58,12 @@
   {
     "id": "bitter_taste",
     "title": "Sensibilité à l'amertume (PTC)",
+    "title_en": "Bitter taste sensitivity (PTC)",
     "gene": "TAS2R38",
     "rsids": ["rs713598", "rs1726866", "rs10246939"],
     "call_rules": [
-      { "when": { "rs713598": "GG", "rs1726866": "AA", "rs10246939": "CC" }, "result": { "label": "Goûteur intense (PAV/PAV)", "detail": "Très sensible au PTC/PROP — chou, brocoli, café noir souvent amers." } },
-      { "when": { "rs713598": "CC", "rs1726866": "GG", "rs10246939": "TT" }, "result": { "label": "Non-goûteur (AVI/AVI)", "detail": "Peu ou pas de perception de l'amertume PTC." } }
+      { "when": { "rs713598": "GG", "rs1726866": "AA", "rs10246939": "CC" }, "result": { "label": "Goûteur intense (PAV/PAV)", "label_en": "Super-taster (PAV/PAV)", "detail": "Très sensible au PTC/PROP — chou, brocoli, café noir souvent amers.", "detail_en": "Very sensitive to PTC/PROP — cabbage, broccoli, black coffee often taste bitter." } },
+      { "when": { "rs713598": "CC", "rs1726866": "GG", "rs10246939": "TT" }, "result": { "label": "Non-goûteur (AVI/AVI)", "label_en": "Non-taster (AVI/AVI)", "detail": "Peu ou pas de perception de l'amertume PTC.", "detail_en": "Little to no perception of PTC bitterness." } }
     ],
     "confidence": "medium",
     "sources": ["Kim et al. 2003"]
@@ -66,12 +71,13 @@
   {
     "id": "eye_color",
     "title": "Couleur des yeux",
+    "title_en": "Eye color",
     "gene": "HERC2 / OCA2",
     "rsids": ["rs12913832"],
     "call_rules": [
-      { "when": { "rs12913832": "AA" }, "result": { "label": "Yeux bruns probables", "detail": "Expression OCA2 maintenue." } },
-      { "when": { "rs12913832": "AG" }, "result": { "label": "Yeux intermédiaires", "detail": "Noisette / vert possibles — fort effet des autres gènes (OCA2, SLC24A4)." } },
-      { "when": { "rs12913832": "GG" }, "result": { "label": "Yeux bleus probables", "detail": "Downregulation d'OCA2 dans l'iris — phénotype européen classique." } }
+      { "when": { "rs12913832": "AA" }, "result": { "label": "Yeux bruns probables", "label_en": "Likely brown eyes", "detail": "Expression OCA2 maintenue.", "detail_en": "OCA2 expression preserved." } },
+      { "when": { "rs12913832": "AG" }, "result": { "label": "Yeux intermédiaires", "label_en": "Intermediate eyes", "detail": "Noisette / vert possibles — fort effet des autres gènes (OCA2, SLC24A4).", "detail_en": "Hazel / green possible — strong influence from other genes (OCA2, SLC24A4)." } },
+      { "when": { "rs12913832": "GG" }, "result": { "label": "Yeux bleus probables", "label_en": "Likely blue eyes", "detail": "Downregulation d'OCA2 dans l'iris — phénotype européen classique.", "detail_en": "OCA2 downregulation in the iris — classic European phenotype." } }
     ],
     "confidence": "high",
     "sources": ["Sturm et al. 2008"]
@@ -79,12 +85,13 @@
   {
     "id": "hair_red",
     "title": "Cheveux roux (MC1R)",
+    "title_en": "Red hair (MC1R)",
     "gene": "MC1R",
     "rsids": ["rs1805007"],
     "call_rules": [
-      { "when": { "rs1805007": "CC" }, "result": { "label": "Pas de variant R151C", "detail": "Un variant parmi d'autres; phénotype roux complexe." } },
-      { "when": { "rs1805007": "CT" }, "result": { "label": "Porteur R151C", "detail": "Contribue à la phéomelanine — peau claire, risque de rousseur si autre variant MC1R associé." } },
-      { "when": { "rs1805007": "TT" }, "result": { "label": "R151C/R151C", "detail": "Forte probabilité de cheveux roux et peau très claire." } }
+      { "when": { "rs1805007": "CC" }, "result": { "label": "Pas de variant R151C", "label_en": "No R151C variant", "detail": "Un variant parmi d'autres; phénotype roux complexe.", "detail_en": "Just one of many variants; the red-hair phenotype is complex." } },
+      { "when": { "rs1805007": "CT" }, "result": { "label": "Porteur R151C", "label_en": "R151C carrier", "detail": "Contribue à la phéomelanine — peau claire, risque de rousseur si autre variant MC1R associé.", "detail_en": "Contributes to pheomelanin — fair skin, possible red hair if paired with another MC1R variant." } },
+      { "when": { "rs1805007": "TT" }, "result": { "label": "R151C/R151C", "label_en": "R151C/R151C", "detail": "Forte probabilité de cheveux roux et peau très claire.", "detail_en": "High probability of red hair and very fair skin." } }
     ],
     "confidence": "medium",
     "sources": ["Valverde et al. 1995"]
@@ -92,12 +99,13 @@
   {
     "id": "earwax_type",
     "title": "Type de cérumen",
+    "title_en": "Earwax type",
     "gene": "ABCC11",
     "rsids": ["rs17822931"],
     "call_rules": [
-      { "when": { "rs17822931": "CC" }, "result": { "label": "Cérumen humide", "detail": "Type 'wet' — phénotype majoritaire en Europe et Afrique." } },
-      { "when": { "rs17822931": "CT" }, "result": { "label": "Cérumen humide (porteur)", "detail": "Phénotype humide mais porteur du variant 'sec'." } },
-      { "when": { "rs17822931": "TT" }, "result": { "label": "Cérumen sec", "detail": "Type 'dry' — phénotype majoritaire en Asie de l'Est; associé à moindre transpiration axillaire." } }
+      { "when": { "rs17822931": "CC" }, "result": { "label": "Cérumen humide", "label_en": "Wet earwax", "detail": "Type 'wet' — phénotype majoritaire en Europe et Afrique.", "detail_en": "'Wet' type — the majority phenotype in Europe and Africa." } },
+      { "when": { "rs17822931": "CT" }, "result": { "label": "Cérumen humide (porteur)", "label_en": "Wet earwax (carrier)", "detail": "Phénotype humide mais porteur du variant 'sec'.", "detail_en": "Wet phenotype, but carrier of the 'dry' variant." } },
+      { "when": { "rs17822931": "TT" }, "result": { "label": "Cérumen sec", "label_en": "Dry earwax", "detail": "Type 'dry' — phénotype majoritaire en Asie de l'Est; associé à moindre transpiration axillaire.", "detail_en": "'Dry' type — the majority phenotype in East Asia; linked to less underarm sweating." } }
     ],
     "confidence": "high",
     "sources": ["Yoshiura et al. 2006"]
@@ -105,12 +113,13 @@
   {
     "id": "asparagus_anosmia",
     "title": "Odeur d'asperge dans l'urine",
+    "title_en": "Asparagus pee smell",
     "gene": "OR2M7",
     "rsids": ["rs4481887"],
     "call_rules": [
-      { "when": { "rs4481887": "GG" }, "result": { "label": "Perçoit l'odeur", "detail": "Capable de détecter les méthanethiols après asperges." } },
-      { "when": { "rs4481887": "AG" }, "result": { "label": "Détection partielle", "detail": "Perception intermédiaire." } },
-      { "when": { "rs4481887": "AA" }, "result": { "label": "Anosmie sélective", "detail": "Incapacité à sentir l'odeur — variante OR2M7." } }
+      { "when": { "rs4481887": "GG" }, "result": { "label": "Perçoit l'odeur", "label_en": "Can smell it", "detail": "Capable de détecter les méthanethiols après asperges.", "detail_en": "Able to detect the methanethiols produced after eating asparagus." } },
+      { "when": { "rs4481887": "AG" }, "result": { "label": "Détection partielle", "label_en": "Partial detection", "detail": "Perception intermédiaire.", "detail_en": "Intermediate perception." } },
+      { "when": { "rs4481887": "AA" }, "result": { "label": "Anosmie sélective", "label_en": "Selective anosmia", "detail": "Incapacité à sentir l'odeur — variante OR2M7.", "detail_en": "Unable to smell it — OR2M7 variant." } }
     ],
     "confidence": "medium",
     "sources": ["Eriksson et al. 2010"]
@@ -118,12 +127,13 @@
   {
     "id": "cilantro_soap",
     "title": "Coriandre goût savonneux",
+    "title_en": "Cilantro soapy taste",
     "gene": "OR6A2",
     "rsids": ["rs72921001"],
     "call_rules": [
-      { "when": { "rs72921001": "CC" }, "result": { "label": "Goût normal", "detail": "Coriandre perçue normalement." } },
-      { "when": { "rs72921001": "AC" }, "result": { "label": "Sensibilité intermédiaire", "detail": "Peut percevoir un arrière-goût." } },
-      { "when": { "rs72921001": "AA" }, "result": { "label": "Goût savonneux", "detail": "Perception désagréable (savon/punaise) de la coriandre fraîche." } }
+      { "when": { "rs72921001": "CC" }, "result": { "label": "Goût normal", "label_en": "Normal taste", "detail": "Coriandre perçue normalement.", "detail_en": "Cilantro tastes normal." } },
+      { "when": { "rs72921001": "AC" }, "result": { "label": "Sensibilité intermédiaire", "label_en": "Intermediate sensitivity", "detail": "Peut percevoir un arrière-goût.", "detail_en": "May notice an off aftertaste." } },
+      { "when": { "rs72921001": "AA" }, "result": { "label": "Goût savonneux", "label_en": "Soapy taste", "detail": "Perception désagréable (savon/punaise) de la coriandre fraîche.", "detail_en": "Unpleasant soap/bug-like perception of fresh cilantro." } }
     ],
     "confidence": "medium",
     "sources": ["Eriksson et al. 2012 (23andMe)"]
@@ -131,12 +141,13 @@
   {
     "id": "sleep_chronotype",
     "title": "Chronotype (matinal/soir)",
+    "title_en": "Chronotype (morning/evening)",
     "gene": "PER3",
     "rsids": ["rs228697"],
     "call_rules": [
-      { "when": { "rs228697": "CC" }, "result": { "label": "Plutôt soir", "detail": "Tendance à une préférence vespérale." } },
-      { "when": { "rs228697": "CG" }, "result": { "label": "Intermédiaire", "detail": "Chronotype neutre." } },
-      { "when": { "rs228697": "GG" }, "result": { "label": "Plutôt matinal", "detail": "Variant associé à un chronotype matinal." } }
+      { "when": { "rs228697": "CC" }, "result": { "label": "Plutôt soir", "label_en": "Evening type", "detail": "Tendance à une préférence vespérale.", "detail_en": "Tendency toward an evening preference." } },
+      { "when": { "rs228697": "CG" }, "result": { "label": "Intermédiaire", "label_en": "Intermediate", "detail": "Chronotype neutre.", "detail_en": "Neutral chronotype." } },
+      { "when": { "rs228697": "GG" }, "result": { "label": "Plutôt matinal", "label_en": "Morning type", "detail": "Variant associé à un chronotype matinal.", "detail_en": "Variant linked to a morning chronotype." } }
     ],
     "confidence": "low",
     "sources": ["Hu et al. 2016 (23andMe)"]
@@ -144,11 +155,12 @@
   {
     "id": "sleep_short",
     "title": "Besoin de sommeil court (ADRB1)",
+    "title_en": "Short sleep need (ADRB1)",
     "gene": "ADRB1",
     "rsids": ["rs33999489"],
     "call_rules": [
-      { "when": { "rs33999489": "AA" }, "result": { "label": "Besoin standard", "detail": "Pas de variant 'short-sleep'." } },
-      { "when": { "rs33999489": "AG" }, "result": { "label": "Possible petit dormeur", "detail": "Porteur variant ADRB1 A187V — nuits courtes mieux tolérées." } }
+      { "when": { "rs33999489": "AA" }, "result": { "label": "Besoin standard", "label_en": "Standard need", "detail": "Pas de variant 'short-sleep'.", "detail_en": "No 'short-sleep' variant." } },
+      { "when": { "rs33999489": "AG" }, "result": { "label": "Possible petit dormeur", "label_en": "Possible short sleeper", "detail": "Porteur variant ADRB1 A187V — nuits courtes mieux tolérées.", "detail_en": "Carrier of ADRB1 A187V — short nights better tolerated." } }
     ],
     "confidence": "low",
     "sources": ["Shi et al. 2019"]
@@ -156,12 +168,13 @@
   {
     "id": "alcohol_metab_adh1b",
     "title": "Métabolisme rapide éthanol (ADH1B)",
+    "title_en": "Fast ethanol metabolism (ADH1B)",
     "gene": "ADH1B",
     "rsids": ["rs1229984"],
     "call_rules": [
-      { "when": { "rs1229984": "GG" }, "result": { "label": "Métabolisme standard (ADH1B*1/*1)", "detail": "Pas de variant rapide." } },
-      { "when": { "rs1229984": "AG" }, "result": { "label": "Métabolisme accéléré", "detail": "Acétaldéhyde produit plus vite — consommation réduite souvent." } },
-      { "when": { "rs1229984": "AA" }, "result": { "label": "Métabolisme très rapide", "detail": "Forte conversion éthanol→acétaldéhyde; effets désagréables à faible dose." } }
+      { "when": { "rs1229984": "GG" }, "result": { "label": "Métabolisme standard (ADH1B*1/*1)", "label_en": "Standard metabolism (ADH1B*1/*1)", "detail": "Pas de variant rapide.", "detail_en": "No fast variant." } },
+      { "when": { "rs1229984": "AG" }, "result": { "label": "Métabolisme accéléré", "label_en": "Accelerated metabolism", "detail": "Acétaldéhyde produit plus vite — consommation réduite souvent.", "detail_en": "Acetaldehyde produced faster — drinking often reduced." } },
+      { "when": { "rs1229984": "AA" }, "result": { "label": "Métabolisme très rapide", "label_en": "Very fast metabolism", "detail": "Forte conversion éthanol→acétaldéhyde; effets désagréables à faible dose.", "detail_en": "Strong ethanol→acetaldehyde conversion; unpleasant effects even at low doses." } }
     ],
     "confidence": "high",
     "sources": ["Edenberg 2007"]
@@ -169,12 +182,13 @@
   {
     "id": "nicotine_dependence",
     "title": "Vulnérabilité nicotine (CHRNA5)",
+    "title_en": "Nicotine vulnerability (CHRNA5)",
     "gene": "CHRNA5",
     "rsids": ["rs16969968"],
     "call_rules": [
-      { "when": { "rs16969968": "GG" }, "result": { "label": "Risque de base", "detail": "Pas de variant de risque." } },
-      { "when": { "rs16969968": "AG" }, "result": { "label": "Risque intermédiaire", "detail": "Variant associé à une dépendance nicotinique et risque cancer poumon accrus." } },
-      { "when": { "rs16969968": "AA" }, "result": { "label": "Risque élevé", "detail": "Dépendance nicotinique et risque cancer bronchique marqués chez fumeurs." } }
+      { "when": { "rs16969968": "GG" }, "result": { "label": "Risque de base", "label_en": "Baseline risk", "detail": "Pas de variant de risque.", "detail_en": "No risk variant." } },
+      { "when": { "rs16969968": "AG" }, "result": { "label": "Risque intermédiaire", "label_en": "Intermediate risk", "detail": "Variant associé à une dépendance nicotinique et risque cancer poumon accrus.", "detail_en": "Variant linked to higher nicotine dependence and lung cancer risk." } },
+      { "when": { "rs16969968": "AA" }, "result": { "label": "Risque élevé", "label_en": "High risk", "detail": "Dépendance nicotinique et risque cancer bronchique marqués chez fumeurs.", "detail_en": "Marked nicotine dependence and lung cancer risk in smokers." } }
     ],
     "confidence": "high",
     "sources": ["Thorgeirsson et al. 2008"]
@@ -182,15 +196,16 @@
   {
     "id": "apoe",
     "title": "Génotype APOE",
+    "title_en": "APOE genotype",
     "gene": "APOE",
     "rsids": ["rs429358", "rs7412"],
     "call_rules": [
-      { "when": { "rs429358": "TT", "rs7412": "CC" }, "result": { "label": "ε3/ε3", "detail": "Génotype le plus courant — risque Alzheimer et cardiovasculaire de référence." } },
-      { "when": { "rs429358": "TT", "rs7412": "CT" }, "result": { "label": "ε2/ε3", "detail": "Légère protection Alzheimer, risque hyperlipidémie III rare." } },
-      { "when": { "rs429358": "TT", "rs7412": "TT" }, "result": { "label": "ε2/ε2", "detail": "Protection Alzheimer marquée, risque de dyslipidémie type III." } },
-      { "when": { "rs429358": "CT", "rs7412": "CC" }, "result": { "label": "ε3/ε4", "detail": "Risque Alzheimer ×2–3 (à la tranche d'âge avancée)." } },
-      { "when": { "rs429358": "CT", "rs7412": "CT" }, "result": { "label": "ε2/ε4", "detail": "Profils mixtes — discuter avec un médecin." } },
-      { "when": { "rs429358": "CC", "rs7412": "CC" }, "result": { "label": "ε4/ε4", "detail": "Risque Alzheimer ×8–12; prévention cardiovasculaire renforcée recommandée." } }
+      { "when": { "rs429358": "TT", "rs7412": "CC" }, "result": { "label": "ε3/ε3", "label_en": "ε3/ε3", "detail": "Génotype le plus courant — risque Alzheimer et cardiovasculaire de référence.", "detail_en": "Most common genotype — baseline Alzheimer and cardiovascular risk." } },
+      { "when": { "rs429358": "TT", "rs7412": "CT" }, "result": { "label": "ε2/ε3", "label_en": "ε2/ε3", "detail": "Légère protection Alzheimer, risque hyperlipidémie III rare.", "detail_en": "Slight protection against Alzheimer's, rare type III hyperlipidemia risk." } },
+      { "when": { "rs429358": "TT", "rs7412": "TT" }, "result": { "label": "ε2/ε2", "label_en": "ε2/ε2", "detail": "Protection Alzheimer marquée, risque de dyslipidémie type III.", "detail_en": "Strong Alzheimer protection, risk of type III dyslipidemia." } },
+      { "when": { "rs429358": "CT", "rs7412": "CC" }, "result": { "label": "ε3/ε4", "label_en": "ε3/ε4", "detail": "Risque Alzheimer ×2–3 (à la tranche d'âge avancée).", "detail_en": "Alzheimer risk ×2–3 (at older ages)." } },
+      { "when": { "rs429358": "CT", "rs7412": "CT" }, "result": { "label": "ε2/ε4", "label_en": "ε2/ε4", "detail": "Profils mixtes — discuter avec un médecin.", "detail_en": "Mixed profile — discuss with a doctor." } },
+      { "when": { "rs429358": "CC", "rs7412": "CC" }, "result": { "label": "ε4/ε4", "label_en": "ε4/ε4", "detail": "Risque Alzheimer ×8–12; prévention cardiovasculaire renforcée recommandée.", "detail_en": "Alzheimer risk ×8–12; reinforced cardiovascular prevention recommended." } }
     ],
     "confidence": "high",
     "sources": ["Corder et al. 1993", "Farrer et al. 1997"]
@@ -198,12 +213,13 @@
   {
     "id": "hemochromatosis",
     "title": "Hémochromatose (HFE C282Y)",
+    "title_en": "Hemochromatosis (HFE C282Y)",
     "gene": "HFE",
     "rsids": ["rs1800562"],
     "call_rules": [
-      { "when": { "rs1800562": "GG" }, "result": { "label": "Pas de variant C282Y", "detail": "Absence du variant principal d'hémochromatose." } },
-      { "when": { "rs1800562": "AG" }, "result": { "label": "Porteur C282Y", "detail": "Hétérozygote — rarement symptomatique, peut contribuer à une surcharge ferrique modérée." } },
-      { "when": { "rs1800562": "AA" }, "result": { "label": "C282Y homozygote", "detail": "Risque d'hémochromatose héréditaire — surveillance ferritine/TS recommandée." } }
+      { "when": { "rs1800562": "GG" }, "result": { "label": "Pas de variant C282Y", "label_en": "No C282Y variant", "detail": "Absence du variant principal d'hémochromatose.", "detail_en": "Main hemochromatosis variant absent." } },
+      { "when": { "rs1800562": "AG" }, "result": { "label": "Porteur C282Y", "label_en": "C282Y carrier", "detail": "Hétérozygote — rarement symptomatique, peut contribuer à une surcharge ferrique modérée.", "detail_en": "Heterozygous — rarely symptomatic, may contribute to mild iron overload." } },
+      { "when": { "rs1800562": "AA" }, "result": { "label": "C282Y homozygote", "label_en": "C282Y homozygous", "detail": "Risque d'hémochromatose héréditaire — surveillance ferritine/TS recommandée.", "detail_en": "Hereditary hemochromatosis risk — ferritin/transferrin saturation monitoring recommended." } }
     ],
     "confidence": "high",
     "sources": ["Feder et al. 1996"]
@@ -211,12 +227,13 @@
   {
     "id": "celiac_hla_proxy",
     "title": "Maladie cœliaque (proxy HLA-DQ)",
+    "title_en": "Celiac disease (HLA-DQ proxy)",
     "gene": "HLA-DQ",
     "rsids": ["rs2187668"],
     "call_rules": [
-      { "when": { "rs2187668": "GG" }, "result": { "label": "Pas de HLA-DQ2.5 (proxy)", "detail": "Risque de maladie cœliaque très faible." } },
-      { "when": { "rs2187668": "AG" }, "result": { "label": "Porteur HLA-DQ2.5 (proxy)", "detail": "Susceptibilité accrue — ne diagnostique pas la maladie, typage HLA requis pour confirmer." } },
-      { "when": { "rs2187668": "AA" }, "result": { "label": "HLA-DQ2.5 homozygote (proxy)", "detail": "Susceptibilité la plus élevée; confirmer par test HLA." } }
+      { "when": { "rs2187668": "GG" }, "result": { "label": "Pas de HLA-DQ2.5 (proxy)", "label_en": "No HLA-DQ2.5 (proxy)", "detail": "Risque de maladie cœliaque très faible.", "detail_en": "Celiac disease risk very low." } },
+      { "when": { "rs2187668": "AG" }, "result": { "label": "Porteur HLA-DQ2.5 (proxy)", "label_en": "HLA-DQ2.5 carrier (proxy)", "detail": "Susceptibilité accrue — ne diagnostique pas la maladie, typage HLA requis pour confirmer.", "detail_en": "Higher susceptibility — not a diagnosis, HLA typing needed to confirm." } },
+      { "when": { "rs2187668": "AA" }, "result": { "label": "HLA-DQ2.5 homozygote (proxy)", "label_en": "HLA-DQ2.5 homozygous (proxy)", "detail": "Susceptibilité la plus élevée; confirmer par test HLA.", "detail_en": "Highest susceptibility; confirm with HLA test." } }
     ],
     "confidence": "medium",
     "sources": ["Monsuur et al. 2008"]
@@ -224,12 +241,13 @@
   {
     "id": "warfarin_sensitivity",
     "title": "Sensibilité à la warfarine (VKORC1)",
+    "title_en": "Warfarin sensitivity (VKORC1)",
     "gene": "VKORC1",
     "rsids": ["rs9923231"],
     "call_rules": [
-      { "when": { "rs9923231": "GG" }, "result": { "label": "Sensibilité standard", "detail": "Haplotype B — dose d'entretien habituelle." } },
-      { "when": { "rs9923231": "AG" }, "result": { "label": "Sensibilité intermédiaire", "detail": "Dose d'entretien réduite modérément." } },
-      { "when": { "rs9923231": "AA" }, "result": { "label": "Haute sensibilité", "detail": "Haplotype A — dose d'entretien nettement plus basse; INR à surveiller étroitement." } }
+      { "when": { "rs9923231": "GG" }, "result": { "label": "Sensibilité standard", "label_en": "Standard sensitivity", "detail": "Haplotype B — dose d'entretien habituelle.", "detail_en": "Haplotype B — usual maintenance dose." } },
+      { "when": { "rs9923231": "AG" }, "result": { "label": "Sensibilité intermédiaire", "label_en": "Intermediate sensitivity", "detail": "Dose d'entretien réduite modérément.", "detail_en": "Moderately reduced maintenance dose." } },
+      { "when": { "rs9923231": "AA" }, "result": { "label": "Haute sensibilité", "label_en": "High sensitivity", "detail": "Haplotype A — dose d'entretien nettement plus basse; INR à surveiller étroitement.", "detail_en": "Haplotype A — markedly lower maintenance dose; INR needs close monitoring." } }
     ],
     "confidence": "high",
     "sources": ["Rieder et al. 2005"]
@@ -237,12 +255,13 @@
   {
     "id": "male_pattern_baldness_proxy",
     "title": "Calvitie masculine (AR proxy)",
+    "title_en": "Male pattern baldness (AR proxy)",
     "gene": "AR",
     "rsids": ["rs6152"],
     "call_rules": [
-      { "when": { "rs6152": "GG" }, "result": { "label": "Risque réduit (proxy)", "detail": "Allèle associé à moindre risque d'alopécie androgénique." } },
-      { "when": { "rs6152": "AG" }, "result": { "label": "Risque intermédiaire", "detail": "Porteur — risque modéré (hommes)." } },
-      { "when": { "rs6152": "AA" }, "result": { "label": "Risque élevé (proxy)", "detail": "Hémizygote/homozygote pour l'allèle à risque (chromosome X)." } }
+      { "when": { "rs6152": "GG" }, "result": { "label": "Risque réduit (proxy)", "label_en": "Lower risk (proxy)", "detail": "Allèle associé à moindre risque d'alopécie androgénique.", "detail_en": "Allele linked to lower risk of androgenic alopecia." } },
+      { "when": { "rs6152": "AG" }, "result": { "label": "Risque intermédiaire", "label_en": "Intermediate risk", "detail": "Porteur — risque modéré (hommes).", "detail_en": "Carrier — moderate risk (in men)." } },
+      { "when": { "rs6152": "AA" }, "result": { "label": "Risque élevé (proxy)", "label_en": "High risk (proxy)", "detail": "Hémizygote/homozygote pour l'allèle à risque (chromosome X).", "detail_en": "Hemizygous/homozygous for the risk allele (X chromosome)." } }
     ],
     "confidence": "low",
     "sources": ["Hillmer et al. 2005"]
@@ -250,12 +269,13 @@
   {
     "id": "freckles",
     "title": "Taches de rousseur (IRF4)",
+    "title_en": "Freckles (IRF4)",
     "gene": "IRF4",
     "rsids": ["rs12203592"],
     "call_rules": [
-      { "when": { "rs12203592": "CC" }, "result": { "label": "Peu de taches", "detail": "Phénotype commun." } },
-      { "when": { "rs12203592": "CT" }, "result": { "label": "Taches fréquentes", "detail": "Contribution IRF4 à la pigmentation." } },
-      { "when": { "rs12203592": "TT" }, "result": { "label": "Taches abondantes", "detail": "Fort phénotype 'freckles' — associé à peau/cheveux clairs." } }
+      { "when": { "rs12203592": "CC" }, "result": { "label": "Peu de taches", "label_en": "Few freckles", "detail": "Phénotype commun.", "detail_en": "Common phenotype." } },
+      { "when": { "rs12203592": "CT" }, "result": { "label": "Taches fréquentes", "label_en": "Frequent freckles", "detail": "Contribution IRF4 à la pigmentation.", "detail_en": "IRF4 contribution to pigmentation." } },
+      { "when": { "rs12203592": "TT" }, "result": { "label": "Taches abondantes", "label_en": "Abundant freckles", "detail": "Fort phénotype 'freckles' — associé à peau/cheveux clairs.", "detail_en": "Strong 'freckles' phenotype — linked to fair skin/hair." } }
     ],
     "confidence": "medium",
     "sources": ["Han et al. 2008"]
@@ -263,14 +283,15 @@
   {
     "id": "celiac_hla",
     "title": "Prédisposition cœliaque (HLA-DQ2/DQ8)",
+    "title_en": "Celiac predisposition (HLA-DQ2/DQ8)",
     "gene": "HLA-DQA1/DQB1",
     "rsids": ["rs2187668", "rs7454108"],
     "call_rules": [
-      { "when": { "rs2187668": "TT" }, "result": { "label": "HLA-DQ2.5 homozygote", "detail": "Haplotype à plus fort risque — ~95% des cœliaques portent DQ2/DQ8. Ne diagnostique pas la maladie : la majorité des porteurs ne la développe jamais." } },
-      { "when": { "rs2187668": "CT" }, "result": { "label": "HLA-DQ2.5 hétérozygote", "detail": "Prédisposition présente. La maladie cœliaque reste rare (~1%) même avec cet allèle." } },
-      { "when": { "rs7454108": "CC" }, "result": { "label": "HLA-DQ8 positif", "detail": "Prédisposition DQ8 — second haplotype à risque. Test clinique nécessaire si symptômes." } },
-      { "when": { "rs7454108": "CT" }, "result": { "label": "HLA-DQ8 porteur", "detail": "Un allèle DQ8 — prédisposition modérée." } },
-      { "when": { "rs2187668": "CC", "rs7454108": "TT" }, "result": { "label": "Risque faible", "detail": "Ni DQ2.5 ni DQ8 détectés — maladie cœliaque très peu probable." } }
+      { "when": { "rs2187668": "TT" }, "result": { "label": "HLA-DQ2.5 homozygote", "label_en": "HLA-DQ2.5 homozygous", "detail": "Haplotype à plus fort risque — ~95% des cœliaques portent DQ2/DQ8. Ne diagnostique pas la maladie : la majorité des porteurs ne la développe jamais.", "detail_en": "Highest-risk haplotype — ~95% of celiacs carry DQ2/DQ8. Not a diagnosis: most carriers never develop the disease." } },
+      { "when": { "rs2187668": "CT" }, "result": { "label": "HLA-DQ2.5 hétérozygote", "label_en": "HLA-DQ2.5 heterozygous", "detail": "Prédisposition présente. La maladie cœliaque reste rare (~1%) même avec cet allèle.", "detail_en": "Predisposition present. Celiac disease remains rare (~1%) even with this allele." } },
+      { "when": { "rs7454108": "CC" }, "result": { "label": "HLA-DQ8 positif", "label_en": "HLA-DQ8 positive", "detail": "Prédisposition DQ8 — second haplotype à risque. Test clinique nécessaire si symptômes.", "detail_en": "DQ8 predisposition — the second risk haplotype. Clinical testing needed if symptomatic." } },
+      { "when": { "rs7454108": "CT" }, "result": { "label": "HLA-DQ8 porteur", "label_en": "HLA-DQ8 carrier", "detail": "Un allèle DQ8 — prédisposition modérée.", "detail_en": "One DQ8 allele — moderate predisposition." } },
+      { "when": { "rs2187668": "CC", "rs7454108": "TT" }, "result": { "label": "Risque faible", "label_en": "Low risk", "detail": "Ni DQ2.5 ni DQ8 détectés — maladie cœliaque très peu probable.", "detail_en": "Neither DQ2.5 nor DQ8 detected — celiac disease very unlikely." } }
     ],
     "confidence": "high",
     "sources": ["Monsuur et al. 2008", "Koskinen et al. 2009"]
@@ -278,12 +299,13 @@
   {
     "id": "obesity_fto",
     "title": "Prédisposition à l'obésité (FTO)",
+    "title_en": "Obesity predisposition (FTO)",
     "gene": "FTO",
     "rsids": ["rs9939609"],
     "call_rules": [
-      { "when": { "rs9939609": "AA" }, "result": { "label": "Risque élevé (AA)", "detail": "+3 kg en moyenne vs TT à IMC adulte. Effet modulable par l'exercice (~30% d'atténuation avec activité soutenue)." } },
-      { "when": { "rs9939609": "AT" }, "result": { "label": "Risque intermédiaire (AT)", "detail": "+1.5 kg en moyenne. L'environnement alimentaire reste prépondérant." } },
-      { "when": { "rs9939609": "TT" }, "result": { "label": "Risque bas (TT)", "detail": "Allèle protecteur — effet FTO minimal. Les autres facteurs (régime, sommeil, activité) dominent." } }
+      { "when": { "rs9939609": "AA" }, "result": { "label": "Risque élevé (AA)", "label_en": "Higher risk (AA)", "detail": "+3 kg en moyenne vs TT à IMC adulte. Effet modulable par l'exercice (~30% d'atténuation avec activité soutenue).", "detail_en": "+3 kg on average vs TT at adult BMI. Effect modulated by exercise (~30% attenuation with sustained activity)." } },
+      { "when": { "rs9939609": "AT" }, "result": { "label": "Risque intermédiaire (AT)", "label_en": "Intermediate risk (AT)", "detail": "+1.5 kg en moyenne. L'environnement alimentaire reste prépondérant.", "detail_en": "+1.5 kg on average. Food environment still dominates." } },
+      { "when": { "rs9939609": "TT" }, "result": { "label": "Risque bas (TT)", "label_en": "Lower risk (TT)", "detail": "Allèle protecteur — effet FTO minimal. Les autres facteurs (régime, sommeil, activité) dominent.", "detail_en": "Protective allele — minimal FTO effect. Other factors (diet, sleep, activity) dominate." } }
     ],
     "confidence": "high",
     "sources": ["Frayling et al. 2007", "Kilpeläinen et al. 2011 (exercise interaction)"]
@@ -291,12 +313,13 @@
   {
     "id": "mthfr_folate",
     "title": "Métabolisme du folate (MTHFR C677T)",
+    "title_en": "Folate metabolism (MTHFR C677T)",
     "gene": "MTHFR",
     "rsids": ["rs1801133"],
     "call_rules": [
-      { "when": { "rs1801133": "GG" }, "result": { "label": "Activité normale (CC)", "detail": "MTHFR pleinement fonctionnelle. Aucun ajustement folate nécessaire." } },
-      { "when": { "rs1801133": "AG" }, "result": { "label": "Activité réduite ~30% (CT)", "detail": "Portez un allèle 677T. Apport en folates (légumes verts, agrumes) conseillé; supplémentation rarement nécessaire." } },
-      { "when": { "rs1801133": "AA" }, "result": { "label": "Activité réduite ~70% (TT)", "detail": "Homozygote 677T — homocystéine potentiellement élevée. Apport folate (idéalement 5-MTHF si grossesse ou carence B12) souvent recommandé par les praticiens. Ne pas auto-supplémenter sans test biologique." } }
+      { "when": { "rs1801133": "GG" }, "result": { "label": "Activité normale (CC)", "label_en": "Normal activity (CC)", "detail": "MTHFR pleinement fonctionnelle. Aucun ajustement folate nécessaire.", "detail_en": "MTHFR fully functional. No folate adjustment needed." } },
+      { "when": { "rs1801133": "AG" }, "result": { "label": "Activité réduite ~30% (CT)", "label_en": "Reduced activity ~30% (CT)", "detail": "Portez un allèle 677T. Apport en folates (légumes verts, agrumes) conseillé; supplémentation rarement nécessaire.", "detail_en": "You carry one 677T allele. Folate intake (leafy greens, citrus) advised; supplementation rarely needed." } },
+      { "when": { "rs1801133": "AA" }, "result": { "label": "Activité réduite ~70% (TT)", "label_en": "Reduced activity ~70% (TT)", "detail": "Homozygote 677T — homocystéine potentiellement élevée. Apport folate (idéalement 5-MTHF si grossesse ou carence B12) souvent recommandé par les praticiens. Ne pas auto-supplémenter sans test biologique.", "detail_en": "677T homozygous — homocysteine potentially elevated. Folate intake (ideally 5-MTHF if pregnant or B12-deficient) often recommended by clinicians. Do not self-supplement without lab testing." } }
     ],
     "confidence": "high",
     "sources": ["Frosst et al. 1995", "Wilson et al. 1999"]
@@ -304,12 +327,13 @@
   {
     "id": "omega3_fads1",
     "title": "Conversion des oméga-3 (FADS1)",
+    "title_en": "Omega-3 conversion (FADS1)",
     "gene": "FADS1",
     "rsids": ["rs174547"],
     "call_rules": [
-      { "when": { "rs174547": "TT" }, "result": { "label": "Convertisseur efficace", "detail": "Conversion ALA → EPA/DHA préservée. Sources végétales (lin, colza, noix) suffisent en théorie." } },
-      { "when": { "rs174547": "CT" }, "result": { "label": "Convertisseur intermédiaire", "detail": "Efficacité modérée. Sources marines (poissons gras 2×/semaine) utiles." } },
-      { "when": { "rs174547": "CC" }, "result": { "label": "Convertisseur faible", "detail": "Conversion limitée — sources marines (EPA/DHA préformés) fortement recommandées; un régime végétal strict demande souvent une supplémentation algale." } }
+      { "when": { "rs174547": "TT" }, "result": { "label": "Convertisseur efficace", "label_en": "Efficient converter", "detail": "Conversion ALA → EPA/DHA préservée. Sources végétales (lin, colza, noix) suffisent en théorie.", "detail_en": "ALA → EPA/DHA conversion preserved. Plant sources (flax, canola, walnuts) should suffice in theory." } },
+      { "when": { "rs174547": "CT" }, "result": { "label": "Convertisseur intermédiaire", "label_en": "Intermediate converter", "detail": "Efficacité modérée. Sources marines (poissons gras 2×/semaine) utiles.", "detail_en": "Moderate efficiency. Marine sources (fatty fish 2×/week) helpful." } },
+      { "when": { "rs174547": "CC" }, "result": { "label": "Convertisseur faible", "label_en": "Weak converter", "detail": "Conversion limitée — sources marines (EPA/DHA préformés) fortement recommandées; un régime végétal strict demande souvent une supplémentation algale.", "detail_en": "Limited conversion — marine sources (preformed EPA/DHA) strongly recommended; a strict plant-based diet often calls for algal supplementation." } }
     ],
     "confidence": "high",
     "sources": ["Schaeffer et al. 2006", "Glaser et al. 2010"]
@@ -317,12 +341,13 @@
   {
     "id": "vitamin_d_gc",
     "title": "Vitamine D circulante (GC)",
+    "title_en": "Circulating vitamin D (GC)",
     "gene": "GC (DBP)",
     "rsids": ["rs2282679"],
     "call_rules": [
-      { "when": { "rs2282679": "TT" }, "result": { "label": "25-OH-D usuellement plus haute (TT)", "detail": "Variant associé à des niveaux circulants plus élevés — statut vitamine D généralement plus facile à maintenir." } },
-      { "when": { "rs2282679": "GT" }, "result": { "label": "Niveau intermédiaire (GT)", "detail": "Exposition solaire modérée + aliments enrichis suffisent souvent en dehors de l'hiver." } },
-      { "when": { "rs2282679": "GG" }, "result": { "label": "Tendance à des niveaux plus bas (GG)", "detail": "Variant associé à des 25-OH-D plus basses. Dosage sanguin conseillé en hiver pour cibler une supplémentation adaptée, plutôt qu'une prise à l'aveugle." } }
+      { "when": { "rs2282679": "TT" }, "result": { "label": "25-OH-D usuellement plus haute (TT)", "label_en": "Typically higher 25-OH-D (TT)", "detail": "Variant associé à des niveaux circulants plus élevés — statut vitamine D généralement plus facile à maintenir.", "detail_en": "Variant linked to higher circulating levels — vitamin D status usually easier to maintain." } },
+      { "when": { "rs2282679": "GT" }, "result": { "label": "Niveau intermédiaire (GT)", "label_en": "Intermediate level (GT)", "detail": "Exposition solaire modérée + aliments enrichis suffisent souvent en dehors de l'hiver.", "detail_en": "Moderate sun exposure + fortified foods are often enough outside of winter." } },
+      { "when": { "rs2282679": "GG" }, "result": { "label": "Tendance à des niveaux plus bas (GG)", "label_en": "Tendency toward lower levels (GG)", "detail": "Variant associé à des 25-OH-D plus basses. Dosage sanguin conseillé en hiver pour cibler une supplémentation adaptée, plutôt qu'une prise à l'aveugle.", "detail_en": "Variant linked to lower 25-OH-D. Blood test advised in winter to target supplementation properly, rather than dosing blind." } }
     ],
     "confidence": "high",
     "sources": ["Wang et al. 2010 (Lancet)", "Ahn et al. 2010"]
@@ -330,12 +355,13 @@
   {
     "id": "salt_sensitivity_agt",
     "title": "Sensibilité au sel (AGT)",
+    "title_en": "Salt sensitivity (AGT)",
     "gene": "AGT",
     "rsids": ["rs699"],
     "call_rules": [
-      { "when": { "rs699": "GG" }, "result": { "label": "Sensibilité au sel probable (GG = 235M/M)", "detail": "Allèle Met235 — réponse tensionnelle plus forte au sel chez certaines populations. Réduire le sel a un effet mesurable sur la tension." } },
-      { "when": { "rs699": "AG" }, "result": { "label": "Sensibilité intermédiaire", "detail": "Un seul allèle à risque — réponse au sel variable." } },
-      { "when": { "rs699": "AA" }, "result": { "label": "Peu sensible au sel (AA = 235T/T)", "detail": "Réponse tensionnelle au sel généralement faible — cela n'annule pas les recommandations globales sur l'apport sodé (&lt;5 g/j)." } }
+      { "when": { "rs699": "GG" }, "result": { "label": "Sensibilité au sel probable (GG = 235M/M)", "label_en": "Likely salt-sensitive (GG = 235M/M)", "detail": "Allèle Met235 — réponse tensionnelle plus forte au sel chez certaines populations. Réduire le sel a un effet mesurable sur la tension.", "detail_en": "Met235 allele — stronger blood pressure response to salt in some populations. Cutting salt has a measurable effect on blood pressure." } },
+      { "when": { "rs699": "AG" }, "result": { "label": "Sensibilité intermédiaire", "label_en": "Intermediate sensitivity", "detail": "Un seul allèle à risque — réponse au sel variable.", "detail_en": "Just one risk allele — salt response varies." } },
+      { "when": { "rs699": "AA" }, "result": { "label": "Peu sensible au sel (AA = 235T/T)", "label_en": "Low salt sensitivity (AA = 235T/T)", "detail": "Réponse tensionnelle au sel généralement faible — cela n'annule pas les recommandations globales sur l'apport sodé (&lt;5 g/j).", "detail_en": "Blood pressure response to salt usually weak — this doesn't override general sodium intake guidelines (<5 g/day)." } }
     ],
     "confidence": "medium",
     "sources": ["Jeunemaitre et al. 1992", "Beeks et al. 2004 review"]

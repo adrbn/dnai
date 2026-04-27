@@ -5,6 +5,7 @@ import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { explainPRS } from "@/lib/prs-explain";
 import { PRSRadar } from "@/components/viz/PRSRadar";
+import { SectionPrimer } from "@/components/SectionPrimer";
 import { PRSDistribution } from "@/components/viz/PRSDistribution";
 import type { PRSFinding } from "@/lib/types";
 import { S, tr, trTpl } from "@/lib/i18n/strings";
@@ -48,13 +49,18 @@ export function PRSSection({ findings, lang = "fr" }: PRSProps) {
 
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
+      <div className="md:col-span-12">
+        <SectionPrimer kind="prs" lang={lang} />
+      </div>
       {sorted.length >= 3 && (
         <Card className="md:col-span-12">
           <CardHeader
             title={tr(S.prs.radarTitle, lang)}
             subtitle={trTpl(S.prs.radarSubtitleTpl, lang, sorted.length)}
           />
-          <PRSRadar findings={sorted} lang={lang} />
+          <div className="mx-auto w-full max-w-[640px]">
+            <PRSRadar findings={sorted} size={560} lang={lang} />
+          </div>
         </Card>
       )}
 

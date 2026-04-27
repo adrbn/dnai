@@ -149,7 +149,7 @@ const STRINGS: Record<Lang, Strings> = {
     sample: {
       eyebrow: "Pages 4–5 d'un rapport type",
       heading:
-        "Chaque variant est détaillé sur une demi-page : position, fréquence, et un paragraphe en langage clair.",
+        "Du rsID\nau paragraphe lisible.",
       health: "Santé · clinvar",
       pharma: "Pharmacogénomique",
     },
@@ -254,7 +254,7 @@ const STRINGS: Record<Lang, Strings> = {
     },
     sample: {
       eyebrow: "Pages 4–5 of a sample report",
-      heading: "Each finding gets a half-page: position, frequency, and a plain-language paragraph.",
+      heading: "From rsID\nto readable paragraph.",
       health: "Health · clinvar",
       pharma: "Pharmacogenomics",
     },
@@ -336,18 +336,18 @@ const SAMPLE_CLINVAR: {
 ];
 
 const SAMPLE_PHARMA: {
-  drug: string;
+  drug: Record<Lang, string>;
   gene: string;
-  phenotype: string;
+  phenotype: Record<Lang, string>;
   star: string;
   severity: "high" | "moderate" | "info";
   source: string;
   advice: Record<Lang, string>;
 }[] = [
   {
-    drug: "Clopidogrel",
+    drug: { fr: "Clopidogrel", en: "Clopidogrel" },
     gene: "CYP2C19",
-    phenotype: "Intermediate metabolizer",
+    phenotype: { fr: "Métaboliseur intermédiaire", en: "Intermediate metabolizer" },
     star: "*1/*2",
     severity: "moderate",
     source: "CPIC Level A",
@@ -357,9 +357,9 @@ const SAMPLE_PHARMA: {
     },
   },
   {
-    drug: "Simvastatine",
+    drug: { fr: "Simvastatine", en: "Simvastatin" },
     gene: "SLCO1B1",
-    phenotype: "Fonction diminuée",
+    phenotype: { fr: "Fonction diminuée", en: "Decreased function" },
     star: "rs4149056 · C/T",
     severity: "moderate",
     source: "CPIC Level A",
@@ -369,9 +369,9 @@ const SAMPLE_PHARMA: {
     },
   },
   {
-    drug: "Codéine",
+    drug: { fr: "Codéine", en: "Codeine" },
     gene: "CYP2D6",
-    phenotype: "Métaboliseur normal",
+    phenotype: { fr: "Métaboliseur normal", en: "Normal metabolizer" },
     star: "*1/*1",
     severity: "info",
     source: "CPIC Level A",
@@ -385,7 +385,7 @@ const SAMPLE_PHARMA: {
 export default function Home() {
   const router = useRouter();
   const { setStatus, setProgress, setData, setError, reset, status } = useAnalysis();
-  const [lang, setLang] = useLang();
+  const [lang, setLang, langHydrated] = useLang();
   const inputRef = useRef<HTMLInputElement>(null);
   const lastFileRef = useRef<File | null>(null);
   const busy = status === "running";
@@ -468,6 +468,18 @@ export default function Home() {
   }, [pendingFile, onFile]);
 
   const s = STRINGS[lang];
+
+  // Avoid the FR→EN flash on reload when the user's stored preference is EN:
+  // useLang returns "fr" until hydrated. Render a neutral skeleton until then.
+  if (!langHydrated) {
+    return (
+      <main
+        className="relative min-h-screen"
+        style={{ background: CL.paper, color: CL.ink }}
+        aria-hidden
+      />
+    );
+  }
 
   return (
     <main
@@ -1157,11 +1169,12 @@ function SampleSpread({ strings, lang }: { strings: Strings["sample"]; lang: Lan
         {strings.eyebrow}
       </div>
       <div
-        className="mt-3 max-w-[760px]"
+        className="mt-3 max-w-[760px] whitespace-pre-line"
         style={{
           fontFamily: "var(--font-serif)",
-          fontSize: "clamp(22px, 3.2vw, 32px)",
-          letterSpacing: "-0.015em",
+          fontSize: "clamp(28px, 4.5vw, 56px)",
+          lineHeight: 1.05,
+          letterSpacing: "-0.025em",
           color: CL.ink,
         }}
       >
@@ -1292,13 +1305,13 @@ function SampleSpread({ strings, lang }: { strings: Strings["sample"]; lang: Lan
                         color: CL.ink,
                       }}
                     >
-                      {p.drug}
+                      {p.drug[lang]}
                     </div>
                     <div
                       className="mt-1 text-[11px] tracking-[0.04em]"
                       style={{ color: CL.ink3, fontFamily: "var(--font-sans)" }}
                     >
-                      {p.gene} &nbsp;·&nbsp; {p.star} &nbsp;·&nbsp; {p.phenotype}
+                      {p.gene} &nbsp;·&nbsp; {p.star} &nbsp;·&nbsp; {p.phenotype[lang]}
                     </div>
                     <div
                       className="mt-2"

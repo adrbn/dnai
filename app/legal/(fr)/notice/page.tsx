@@ -24,9 +24,10 @@ export default function NoticePage() {
         Hébergement
       </h2>
       <p>
-        Les pages statiques de DNAI sont hébergées par un fournisseur CDN (par exemple Vercel, Cloudflare). Les
-        fichiers ADN ne sont jamais transmis à cet hébergeur : l&apos;analyse s&apos;exécute dans le navigateur
-        de l&apos;utilisateur.
+        Les pages statiques de DNAI sont hébergées par Vercel Inc.
+        (440 N Barranca Ave #4133, Covina, CA 91723, USA — vercel.com).
+        Les fichiers ADN ne sont jamais transmis à l&apos;hébergeur : l&apos;analyse s&apos;exécute
+        intégralement dans le navigateur de l&apos;utilisateur.
       </p>
 
       <h2 className="mt-8 font-serif text-[24px] font-medium tracking-[-0.01em] text-ink">

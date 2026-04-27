@@ -20,7 +20,7 @@ function maxSeverity(a: Severity, b: Severity): Severity {
  * never appear to prescribe or recommend — only quote published
  * genotype-drug associations.
  */
-function softenEffect(raw: string): string {
+function softenEffectFr(raw: string): string {
   if (!raw) return raw;
   let s = raw;
   // Imperative → descriptive
@@ -51,10 +51,29 @@ function softenEffect(raw: string): string {
   s = s.replace(/\bdosage guidé\b/gi, "un dosage guidé est décrit");
   // Tidy
   s = s.replace(/\s{2,}/g, " ").trim();
-  // Strip trailing punctuation duplication
   s = s.replace(/\.\s*\.$/g, ".");
   if (!s.endsWith(".")) s += ".";
   return `${s} — Source : littérature CPIC/DPWG. Pour information, ne constitue pas une recommandation médicale.`;
+}
+
+/**
+ * EN counterpart of softenEffectFr. The EN strings in pgx-rules.json are
+ * already authored in descriptive register (per translation guidelines), so
+ * the regex pass mostly handles legacy imperative phrasing as a safety net,
+ * then appends the EN source/ack tail.
+ */
+function softenEffectEn(raw: string): string {
+  if (!raw) return raw;
+  let s = raw;
+  s = s.replace(/\bavoid\b/gi, "association reported as risky in the literature");
+  s = s.replace(/\breduce the dose\b/gi, "a dose reduction is described");
+  s = s.replace(/\bmonitor(?:ing)?\b/gi, "biological follow-up is described");
+  s = s.replace(/\brecommend(?:ed)?\b/gi, "described in the literature");
+  s = s.replace(/\bsevere toxicity\b/gi, "severe toxicity reported");
+  s = s.replace(/\s{2,}/g, " ").trim();
+  s = s.replace(/\.\s*\.$/g, ".");
+  if (!s.endsWith(".")) s += ".";
+  return `${s} — Source: literature CPIC/DPWG. For information only; does not constitute medical advice.`;
 }
 
 export type PharmaAnnotateResult = {
@@ -90,21 +109,29 @@ export function annotatePharma(
         existing.contributors.push({
           gene: f.rule.gene,
           phenotype: f.outcome.phenotype,
+          phenotype_en: f.outcome.phenotype_en,
           zygosity: f.zygosity,
         });
         if (existing.severity === impl.severity) {
-          existing.effect = softenEffect(impl.effect);
+          existing.effect = softenEffectFr(impl.effect);
+          existing.effect_en = impl.effect_en
+            ? softenEffectEn(impl.effect_en)
+            : undefined;
+          existing.drug_class_en = impl.drug_class_en ?? existing.drug_class_en;
         }
       } else {
         byDrugMap.set(key, {
           drug: impl.drug,
           drug_class: impl.drug_class,
-          effect: softenEffect(impl.effect),
+          drug_class_en: impl.drug_class_en,
+          effect: softenEffectFr(impl.effect),
+          effect_en: impl.effect_en ? softenEffectEn(impl.effect_en) : undefined,
           severity: impl.severity,
           contributors: [
             {
               gene: f.rule.gene,
               phenotype: f.outcome.phenotype,
+              phenotype_en: f.outcome.phenotype_en,
               zygosity: f.zygosity,
             },
           ],

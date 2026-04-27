@@ -1,14 +1,8 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import type { CameraPose, HighlightPoint } from "./Genome3D";
+import { Genome3D, type CameraPose, type HighlightPoint } from "./Genome3D";
 import { Genome2D } from "./Genome2D";
-
-const Genome3D = dynamic(
-  () => import("./Genome3D").then((m) => m.Genome3D),
-  { ssr: false },
-);
 
 interface GenomeStageProps {
   pose: CameraPose;
@@ -25,8 +19,6 @@ export function GenomeStage(props: GenomeStageProps) {
     const rm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     setReducedMotion(rm);
 
-    const isNarrow = window.innerWidth < 768;
-    const isCoarse = window.matchMedia("(pointer: coarse)").matches;
     const hasWebGL = (() => {
       try {
         const c = document.createElement("canvas");
@@ -35,7 +27,7 @@ export function GenomeStage(props: GenomeStageProps) {
         return false;
       }
     })();
-    setUse3D(hasWebGL && !isNarrow && !isCoarse);
+    setUse3D(hasWebGL);
   }, []);
 
   if (use3D === null) {

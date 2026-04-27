@@ -23,12 +23,16 @@ export type ClinVarEntry = {
   rs: string;
   gene: string;
   condition: string;
+  /** Optional English condition name (falls back to `condition` if absent). */
+  condition_en?: string;
   sig: ClinicalSignificance;
   ref: string; // allows SNVs and indels
   alt: string;
   rev: number; // review status stars 0-4
   href?: string;
   note?: string;
+  /** Optional English curated note (falls back to `note` if absent). */
+  note_en?: string;
 };
 
 export type ClinVarFinding = {
@@ -42,12 +46,18 @@ export type Severity = "low" | "medium" | "high";
 export type PGxImplication = {
   drug: string;
   drug_class?: string;
+  /** Optional English drug class label (falls back to `drug_class`). */
+  drug_class_en?: string;
   effect: string;
+  /** Optional English effect text (falls back to `effect`). Pre-softened. */
+  effect_en?: string;
   severity: Severity;
 };
 
 export type PGxCallOutcome = {
   phenotype: string;
+  /** Optional English phenotype label (falls back to `phenotype`). */
+  phenotype_en?: string;
   star?: string;
 };
 
@@ -75,21 +85,37 @@ export type PharmaFinding = {
 export type PharmaByDrug = {
   drug: string;
   drug_class?: string;
+  drug_class_en?: string;
   effect: string;
+  /** Pre-softened English effect text with EN source/ack tail. */
+  effect_en?: string;
   severity: Severity;
-  contributors: { gene: string; phenotype: string; zygosity: Zygosity }[];
+  contributors: {
+    gene: string;
+    phenotype: string;
+    phenotype_en?: string;
+    zygosity: Zygosity;
+  }[];
 };
 
 export type TraitConfidence = "high" | "medium" | "low";
 
 export type TraitCallRule = {
   when: Record<string, string>; // rsid -> genotype string like "AA" or "AG"
-  result: { label: string; detail: string; emoji?: string };
+  result: {
+    label: string;
+    label_en?: string;
+    detail: string;
+    detail_en?: string;
+    emoji?: string;
+  };
 };
 
 export type TraitRule = {
   id: string;
   title: string;
+  /** Optional English title (falls back to `title`). */
+  title_en?: string;
   gene: string;
   rsids: string[];
   call_rules: TraitCallRule[];
@@ -100,7 +126,13 @@ export type TraitRule = {
 
 export type TraitFinding = {
   rule: TraitRule;
-  result: { label: string; detail: string; emoji?: string } | null; // null = indeterminate
+  result: {
+    label: string;
+    label_en?: string;
+    detail: string;
+    detail_en?: string;
+    emoji?: string;
+  } | null; // null = indeterminate
   genotypes_used: Record<string, string | null>;
 };
 
@@ -190,7 +222,7 @@ export type NeanderthalResult = {
   archaicDosage: number; // sum of archaic allele copies
   maxDosage: number; // 2 * matchedSnps
   percent: number; // estimated % Neanderthal-like in genome (0..4)
-  topHits: { rsid: string; gene: string; dosage: number; note: string }[];
+  topHits: { rsid: string; gene: string; dosage: number; note: LocalizedString }[];
 };
 
 export type AncestryComponent = {
@@ -224,29 +256,36 @@ export type HaplogroupResult = {
 
 export type CarrierFinding = {
   condition: string;
+  condition_en?: string;
   gene: string;
   rsid: string;
   zygosity: Zygosity;
   status: "carrier" | "affected" | "clear";
   inheritance: "AR" | "XLR";
   note: string;
+  note_en?: string;
 };
 
 export type ActionableFinding = {
   id: string;
   gene: string;
   name: string;
+  name_en?: string;
   call: string; // e.g., "ε3/ε4", "heterozygote"
+  call_en?: string;
   risk: "high" | "moderate" | "low" | "neutral";
   note: string;
+  note_en?: string;
   rsids: string[];
   genotypes: Record<string, string | null>;
 };
 
+export type LocalizedString = { fr: string; en: string };
+
 export type FunResult = {
-  music: { notes: number[]; tempo: number; key: string }; // MIDI notes 0..87
+  music: { notes: number[]; tempo: number; key: LocalizedString }; // MIDI notes 0..87
   art: { seed: string; palette: string[]; shapes: string }; // svg path string
-  twins: { name: string; similarity: number; era: string; note: string }[];
+  twins: { name: LocalizedString; similarity: number; era: LocalizedString; note: LocalizedString }[];
 };
 
 export type AnalysisResult = {

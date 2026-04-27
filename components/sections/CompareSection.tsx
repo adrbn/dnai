@@ -25,6 +25,7 @@ const SEV_COLOR: Record<Severity, string> = {
 
 import type { Lang } from "@/lib/i18n/lang";
 import { SectionDisclaimer } from "@/components/SectionDisclaimer";
+import { SectionPrimer } from "@/components/SectionPrimer";
 
 interface CompareProps {
   result: AnalysisResult;
@@ -117,6 +118,7 @@ export function CompareSection({ result, genotypes, lang = "fr" }: CompareProps)
   if (!compareResult || !compareGenotypes) {
     return (
       <>
+        <SectionPrimer kind="compare" lang={lang} />
         <SectionDisclaimer kind="compare" lang={lang} />
         <Card>
           <CardHeader title={c.ctaTitle} subtitle={c.ctaSubtitle} />
@@ -143,6 +145,7 @@ export function CompareSection({ result, genotypes, lang = "fr" }: CompareProps)
 
   return (
     <>
+      <SectionPrimer kind="compare" lang={lang} />
       <SectionDisclaimer kind="compare" lang={lang} />
       <CompareContent
         a={{ result, genotypes }}

@@ -62,19 +62,23 @@ const CHROME: Record<Lang, {
 };
 
 export default function ReportPage() {
-  const { result, positions, genotypes } = useAnalysis();
+  const { result, positions, genotypes, hydrated: analysisHydrated, hydrate: hydrateAnalysis } = useAnalysis();
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("overview");
   const [pdfModalOpen, setPdfModalOpen] = useState(false);
   const [pdfInfo, setPdfInfo] = useState<PdfUserInfo | null>(null);
   const { unlocked, hydrated } = useUnlockGate();
-  const [lang, setLang] = useLang();
+  const [lang, setLang, langHydrated] = useLang();
   const tabs = TAB_ORDER.map((key) => ({ key, ...TAB_LABELS[lang][key] }));
   const chrome = CHROME[lang];
 
   useEffect(() => {
-    if (!result) router.replace("/");
-  }, [result, router]);
+    void hydrateAnalysis();
+  }, [hydrateAnalysis]);
+
+  useEffect(() => {
+    if (analysisHydrated && !result) router.replace("/");
+  }, [analysisHydrated, result, router]);
 
   useEffect(() => {
     setPdfInfo(loadSavedPdfInfo());
@@ -86,9 +90,13 @@ export default function ReportPage() {
     setTimeout(() => window.print(), 80);
   };
 
+  if (!analysisHydrated) return null;
   if (!result) return null;
   if (hydrated && !unlocked) return <Paywall eyebrow="Rapport" />;
-  if (!hydrated) return null;
+  // Block first paint until both the unlock gate AND the lang preference
+  // have read localStorage. Otherwise users land on FR for a beat even when
+  // they picked EN on the homepage.
+  if (!hydrated || !langHydrated) return null;
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-grid">

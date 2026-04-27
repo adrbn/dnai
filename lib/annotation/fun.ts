@@ -1,4 +1,4 @@
-import type { FunResult } from "../types";
+import type { FunResult, LocalizedString } from "../types";
 
 // All outputs are deterministic functions of the file hash so the same user
 // always gets the same "DNA song" / "DNA art" / "celebrity twin".
@@ -21,8 +21,11 @@ const A_MINOR_SCALE = [57, 59, 60, 62, 64, 65, 67, 69, 71, 72, 74, 76, 77, 79];
 function buildMusic(hash: string): FunResult["music"] {
   const bytes = hashToBytes(hash);
   // Major if first byte is even, minor otherwise
-  const scale = bytes[0] % 2 === 0 ? C_MAJOR_SCALE : A_MINOR_SCALE;
-  const key = bytes[0] % 2 === 0 ? "Do majeur" : "La mineur";
+  const isMajor = bytes[0] % 2 === 0;
+  const scale = isMajor ? C_MAJOR_SCALE : A_MINOR_SCALE;
+  const key: LocalizedString = isMajor
+    ? { fr: "Do majeur", en: "C major" }
+    : { fr: "La mineur", en: "A minor" };
   const notes: number[] = [];
   for (let i = 0; i < 16; i++) {
     const b = cyclicByte(bytes, i);
@@ -58,19 +61,69 @@ function buildArt(hash: string): FunResult["art"] {
   return { seed: hash.slice(0, 8), palette, shapes };
 }
 
-type Twin = { name: string; era: string; bias: number; note: string };
+type Twin = { name: LocalizedString; era: LocalizedString; bias: number; note: LocalizedString };
 
 const TWINS: Twin[] = [
-  { name: "Ötzi (l'Homme des glaces)", era: "−3300 av. J.-C. (Alpes)", bias: 0.3, note: "Chasseur-cueilleur néolithique, haplogroupe G-L91." },
-  { name: "Richard III", era: "XVe siècle (Angleterre)", bias: 0.5, note: "Roi Plantagenêt — génome séquencé sur squelette de Leicester." },
-  { name: "Tutankhamon", era: "−1325 av. J.-C. (Égypte)", bias: 0.4, note: "Pharaon — haplogroupe Y R1b selon reconstitution." },
-  { name: "Néandertal de Vindija", era: "−38 000 ans (Croatie)", bias: 0.6, note: "Référence génomique néandertalienne." },
-  { name: "Homme de Cheddar", era: "−7150 av. J.-C. (Angleterre)", bias: 0.45, note: "Chasseur-cueilleur mésolithique britannique, peau foncée, yeux bleus." },
-  { name: "Cléopâtre (reconstitution)", era: "−30 av. J.-C. (Égypte)", bias: 0.35, note: "Dynastie ptolémaïque gréco-égyptienne." },
-  { name: "Charlemagne (lignée attribuée)", era: "IXe siècle (Francie)", bias: 0.55, note: "Haplogroupe R1b probable — ancêtre commun récent pour beaucoup d'Européens." },
-  { name: "Genghis Khan (lignée Y)", era: "XIIIe siècle (Mongolie)", bias: 0.25, note: "C3-star cluster — ~0.5% des hommes de la planète." },
-  { name: "Ramsès II", era: "−1213 av. J.-C. (Égypte)", bias: 0.3, note: "Pharaon — analyse génétique post-mortem controversée." },
-  { name: "Homme de Kennewick", era: "−7000 av. J.-C. (Amérique du Nord)", bias: 0.35, note: "Ancêtre commun avec les populations amérindiennes actuelles." },
+  {
+    name: { fr: "Ötzi (l'Homme des glaces)", en: "Ötzi (the Iceman)" },
+    era: { fr: "−3300 av. J.-C. (Alpes)", en: "−3300 BCE (Alps)" },
+    bias: 0.3,
+    note: { fr: "Chasseur-cueilleur néolithique, haplogroupe G-L91.", en: "Neolithic hunter-gatherer, haplogroup G-L91." },
+  },
+  {
+    name: { fr: "Richard III", en: "Richard III" },
+    era: { fr: "XVe siècle (Angleterre)", en: "15th century (England)" },
+    bias: 0.5,
+    note: { fr: "Roi Plantagenêt — génome séquencé sur squelette de Leicester.", en: "Plantagenet king — genome sequenced from the Leicester skeleton." },
+  },
+  {
+    name: { fr: "Toutânkhamon", en: "Tutankhamun" },
+    era: { fr: "−1325 av. J.-C. (Égypte)", en: "−1325 BCE (Egypt)" },
+    bias: 0.4,
+    note: { fr: "Pharaon — haplogroupe Y R1b selon reconstitution.", en: "Pharaoh — Y haplogroup R1b per reconstruction." },
+  },
+  {
+    name: { fr: "Néandertal de Vindija", en: "Vindija Neanderthal" },
+    era: { fr: "−38 000 ans (Croatie)", en: "−38,000 years (Croatia)" },
+    bias: 0.6,
+    note: { fr: "Référence génomique néandertalienne.", en: "Neanderthal genomic reference." },
+  },
+  {
+    name: { fr: "Homme de Cheddar", en: "Cheddar Man" },
+    era: { fr: "−7150 av. J.-C. (Angleterre)", en: "−7150 BCE (England)" },
+    bias: 0.45,
+    note: { fr: "Chasseur-cueilleur mésolithique britannique, peau foncée, yeux bleus.", en: "British Mesolithic hunter-gatherer — dark skin, blue eyes." },
+  },
+  {
+    name: { fr: "Cléopâtre (reconstitution)", en: "Cleopatra (reconstruction)" },
+    era: { fr: "−30 av. J.-C. (Égypte)", en: "−30 BCE (Egypt)" },
+    bias: 0.35,
+    note: { fr: "Dynastie ptolémaïque gréco-égyptienne.", en: "Greco-Egyptian Ptolemaic dynasty." },
+  },
+  {
+    name: { fr: "Charlemagne (lignée attribuée)", en: "Charlemagne (attributed lineage)" },
+    era: { fr: "IXe siècle (Francie)", en: "9th century (Francia)" },
+    bias: 0.55,
+    note: { fr: "Haplogroupe R1b probable — ancêtre commun récent pour beaucoup d'Européens.", en: "Likely R1b haplogroup — recent common ancestor for many Europeans." },
+  },
+  {
+    name: { fr: "Gengis Khan (lignée Y)", en: "Genghis Khan (Y lineage)" },
+    era: { fr: "XIIIe siècle (Mongolie)", en: "13th century (Mongolia)" },
+    bias: 0.25,
+    note: { fr: "C3-star cluster — ~0,5 % des hommes de la planète.", en: "C3-star cluster — ~0.5% of men worldwide." },
+  },
+  {
+    name: { fr: "Ramsès II", en: "Ramesses II" },
+    era: { fr: "−1213 av. J.-C. (Égypte)", en: "−1213 BCE (Egypt)" },
+    bias: 0.3,
+    note: { fr: "Pharaon — analyse génétique post-mortem controversée.", en: "Pharaoh — controversial post-mortem genetic analysis." },
+  },
+  {
+    name: { fr: "Homme de Kennewick", en: "Kennewick Man" },
+    era: { fr: "−7000 av. J.-C. (Amérique du Nord)", en: "−7000 BCE (North America)" },
+    bias: 0.35,
+    note: { fr: "Ancêtre commun avec les populations amérindiennes actuelles.", en: "Shared ancestry with present-day Native American populations." },
+  },
 ];
 
 function buildTwins(hash: string): FunResult["twins"] {

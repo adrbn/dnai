@@ -28,7 +28,8 @@ export function PRSRadar({ findings, size = 320, lang = "fr" }: PRSRadarProps) {
   if (findings.length < 3) return null;
   // Pad room for the label ring (we place labels at 1.18 × r) plus a little
   // slack so long trait names like "Longévité exceptionnelle" don't get clipped.
-  const pad = 96;
+  // Scale padding with size so labels never clip on bigger renders.
+  const pad = Math.max(96, Math.round(size * 0.22));
   const cx = size / 2;
   const cy = size / 2;
   const r = size / 2 - pad;
@@ -120,12 +121,12 @@ export function PRSRadar({ findings, size = 320, lang = "fr" }: PRSRadarProps) {
               dominantBaseline="middle"
               className="fill-ink/70"
               style={{
-                fontSize: 10,
+                fontSize: Math.max(11, Math.round(size / 36)),
                 fontFamily: "var(--font-sans)",
                 letterSpacing: 0.2,
               }}
             >
-              {truncate(traitFor(f, lang), 14)}
+              {truncate(traitFor(f, lang), 22)}
             </text>
           </g>
         );

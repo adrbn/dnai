@@ -53,7 +53,7 @@ No account. No upload. No "premium unlock for your own data". Just your file, op
 Not a promise — an architecture.
 
 - **No upload.** Parsing & annotation run in a Web Worker, in browser memory.
-- **No persistence.** The file is freed when you close the tab. Only your disclaimer acceptance is kept (`localStorage`).
+- **Local-only persistence.** The raw file is freed as soon as parsing finishes. The structured report (annotations, percentiles, narrative inputs) is cached in **IndexedDB on your device** so refresh, tab close and a return visit tomorrow don't force a re-import. Nothing crosses the network — clearing browser data wipes it.
 - **Works offline.** Turn off Wi-Fi after the page loads — the whole pipeline keeps running.
 - **No genetic telemetry.** We embed Vercel Analytics (page views, country, referrer). It **never** sees your file's content.
 

@@ -3,6 +3,7 @@
 import { useAnalysis } from "./analysis";
 import { useConsent } from "./consent";
 import { useUnlock } from "./unlock";
+import { clearAnalysis } from "./persist";
 
 /**
  * Known DNAI localStorage keys. Listed explicitly so we never wipe
@@ -33,6 +34,8 @@ export function fullReset(): void {
   }
 
   if (typeof window === "undefined") return;
+  // Clear the persisted analysis blob (best-effort).
+  void clearAnalysis();
   for (const key of DNAI_STORAGE_KEYS) {
     try {
       window.localStorage.removeItem(key);

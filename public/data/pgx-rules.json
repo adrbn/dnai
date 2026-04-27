@@ -6,15 +6,15 @@
     "ref_allele": "G",
     "alt_allele": "A",
     "call": {
-      "ref/ref": { "phenotype": "Métaboliseur normal (*1/*1)", "star": "*1/*1" },
-      "ref/alt": { "phenotype": "Métaboliseur intermédiaire (*1/*2)", "star": "*1/*2" },
-      "alt/alt": { "phenotype": "Métaboliseur lent (*2/*2)", "star": "*2/*2" }
+      "ref/ref": { "phenotype": "Métaboliseur normal (*1/*1)", "phenotype_en": "Normal metabolizer (*1/*1)", "star": "*1/*1" },
+      "ref/alt": { "phenotype": "Métaboliseur intermédiaire (*1/*2)", "phenotype_en": "Intermediate metabolizer (*1/*2)", "star": "*1/*2" },
+      "alt/alt": { "phenotype": "Métaboliseur lent (*2/*2)", "phenotype_en": "Poor metabolizer (*2/*2)", "star": "*2/*2" }
     },
     "implications": [
-      { "drug": "clopidogrel", "drug_class": "antiplaquettaire", "effect": "Échec thérapeutique probable — activation métabolique réduite; alternative (prasugrel, ticagrelor) recommandée.", "severity": "high" },
-      { "drug": "oméprazole", "drug_class": "IPP", "effect": "Concentrations plasmatiques augmentées; efficacité souvent accrue mais surdosage possible à forte dose.", "severity": "medium" },
-      { "drug": "escitalopram", "drug_class": "ISRS", "effect": "Concentrations augmentées; réduire la dose ou changer de molécule.", "severity": "medium" },
-      { "drug": "voriconazole", "drug_class": "antifongique", "effect": "Exposition augmentée; surveillance thérapeutique recommandée.", "severity": "high" }
+      { "drug": "clopidogrel", "drug_class": "antiplaquettaire", "drug_class_en": "antiplatelet", "effect": "Échec thérapeutique probable — activation métabolique réduite; alternative (prasugrel, ticagrelor) recommandée.", "effect_en": "Probable therapeutic failure reported — reduced metabolic activation; alternatives (prasugrel, ticagrelor) are mentioned in the literature.", "severity": "high" },
+      { "drug": "oméprazole", "drug_class": "IPP", "drug_class_en": "PPI", "effect": "Concentrations plasmatiques augmentées; efficacité souvent accrue mais surdosage possible à forte dose.", "effect_en": "Increased plasma concentrations described; often greater efficacy but possible overexposure at high doses.", "severity": "medium" },
+      { "drug": "escitalopram", "drug_class": "ISRS", "drug_class_en": "SSRI", "effect": "Concentrations augmentées; réduire la dose ou changer de molécule.", "effect_en": "Increased concentrations described; a dose reduction or alternative agent is described in the literature.", "severity": "medium" },
+      { "drug": "voriconazole", "drug_class": "antifongique", "drug_class_en": "antifungal", "effect": "Exposition augmentée; surveillance thérapeutique recommandée.", "effect_en": "Increased exposure described; therapeutic drug monitoring is described in the literature.", "severity": "high" }
     ]
   },
   {
@@ -24,12 +24,12 @@
     "ref_allele": "G",
     "alt_allele": "A",
     "call": {
-      "ref/ref": { "phenotype": "Pas d'allèle *3", "star": "*1/*1" },
-      "ref/alt": { "phenotype": "Porteur *3 (loss-of-function)", "star": "*1/*3" },
-      "alt/alt": { "phenotype": "*3/*3 (métaboliseur lent)", "star": "*3/*3" }
+      "ref/ref": { "phenotype": "Pas d'allèle *3", "phenotype_en": "No *3 allele", "star": "*1/*1" },
+      "ref/alt": { "phenotype": "Porteur *3 (loss-of-function)", "phenotype_en": "*3 carrier (loss-of-function)", "star": "*1/*3" },
+      "alt/alt": { "phenotype": "*3/*3 (métaboliseur lent)", "phenotype_en": "*3/*3 (poor metabolizer)", "star": "*3/*3" }
     },
     "implications": [
-      { "drug": "clopidogrel", "drug_class": "antiplaquettaire", "effect": "Allèle *3 = perte de fonction; combiné à *2 peut donner PM; alternative indiquée.", "severity": "high" }
+      { "drug": "clopidogrel", "drug_class": "antiplaquettaire", "drug_class_en": "antiplatelet", "effect": "Allèle *3 = perte de fonction; combiné à *2 peut donner PM; alternative indiquée.", "effect_en": "*3 allele = loss-of-function; combined with *2 may yield a poor metabolizer phenotype; alternatives are mentioned in the literature.", "severity": "high" }
     ]
   },
   {
@@ -39,13 +39,13 @@
     "ref_allele": "C",
     "alt_allele": "T",
     "call": {
-      "ref/ref": { "phenotype": "Pas d'allèle *17", "star": "*1/*1" },
-      "ref/alt": { "phenotype": "Porteur *17 (gain-of-function)", "star": "*1/*17" },
-      "alt/alt": { "phenotype": "*17/*17 (métaboliseur ultra-rapide)", "star": "*17/*17" }
+      "ref/ref": { "phenotype": "Pas d'allèle *17", "phenotype_en": "No *17 allele", "star": "*1/*1" },
+      "ref/alt": { "phenotype": "Porteur *17 (gain-of-function)", "phenotype_en": "*17 carrier (gain-of-function)", "star": "*1/*17" },
+      "alt/alt": { "phenotype": "*17/*17 (métaboliseur ultra-rapide)", "phenotype_en": "*17/*17 (ultra-rapid metabolizer)", "star": "*17/*17" }
     },
     "implications": [
-      { "drug": "escitalopram", "drug_class": "ISRS", "effect": "Métabolisme accéléré; efficacité réduite possible.", "severity": "medium" },
-      { "drug": "oméprazole", "drug_class": "IPP", "effect": "Clairance accrue; efficacité anti-acide réduite.", "severity": "low" }
+      { "drug": "escitalopram", "drug_class": "ISRS", "drug_class_en": "SSRI", "effect": "Métabolisme accéléré; efficacité réduite possible.", "effect_en": "Accelerated metabolism described; possible reduced efficacy reported.", "severity": "medium" },
+      { "drug": "oméprazole", "drug_class": "IPP", "drug_class_en": "PPI", "effect": "Clairance accrue; efficacité anti-acide réduite.", "effect_en": "Increased clearance described; reduced acid-suppressing efficacy reported.", "severity": "low" }
     ]
   },
   {
@@ -55,16 +55,16 @@
     "ref_allele": "C",
     "alt_allele": "T",
     "call": {
-      "ref/ref": { "phenotype": "Pas d'allèle *4", "star": "*1/*1" },
-      "ref/alt": { "phenotype": "Porteur *4 (loss-of-function)", "star": "*1/*4" },
-      "alt/alt": { "phenotype": "*4/*4 — métaboliseur lent probable", "star": "*4/*4" }
+      "ref/ref": { "phenotype": "Pas d'allèle *4", "phenotype_en": "No *4 allele", "star": "*1/*1" },
+      "ref/alt": { "phenotype": "Porteur *4 (loss-of-function)", "phenotype_en": "*4 carrier (loss-of-function)", "star": "*1/*4" },
+      "alt/alt": { "phenotype": "*4/*4 — métaboliseur lent probable", "phenotype_en": "*4/*4 — likely poor metabolizer", "star": "*4/*4" }
     },
     "implications": [
-      { "drug": "codéine", "drug_class": "opioïde", "effect": "Conversion réduite en morphine; antalgie insuffisante.", "severity": "high" },
-      { "drug": "tramadol", "drug_class": "opioïde", "effect": "Activation réduite; antalgie insuffisante.", "severity": "high" },
-      { "drug": "tamoxifène", "drug_class": "anti-cancéreux", "effect": "Conversion réduite en endoxifène; efficacité moindre en prévention de récidive.", "severity": "high" },
-      { "drug": "nortriptyline", "drug_class": "tricyclique", "effect": "Concentrations augmentées; risque d'effets indésirables.", "severity": "medium" },
-      { "drug": "métoprolol", "drug_class": "bêta-bloquant", "effect": "Bradycardie/hypotension accrues; envisager bisoprolol.", "severity": "medium" }
+      { "drug": "codéine", "drug_class": "opioïde", "drug_class_en": "opioid", "effect": "Conversion réduite en morphine; antalgie insuffisante.", "effect_en": "Reduced conversion to morphine described; insufficient analgesia reported.", "severity": "high" },
+      { "drug": "tramadol", "drug_class": "opioïde", "drug_class_en": "opioid", "effect": "Activation réduite; antalgie insuffisante.", "effect_en": "Reduced activation described; insufficient analgesia reported.", "severity": "high" },
+      { "drug": "tamoxifène", "drug_class": "anti-cancéreux", "drug_class_en": "anti-cancer agent", "effect": "Conversion réduite en endoxifène; efficacité moindre en prévention de récidive.", "effect_en": "Reduced conversion to endoxifen described; lower efficacy reported for recurrence prevention.", "severity": "high" },
+      { "drug": "nortriptyline", "drug_class": "tricyclique", "drug_class_en": "tricyclic antidepressant", "effect": "Concentrations augmentées; risque d'effets indésirables.", "effect_en": "Increased concentrations described; risk of adverse effects reported.", "severity": "medium" },
+      { "drug": "métoprolol", "drug_class": "bêta-bloquant", "drug_class_en": "beta-blocker", "effect": "Bradycardie/hypotension accrues; envisager bisoprolol.", "effect_en": "Increased bradycardia/hypotension reported; bisoprolol is mentioned as an alternative in the literature.", "severity": "medium" }
     ]
   },
   {
@@ -74,13 +74,13 @@
     "ref_allele": "G",
     "alt_allele": "A",
     "call": {
-      "ref/ref": { "phenotype": "Pas d'allèle *10", "star": "*1/*1" },
-      "ref/alt": { "phenotype": "Porteur *10 (activité réduite)", "star": "*1/*10" },
-      "alt/alt": { "phenotype": "*10/*10 (activité réduite marquée)", "star": "*10/*10" }
+      "ref/ref": { "phenotype": "Pas d'allèle *10", "phenotype_en": "No *10 allele", "star": "*1/*1" },
+      "ref/alt": { "phenotype": "Porteur *10 (activité réduite)", "phenotype_en": "*10 carrier (reduced activity)", "star": "*1/*10" },
+      "alt/alt": { "phenotype": "*10/*10 (activité réduite marquée)", "phenotype_en": "*10/*10 (markedly reduced activity)", "star": "*10/*10" }
     },
     "implications": [
-      { "drug": "tamoxifène", "drug_class": "anti-cancéreux", "effect": "Concentrations d'endoxifène diminuées; efficacité réduite.", "severity": "medium" },
-      { "drug": "codéine", "drug_class": "opioïde", "effect": "Activation partielle; antalgie réduite.", "severity": "medium" }
+      { "drug": "tamoxifène", "drug_class": "anti-cancéreux", "drug_class_en": "anti-cancer agent", "effect": "Concentrations d'endoxifène diminuées; efficacité réduite.", "effect_en": "Decreased endoxifen concentrations described; reduced efficacy reported.", "severity": "medium" },
+      { "drug": "codéine", "drug_class": "opioïde", "drug_class_en": "opioid", "effect": "Activation partielle; antalgie réduite.", "effect_en": "Partial activation described; reduced analgesia reported.", "severity": "medium" }
     ]
   },
   {
@@ -90,14 +90,14 @@
     "ref_allele": "A",
     "alt_allele": "C",
     "call": {
-      "ref/ref": { "phenotype": "Métaboliseur rapide de la caféine (*1A/*1A)", "star": "*1A/*1A" },
-      "ref/alt": { "phenotype": "Métaboliseur intermédiaire (*1A/*1F)", "star": "*1A/*1F" },
-      "alt/alt": { "phenotype": "Métaboliseur lent (*1F/*1F)", "star": "*1F/*1F" }
+      "ref/ref": { "phenotype": "Métaboliseur rapide de la caféine (*1A/*1A)", "phenotype_en": "Rapid caffeine metabolizer (*1A/*1A)", "star": "*1A/*1A" },
+      "ref/alt": { "phenotype": "Métaboliseur intermédiaire (*1A/*1F)", "phenotype_en": "Intermediate metabolizer (*1A/*1F)", "star": "*1A/*1F" },
+      "alt/alt": { "phenotype": "Métaboliseur lent (*1F/*1F)", "phenotype_en": "Poor metabolizer (*1F/*1F)", "star": "*1F/*1F" }
     },
     "implications": [
-      { "drug": "caféine", "drug_class": "stimulant", "effect": "Demi-vie prolongée (>5h); éviter après 14h pour préserver le sommeil.", "severity": "low" },
-      { "drug": "clozapine", "drug_class": "antipsychotique", "effect": "Concentrations augmentées; ajustement de dose recommandé.", "severity": "medium" },
-      { "drug": "théophylline", "drug_class": "bronchodilatateur", "effect": "Clairance réduite; surveillance thérapeutique.", "severity": "medium" }
+      { "drug": "caféine", "drug_class": "stimulant", "drug_class_en": "stimulant", "effect": "Demi-vie prolongée (>5h); éviter après 14h pour préserver le sommeil.", "effect_en": "Prolonged half-life described (>5h); the literature describes limiting intake after 2 PM to preserve sleep.", "severity": "low" },
+      { "drug": "clozapine", "drug_class": "antipsychotique", "drug_class_en": "antipsychotic", "effect": "Concentrations augmentées; ajustement de dose recommandé.", "effect_en": "Increased concentrations described; a dose adjustment is described in the literature.", "severity": "medium" },
+      { "drug": "théophylline", "drug_class": "bronchodilatateur", "drug_class_en": "bronchodilator", "effect": "Clairance réduite; surveillance thérapeutique.", "effect_en": "Reduced clearance described; therapeutic drug monitoring is described in the literature.", "severity": "medium" }
     ]
   },
   {
@@ -107,14 +107,14 @@
     "ref_allele": "C",
     "alt_allele": "T",
     "call": {
-      "ref/ref": { "phenotype": "Pas d'allèle *2", "star": "*1/*1" },
-      "ref/alt": { "phenotype": "Porteur *2 (activité réduite)", "star": "*1/*2" },
-      "alt/alt": { "phenotype": "*2/*2 (métaboliseur lent)", "star": "*2/*2" }
+      "ref/ref": { "phenotype": "Pas d'allèle *2", "phenotype_en": "No *2 allele", "star": "*1/*1" },
+      "ref/alt": { "phenotype": "Porteur *2 (activité réduite)", "phenotype_en": "*2 carrier (reduced activity)", "star": "*1/*2" },
+      "alt/alt": { "phenotype": "*2/*2 (métaboliseur lent)", "phenotype_en": "*2/*2 (poor metabolizer)", "star": "*2/*2" }
     },
     "implications": [
-      { "drug": "warfarine", "drug_class": "anticoagulant", "effect": "Dose d'entretien réduite; risque hémorragique accru; dosage guidé INR + CYP2C9/VKORC1.", "severity": "high" },
-      { "drug": "phénytoïne", "drug_class": "antiépileptique", "effect": "Concentrations augmentées; risque de toxicité.", "severity": "high" },
-      { "drug": "célécoxib", "drug_class": "AINS COX-2", "effect": "Exposition augmentée; débuter à demi-dose.", "severity": "medium" }
+      { "drug": "warfarine", "drug_class": "anticoagulant", "drug_class_en": "anticoagulant", "effect": "Dose d'entretien réduite; risque hémorragique accru; dosage guidé INR + CYP2C9/VKORC1.", "effect_en": "Reduced maintenance dose described; increased bleeding risk reported; INR-guided dosing combined with CYP2C9/VKORC1 is described in the literature.", "severity": "high" },
+      { "drug": "phénytoïne", "drug_class": "antiépileptique", "drug_class_en": "antiepileptic", "effect": "Concentrations augmentées; risque de toxicité.", "effect_en": "Increased concentrations described; risk of toxicity reported.", "severity": "high" },
+      { "drug": "célécoxib", "drug_class": "AINS COX-2", "drug_class_en": "COX-2 NSAID", "effect": "Exposition augmentée; débuter à demi-dose.", "effect_en": "Increased exposure described; starting at half dose is described in the literature.", "severity": "medium" }
     ]
   },
   {
@@ -124,13 +124,13 @@
     "ref_allele": "A",
     "alt_allele": "C",
     "call": {
-      "ref/ref": { "phenotype": "Pas d'allèle *3", "star": "*1/*1" },
-      "ref/alt": { "phenotype": "Porteur *3 (activité fortement réduite)", "star": "*1/*3" },
-      "alt/alt": { "phenotype": "*3/*3 (métaboliseur très lent)", "star": "*3/*3" }
+      "ref/ref": { "phenotype": "Pas d'allèle *3", "phenotype_en": "No *3 allele", "star": "*1/*1" },
+      "ref/alt": { "phenotype": "Porteur *3 (activité fortement réduite)", "phenotype_en": "*3 carrier (strongly reduced activity)", "star": "*1/*3" },
+      "alt/alt": { "phenotype": "*3/*3 (métaboliseur très lent)", "phenotype_en": "*3/*3 (very poor metabolizer)", "star": "*3/*3" }
     },
     "implications": [
-      { "drug": "warfarine", "drug_class": "anticoagulant", "effect": "Sensibilité majeure; dose souvent diminuée de 30–50%.", "severity": "high" },
-      { "drug": "phénytoïne", "drug_class": "antiépileptique", "effect": "Clairance réduite >50%; adaptation posologique stricte.", "severity": "high" }
+      { "drug": "warfarine", "drug_class": "anticoagulant", "drug_class_en": "anticoagulant", "effect": "Sensibilité majeure; dose souvent diminuée de 30–50%.", "effect_en": "Major sensitivity reported; a dose reduction of 30–50% is described in the literature.", "severity": "high" },
+      { "drug": "phénytoïne", "drug_class": "antiépileptique", "drug_class_en": "antiepileptic", "effect": "Clairance réduite >50%; adaptation posologique stricte.", "effect_en": "Clearance reduced by >50%; a strict dosage adaptation is described in the literature.", "severity": "high" }
     ]
   },
   {
@@ -140,13 +140,13 @@
     "ref_allele": "G",
     "alt_allele": "A",
     "call": {
-      "ref/ref": { "phenotype": "Sensibilité normale à la warfarine" },
-      "ref/alt": { "phenotype": "Sensibilité intermédiaire" },
-      "alt/alt": { "phenotype": "Haute sensibilité à la warfarine" }
+      "ref/ref": { "phenotype": "Sensibilité normale à la warfarine", "phenotype_en": "Normal warfarin sensitivity" },
+      "ref/alt": { "phenotype": "Sensibilité intermédiaire", "phenotype_en": "Intermediate sensitivity" },
+      "alt/alt": { "phenotype": "Haute sensibilité à la warfarine", "phenotype_en": "High warfarin sensitivity" }
     },
     "implications": [
-      { "drug": "warfarine", "drug_class": "anticoagulant", "effect": "Dose d'entretien souvent réduite; combiner à CYP2C9 pour algorithme de dosage.", "severity": "high" },
-      { "drug": "acénocoumarol", "drug_class": "anticoagulant", "effect": "Sensibilité accrue; réduire dose initiale.", "severity": "high" }
+      { "drug": "warfarine", "drug_class": "anticoagulant", "drug_class_en": "anticoagulant", "effect": "Dose d'entretien souvent réduite; combiner à CYP2C9 pour algorithme de dosage.", "effect_en": "Reduced maintenance dose often described; combining with CYP2C9 in a dosing algorithm is described in the literature.", "severity": "high" },
+      { "drug": "acénocoumarol", "drug_class": "anticoagulant", "drug_class_en": "anticoagulant", "effect": "Sensibilité accrue; réduire dose initiale.", "effect_en": "Increased sensitivity reported; a reduced initial dose is described in the literature.", "severity": "high" }
     ]
   },
   {
@@ -156,13 +156,13 @@
     "ref_allele": "C",
     "alt_allele": "G",
     "call": {
-      "ref/ref": { "phenotype": "Activité TPMT normale", "star": "*1/*1" },
-      "ref/alt": { "phenotype": "Porteur *2 (activité réduite)", "star": "*1/*2" },
-      "alt/alt": { "phenotype": "Activité TPMT quasi nulle", "star": "*2/*2" }
+      "ref/ref": { "phenotype": "Activité TPMT normale", "phenotype_en": "Normal TPMT activity", "star": "*1/*1" },
+      "ref/alt": { "phenotype": "Porteur *2 (activité réduite)", "phenotype_en": "*2 carrier (reduced activity)", "star": "*1/*2" },
+      "alt/alt": { "phenotype": "Activité TPMT quasi nulle", "phenotype_en": "Near-absent TPMT activity", "star": "*2/*2" }
     },
     "implications": [
-      { "drug": "azathioprine", "drug_class": "immunosuppresseur", "effect": "Myélotoxicité sévère; dose à réduire ou alternative.", "severity": "high" },
-      { "drug": "mercaptopurine", "drug_class": "anti-cancéreux", "effect": "Myélotoxicité; dose à réduire fortement.", "severity": "high" }
+      { "drug": "azathioprine", "drug_class": "immunosuppresseur", "drug_class_en": "immunosuppressant", "effect": "Myélotoxicité sévère; dose à réduire ou alternative.", "effect_en": "Severe myelotoxicity reported; a dose reduction or alternative is described in the literature.", "severity": "high" },
+      { "drug": "mercaptopurine", "drug_class": "anti-cancéreux", "drug_class_en": "anti-cancer agent", "effect": "Myélotoxicité; dose à réduire fortement.", "effect_en": "Myelotoxicity reported; a substantial dose reduction is described in the literature.", "severity": "high" }
     ]
   },
   {
@@ -172,13 +172,13 @@
     "ref_allele": "T",
     "alt_allele": "C",
     "call": {
-      "ref/ref": { "phenotype": "Pas d'allèle *3C", "star": "*1/*1" },
-      "ref/alt": { "phenotype": "Porteur *3C (activité réduite)", "star": "*1/*3C" },
-      "alt/alt": { "phenotype": "Activité TPMT très réduite", "star": "*3C/*3C" }
+      "ref/ref": { "phenotype": "Pas d'allèle *3C", "phenotype_en": "No *3C allele", "star": "*1/*1" },
+      "ref/alt": { "phenotype": "Porteur *3C (activité réduite)", "phenotype_en": "*3C carrier (reduced activity)", "star": "*1/*3C" },
+      "alt/alt": { "phenotype": "Activité TPMT très réduite", "phenotype_en": "Strongly reduced TPMT activity", "star": "*3C/*3C" }
     },
     "implications": [
-      { "drug": "azathioprine", "drug_class": "immunosuppresseur", "effect": "Myélotoxicité accrue; adapter dose.", "severity": "high" },
-      { "drug": "mercaptopurine", "drug_class": "anti-cancéreux", "effect": "Risque myélosuppression; réduction de dose.", "severity": "high" }
+      { "drug": "azathioprine", "drug_class": "immunosuppresseur", "drug_class_en": "immunosuppressant", "effect": "Myélotoxicité accrue; adapter dose.", "effect_en": "Increased myelotoxicity reported; a dosage adaptation is described in the literature.", "severity": "high" },
+      { "drug": "mercaptopurine", "drug_class": "anti-cancéreux", "drug_class_en": "anti-cancer agent", "effect": "Risque myélosuppression; réduction de dose.", "effect_en": "Risk of myelosuppression reported; a dose reduction is described in the literature.", "severity": "high" }
     ]
   },
   {
@@ -188,13 +188,13 @@
     "ref_allele": "C",
     "alt_allele": "T",
     "call": {
-      "ref/ref": { "phenotype": "Activité DPD normale" },
-      "ref/alt": { "phenotype": "Activité DPD réduite (variant *2A)" },
-      "alt/alt": { "phenotype": "Déficit DPD complet (rare)" }
+      "ref/ref": { "phenotype": "Activité DPD normale", "phenotype_en": "Normal DPD activity" },
+      "ref/alt": { "phenotype": "Activité DPD réduite (variant *2A)", "phenotype_en": "Reduced DPD activity (*2A variant)" },
+      "alt/alt": { "phenotype": "Déficit DPD complet (rare)", "phenotype_en": "Complete DPD deficiency (rare)" }
     },
     "implications": [
-      { "drug": "fluorouracile", "drug_class": "anti-cancéreux", "effect": "Toxicité sévère (muqueuse, hématologique) possiblement fatale; réduire dose 50% ou éviter.", "severity": "high" },
-      { "drug": "capécitabine", "drug_class": "anti-cancéreux", "effect": "Toxicité sévère; adapter ou contre-indiquer.", "severity": "high" }
+      { "drug": "fluorouracile", "drug_class": "anti-cancéreux", "drug_class_en": "anti-cancer agent", "effect": "Toxicité sévère (muqueuse, hématologique) possiblement fatale; réduire dose 50% ou éviter.", "effect_en": "Severe toxicity reported (mucosal, hematological), potentially fatal; a 50% dose reduction or avoidance is described in the literature.", "severity": "high" },
+      { "drug": "capécitabine", "drug_class": "anti-cancéreux", "drug_class_en": "anti-cancer agent", "effect": "Toxicité sévère; adapter ou contre-indiquer.", "effect_en": "Severe toxicity reported; dosage adaptation or contraindication is described in the literature.", "severity": "high" }
     ]
   },
   {
@@ -204,13 +204,13 @@
     "ref_allele": "T",
     "alt_allele": "C",
     "call": {
-      "ref/ref": { "phenotype": "Transport hépatique normal (*1A/*1A)", "star": "*1A/*1A" },
-      "ref/alt": { "phenotype": "Transport réduit (*1A/*5)", "star": "*1A/*5" },
-      "alt/alt": { "phenotype": "Transport fortement réduit (*5/*5)", "star": "*5/*5" }
+      "ref/ref": { "phenotype": "Transport hépatique normal (*1A/*1A)", "phenotype_en": "Normal hepatic transport (*1A/*1A)", "star": "*1A/*1A" },
+      "ref/alt": { "phenotype": "Transport réduit (*1A/*5)", "phenotype_en": "Reduced transport (*1A/*5)", "star": "*1A/*5" },
+      "alt/alt": { "phenotype": "Transport fortement réduit (*5/*5)", "phenotype_en": "Strongly reduced transport (*5/*5)", "star": "*5/*5" }
     },
     "implications": [
-      { "drug": "simvastatine", "drug_class": "statine", "effect": "Myopathie/rhabdomyolyse; limiter dose à 20 mg ou changer (rosuvastatine, atorvastatine).", "severity": "high" },
-      { "drug": "atorvastatine", "drug_class": "statine", "effect": "Risque musculaire modéré; surveiller.", "severity": "medium" }
+      { "drug": "simvastatine", "drug_class": "statine", "drug_class_en": "statin", "effect": "Myopathie/rhabdomyolyse; limiter dose à 20 mg ou changer (rosuvastatine, atorvastatine).", "effect_en": "Myopathy/rhabdomyolysis reported; a 20 mg dose cap or switch (rosuvastatin, atorvastatin) is described in the literature.", "severity": "high" },
+      { "drug": "atorvastatine", "drug_class": "statine", "drug_class_en": "statin", "effect": "Risque musculaire modéré; surveiller.", "effect_en": "Moderate muscular risk reported; clinical follow-up is described in the literature.", "severity": "medium" }
     ]
   },
   {
@@ -220,13 +220,13 @@
     "ref_allele": "T",
     "alt_allele": "G",
     "call": {
-      "ref/ref": { "phenotype": "HLA-B*57:01 négatif" },
-      "ref/alt": { "phenotype": "HLA-B*57:01 positif (hétérozygote)" },
-      "alt/alt": { "phenotype": "HLA-B*57:01 positif (homozygote, rare)" }
+      "ref/ref": { "phenotype": "HLA-B*57:01 négatif", "phenotype_en": "HLA-B*57:01 negative" },
+      "ref/alt": { "phenotype": "HLA-B*57:01 positif (hétérozygote)", "phenotype_en": "HLA-B*57:01 positive (heterozygous)" },
+      "alt/alt": { "phenotype": "HLA-B*57:01 positif (homozygote, rare)", "phenotype_en": "HLA-B*57:01 positive (homozygous, rare)" }
     },
     "implications": [
-      { "drug": "abacavir", "drug_class": "antirétroviral", "effect": "Hypersensibilité sévère; contre-indication absolue.", "severity": "high" },
-      { "drug": "flucloxacilline", "drug_class": "antibiotique", "effect": "Atteinte hépatique idiosyncrasique; éviter si possible.", "severity": "medium" }
+      { "drug": "abacavir", "drug_class": "antirétroviral", "drug_class_en": "antiretroviral", "effect": "Hypersensibilité sévère; contre-indication absolue.", "effect_en": "Severe hypersensitivity reported; absolute contraindication is described in the literature.", "severity": "high" },
+      { "drug": "flucloxacilline", "drug_class": "antibiotique", "drug_class_en": "antibiotic", "effect": "Atteinte hépatique idiosyncrasique; éviter si possible.", "effect_en": "Idiosyncratic liver injury reported; avoidance where possible is described in the literature.", "severity": "medium" }
     ]
   },
   {
@@ -236,14 +236,14 @@
     "ref_allele": "C",
     "alt_allele": "G",
     "call": {
-      "ref/ref": { "phenotype": "HLA-B*15:02 négatif" },
-      "ref/alt": { "phenotype": "HLA-B*15:02 possible (proxy, confirmation HLA typing)" },
-      "alt/alt": { "phenotype": "HLA-B*15:02 probable (proxy)" }
+      "ref/ref": { "phenotype": "HLA-B*15:02 négatif", "phenotype_en": "HLA-B*15:02 negative" },
+      "ref/alt": { "phenotype": "HLA-B*15:02 possible (proxy, confirmation HLA typing)", "phenotype_en": "HLA-B*15:02 possible (proxy, HLA typing confirmation needed)" },
+      "alt/alt": { "phenotype": "HLA-B*15:02 probable (proxy)", "phenotype_en": "HLA-B*15:02 likely (proxy)" }
     },
     "implications": [
-      { "drug": "carbamazépine", "drug_class": "antiépileptique", "effect": "Syndrome de Stevens-Johnson/Lyell; contre-indication chez porteurs (surtout Asiatiques).", "severity": "high" },
-      { "drug": "oxcarbazépine", "drug_class": "antiépileptique", "effect": "Risque SJS/TEN; éviter.", "severity": "high" },
-      { "drug": "phénytoïne", "drug_class": "antiépileptique", "effect": "Risque SJS/TEN accru.", "severity": "medium" }
+      { "drug": "carbamazépine", "drug_class": "antiépileptique", "drug_class_en": "antiepileptic", "effect": "Syndrome de Stevens-Johnson/Lyell; contre-indication chez porteurs (surtout Asiatiques).", "effect_en": "Stevens-Johnson syndrome/TEN reported; contraindication in carriers (especially Asian populations) is described in the literature.", "severity": "high" },
+      { "drug": "oxcarbazépine", "drug_class": "antiépileptique", "drug_class_en": "antiepileptic", "effect": "Risque SJS/TEN; éviter.", "effect_en": "SJS/TEN risk reported; avoidance is described in the literature.", "severity": "high" },
+      { "drug": "phénytoïne", "drug_class": "antiépileptique", "drug_class_en": "antiepileptic", "effect": "Risque SJS/TEN accru.", "effect_en": "Increased SJS/TEN risk reported.", "severity": "medium" }
     ]
   },
   {
@@ -253,15 +253,15 @@
     "ref_allele": "C",
     "alt_allele": "T",
     "call": {
-      "ref/ref": { "phenotype": "Pas de variant G6PD A-" },
-      "ref/alt": { "phenotype": "Porteur G6PD A- (hétérozygote)" },
-      "alt/alt": { "phenotype": "Déficit G6PD A- (hémizygote/homozygote)" }
+      "ref/ref": { "phenotype": "Pas de variant G6PD A-", "phenotype_en": "No G6PD A- variant" },
+      "ref/alt": { "phenotype": "Porteur G6PD A- (hétérozygote)", "phenotype_en": "G6PD A- carrier (heterozygous)" },
+      "alt/alt": { "phenotype": "Déficit G6PD A- (hémizygote/homozygote)", "phenotype_en": "G6PD A- deficiency (hemizygous/homozygous)" }
     },
     "implications": [
-      { "drug": "rasburicase", "drug_class": "urolytique", "effect": "Hémolyse aiguë; contre-indiqué.", "severity": "high" },
-      { "drug": "primaquine", "drug_class": "antipaludique", "effect": "Hémolyse; dépistage préalable requis.", "severity": "high" },
-      { "drug": "dapsone", "drug_class": "antibiotique", "effect": "Hémolyse; surveiller l'hémoglobine.", "severity": "medium" },
-      { "drug": "sulfaméthoxazole", "drug_class": "antibiotique", "effect": "Risque d'hémolyse; prudence.", "severity": "medium" }
+      { "drug": "rasburicase", "drug_class": "urolytique", "drug_class_en": "uricolytic", "effect": "Hémolyse aiguë; contre-indiqué.", "effect_en": "Acute hemolysis reported; contraindication is described in the literature.", "severity": "high" },
+      { "drug": "primaquine", "drug_class": "antipaludique", "drug_class_en": "antimalarial", "effect": "Hémolyse; dépistage préalable requis.", "effect_en": "Hemolysis reported; prior screening is described in the literature.", "severity": "high" },
+      { "drug": "dapsone", "drug_class": "antibiotique", "drug_class_en": "antibiotic", "effect": "Hémolyse; surveiller l'hémoglobine.", "effect_en": "Hemolysis reported; hemoglobin monitoring is described in the literature.", "severity": "medium" },
+      { "drug": "sulfaméthoxazole", "drug_class": "antibiotique", "drug_class_en": "antibiotic", "effect": "Risque d'hémolyse; prudence.", "effect_en": "Risk of hemolysis reported; caution is described in the literature.", "severity": "medium" }
     ]
   },
   {
@@ -271,13 +271,13 @@
     "ref_allele": "C",
     "alt_allele": "T",
     "call": {
-      "ref/ref": { "phenotype": "Activité UGT1A1 normale (*1/*1)", "star": "*1/*1" },
-      "ref/alt": { "phenotype": "Réduction (*1/*28)", "star": "*1/*28" },
-      "alt/alt": { "phenotype": "Gilbert / activité réduite (*28/*28)", "star": "*28/*28" }
+      "ref/ref": { "phenotype": "Activité UGT1A1 normale (*1/*1)", "phenotype_en": "Normal UGT1A1 activity (*1/*1)", "star": "*1/*1" },
+      "ref/alt": { "phenotype": "Réduction (*1/*28)", "phenotype_en": "Reduced activity (*1/*28)", "star": "*1/*28" },
+      "alt/alt": { "phenotype": "Gilbert / activité réduite (*28/*28)", "phenotype_en": "Gilbert syndrome / reduced activity (*28/*28)", "star": "*28/*28" }
     },
     "implications": [
-      { "drug": "irinotécan", "drug_class": "anti-cancéreux", "effect": "Neutropénie/diarrhée sévère; réduire la dose initiale.", "severity": "high" },
-      { "drug": "atazanavir", "drug_class": "antirétroviral", "effect": "Hyperbilirubinémie; ictère bénin.", "severity": "low" }
+      { "drug": "irinotécan", "drug_class": "anti-cancéreux", "drug_class_en": "anti-cancer agent", "effect": "Neutropénie/diarrhée sévère; réduire la dose initiale.", "effect_en": "Severe neutropenia/diarrhea reported; a reduced initial dose is described in the literature.", "severity": "high" },
+      { "drug": "atazanavir", "drug_class": "antirétroviral", "drug_class_en": "antiretroviral", "effect": "Hyperbilirubinémie; ictère bénin.", "effect_en": "Hyperbilirubinemia reported; benign jaundice described.", "severity": "low" }
     ]
   },
   {
@@ -287,13 +287,13 @@
     "ref_allele": "C",
     "alt_allele": "T",
     "call": {
-      "ref/ref": { "phenotype": "Activité NUDT15 normale" },
-      "ref/alt": { "phenotype": "Porteur (activité intermédiaire)" },
-      "alt/alt": { "phenotype": "Déficit NUDT15 (myélotoxicité sévère aux thiopurines)" }
+      "ref/ref": { "phenotype": "Activité NUDT15 normale", "phenotype_en": "Normal NUDT15 activity" },
+      "ref/alt": { "phenotype": "Porteur (activité intermédiaire)", "phenotype_en": "Carrier (intermediate activity)" },
+      "alt/alt": { "phenotype": "Déficit NUDT15 (myélotoxicité sévère aux thiopurines)", "phenotype_en": "NUDT15 deficiency (severe thiopurine myelotoxicity)" }
     },
     "implications": [
-      { "drug": "mercaptopurine", "drug_class": "anti-cancéreux", "effect": "Myélosuppression sévère; dose à réduire drastiquement.", "severity": "high" },
-      { "drug": "azathioprine", "drug_class": "immunosuppresseur", "effect": "Myélotoxicité; adapter dose.", "severity": "high" }
+      { "drug": "mercaptopurine", "drug_class": "anti-cancéreux", "drug_class_en": "anti-cancer agent", "effect": "Myélosuppression sévère; dose à réduire drastiquement.", "effect_en": "Severe myelosuppression reported; a drastic dose reduction is described in the literature.", "severity": "high" },
+      { "drug": "azathioprine", "drug_class": "immunosuppresseur", "drug_class_en": "immunosuppressant", "effect": "Myélotoxicité; adapter dose.", "effect_en": "Myelotoxicity reported; a dosage adaptation is described in the literature.", "severity": "high" }
     ]
   },
   {
@@ -303,13 +303,13 @@
     "ref_allele": "C",
     "alt_allele": "A",
     "call": {
-      "ref/ref": { "phenotype": "Transporteur ABCG2 normal" },
-      "ref/alt": { "phenotype": "Activité réduite (porteur)" },
-      "alt/alt": { "phenotype": "Activité fortement réduite" }
+      "ref/ref": { "phenotype": "Transporteur ABCG2 normal", "phenotype_en": "Normal ABCG2 transporter" },
+      "ref/alt": { "phenotype": "Activité réduite (porteur)", "phenotype_en": "Reduced activity (carrier)" },
+      "alt/alt": { "phenotype": "Activité fortement réduite", "phenotype_en": "Strongly reduced activity" }
     },
     "implications": [
-      { "drug": "rosuvastatine", "drug_class": "statine", "effect": "Exposition augmentée; limiter la dose à 20 mg/j.", "severity": "medium" },
-      { "drug": "allopurinol", "drug_class": "urolytique", "effect": "Efficacité réduite sur l'uricémie; augmenter dose si besoin.", "severity": "low" }
+      { "drug": "rosuvastatine", "drug_class": "statine", "drug_class_en": "statin", "effect": "Exposition augmentée; limiter la dose à 20 mg/j.", "effect_en": "Increased exposure described; a 20 mg/day dose cap is described in the literature.", "severity": "medium" },
+      { "drug": "allopurinol", "drug_class": "urolytique", "drug_class_en": "uricolytic", "effect": "Efficacité réduite sur l'uricémie; augmenter dose si besoin.", "effect_en": "Reduced efficacy on serum uric acid described; a dose increase as needed is described in the literature.", "severity": "low" }
     ]
   },
   {
@@ -319,12 +319,12 @@
     "ref_allele": "C",
     "alt_allele": "T",
     "call": {
-      "ref/ref": { "phenotype": "CC — réponse favorable à l'IFN-α" },
-      "ref/alt": { "phenotype": "CT — réponse intermédiaire" },
-      "alt/alt": { "phenotype": "TT — réponse réduite" }
+      "ref/ref": { "phenotype": "CC — réponse favorable à l'IFN-α", "phenotype_en": "CC — favorable response to IFN-α" },
+      "ref/alt": { "phenotype": "CT — réponse intermédiaire", "phenotype_en": "CT — intermediate response" },
+      "alt/alt": { "phenotype": "TT — réponse réduite", "phenotype_en": "TT — reduced response" }
     },
     "implications": [
-      { "drug": "péginterféron α / ribavirine", "drug_class": "antiviral VHC", "effect": "Probabilité de réponse virologique soutenue variable selon génotype.", "severity": "medium" }
+      { "drug": "péginterféron α / ribavirine", "drug_class": "antiviral VHC", "drug_class_en": "HCV antiviral", "effect": "Probabilité de réponse virologique soutenue variable selon génotype.", "effect_en": "Likelihood of sustained virological response described as variable by genotype.", "severity": "medium" }
     ]
   },
   {
@@ -334,12 +334,12 @@
     "ref_allele": "T",
     "alt_allele": "C",
     "call": {
-      "ref/ref": { "phenotype": "Expresseur CYP3A5 (*1/*1)", "star": "*1/*1" },
-      "ref/alt": { "phenotype": "Expresseur intermédiaire (*1/*3)", "star": "*1/*3" },
-      "alt/alt": { "phenotype": "Non-expresseur (*3/*3)", "star": "*3/*3" }
+      "ref/ref": { "phenotype": "Expresseur CYP3A5 (*1/*1)", "phenotype_en": "CYP3A5 expresser (*1/*1)", "star": "*1/*1" },
+      "ref/alt": { "phenotype": "Expresseur intermédiaire (*1/*3)", "phenotype_en": "Intermediate expresser (*1/*3)", "star": "*1/*3" },
+      "alt/alt": { "phenotype": "Non-expresseur (*3/*3)", "phenotype_en": "Non-expresser (*3/*3)", "star": "*3/*3" }
     },
     "implications": [
-      { "drug": "tacrolimus", "drug_class": "immunosuppresseur", "effect": "Expresseurs nécessitent ~1,5–2× la dose standard pour atteindre la cible.", "severity": "high" }
+      { "drug": "tacrolimus", "drug_class": "immunosuppresseur", "drug_class_en": "immunosuppressant", "effect": "Expresseurs nécessitent ~1,5–2× la dose standard pour atteindre la cible.", "effect_en": "Expressers are described in the literature as requiring ~1.5–2× the standard dose to reach target levels.", "severity": "high" }
     ]
   },
   {
@@ -349,12 +349,12 @@
     "ref_allele": "G",
     "alt_allele": "A",
     "call": {
-      "ref/ref": { "phenotype": "Val/Val — dégradation dopamine rapide" },
-      "ref/alt": { "phenotype": "Val/Met — intermédiaire" },
-      "alt/alt": { "phenotype": "Met/Met — dégradation dopamine lente" }
+      "ref/ref": { "phenotype": "Val/Val — dégradation dopamine rapide", "phenotype_en": "Val/Val — rapid dopamine degradation" },
+      "ref/alt": { "phenotype": "Val/Met — intermédiaire", "phenotype_en": "Val/Met — intermediate" },
+      "alt/alt": { "phenotype": "Met/Met — dégradation dopamine lente", "phenotype_en": "Met/Met — slow dopamine degradation" }
     },
     "implications": [
-      { "drug": "lévodopa", "drug_class": "antiparkinsonien", "effect": "Pharmacocinétique modulée; variabilité de réponse.", "severity": "low" }
+      { "drug": "lévodopa", "drug_class": "antiparkinsonien", "drug_class_en": "antiparkinsonian", "effect": "Pharmacocinétique modulée; variabilité de réponse.", "effect_en": "Modulated pharmacokinetics described; response variability reported.", "severity": "low" }
     ]
   },
   {
@@ -364,13 +364,13 @@
     "ref_allele": "C",
     "alt_allele": "T",
     "call": {
-      "ref/ref": { "phenotype": "CC — signaling 5-HT2A de référence" },
-      "ref/alt": { "phenotype": "CT — intermédiaire" },
-      "alt/alt": { "phenotype": "TT — variant associé à moindre tolérance aux ISRS" }
+      "ref/ref": { "phenotype": "CC — signaling 5-HT2A de référence", "phenotype_en": "CC — reference 5-HT2A signaling" },
+      "ref/alt": { "phenotype": "CT — intermédiaire", "phenotype_en": "CT — intermediate" },
+      "alt/alt": { "phenotype": "TT — variant associé à moindre tolérance aux ISRS", "phenotype_en": "TT — variant associated with reduced SSRI tolerability" }
     },
     "implications": [
-      { "drug": "citalopram", "drug_class": "ISRS", "effect": "Associé à plus d'effets indésirables (nausées, agitation).", "severity": "low" },
-      { "drug": "paroxétine", "drug_class": "ISRS", "effect": "Tolérance variable.", "severity": "low" }
+      { "drug": "citalopram", "drug_class": "ISRS", "drug_class_en": "SSRI", "effect": "Associé à plus d'effets indésirables (nausées, agitation).", "effect_en": "Association reported with more adverse effects (nausea, agitation).", "severity": "low" },
+      { "drug": "paroxétine", "drug_class": "ISRS", "drug_class_en": "SSRI", "effect": "Tolérance variable.", "effect_en": "Variable tolerability reported.", "severity": "low" }
     ]
   },
   {
@@ -380,13 +380,13 @@
     "ref_allele": "A",
     "alt_allele": "G",
     "call": {
-      "ref/ref": { "phenotype": "AA — récepteur μ standard" },
-      "ref/alt": { "phenotype": "AG — réponse aux opioïdes modifiée" },
-      "alt/alt": { "phenotype": "GG — besoin plus élevé en morphine décrit" }
+      "ref/ref": { "phenotype": "AA — récepteur μ standard", "phenotype_en": "AA — standard μ receptor" },
+      "ref/alt": { "phenotype": "AG — réponse aux opioïdes modifiée", "phenotype_en": "AG — altered opioid response" },
+      "alt/alt": { "phenotype": "GG — besoin plus élevé en morphine décrit", "phenotype_en": "GG — higher morphine requirement described" }
     },
     "implications": [
-      { "drug": "morphine", "drug_class": "opioïde", "effect": "Porteurs G : antalgie réduite, titrer selon douleur.", "severity": "medium" },
-      { "drug": "naltrexone", "drug_class": "antagoniste opioïde", "effect": "Efficacité possiblement accrue chez porteurs G (alcoolo-dépendance).", "severity": "low" }
+      { "drug": "morphine", "drug_class": "opioïde", "drug_class_en": "opioid", "effect": "Porteurs G : antalgie réduite, titrer selon douleur.", "effect_en": "G carriers: reduced analgesia reported; pain-guided titration is described in the literature.", "severity": "medium" },
+      { "drug": "naltrexone", "drug_class": "antagoniste opioïde", "drug_class_en": "opioid antagonist", "effect": "Efficacité possiblement accrue chez porteurs G (alcoolo-dépendance).", "effect_en": "Possibly increased efficacy reported in G carriers (alcohol use disorder).", "severity": "low" }
     ]
   },
   {
@@ -396,12 +396,12 @@
     "ref_allele": "C",
     "alt_allele": "G",
     "call": {
-      "ref/ref": { "phenotype": "Arg/Arg — réponse forte aux bêta-bloquants" },
-      "ref/alt": { "phenotype": "Arg/Gly — intermédiaire" },
-      "alt/alt": { "phenotype": "Gly/Gly — réponse diminuée" }
+      "ref/ref": { "phenotype": "Arg/Arg — réponse forte aux bêta-bloquants", "phenotype_en": "Arg/Arg — strong response to beta-blockers" },
+      "ref/alt": { "phenotype": "Arg/Gly — intermédiaire", "phenotype_en": "Arg/Gly — intermediate" },
+      "alt/alt": { "phenotype": "Gly/Gly — réponse diminuée", "phenotype_en": "Gly/Gly — diminished response" }
     },
     "implications": [
-      { "drug": "métoprolol", "drug_class": "bêta-bloquant", "effect": "Efficacité hypotensive variable selon génotype.", "severity": "low" }
+      { "drug": "métoprolol", "drug_class": "bêta-bloquant", "drug_class_en": "beta-blocker", "effect": "Efficacité hypotensive variable selon génotype.", "effect_en": "Antihypertensive efficacy described as variable by genotype.", "severity": "low" }
     ]
   },
   {
@@ -411,13 +411,13 @@
     "ref_allele": "G",
     "alt_allele": "A",
     "call": {
-      "ref/ref": { "phenotype": "Activité MTHFR normale (C/C)" },
-      "ref/alt": { "phenotype": "Activité réduite ~65% (C/T)" },
-      "alt/alt": { "phenotype": "Activité réduite ~30% (T/T) — homocystéine élevée possible" }
+      "ref/ref": { "phenotype": "Activité MTHFR normale (C/C)", "phenotype_en": "Normal MTHFR activity (C/C)" },
+      "ref/alt": { "phenotype": "Activité réduite ~65% (C/T)", "phenotype_en": "Reduced activity ~65% (C/T)" },
+      "alt/alt": { "phenotype": "Activité réduite ~30% (T/T) — homocystéine élevée possible", "phenotype_en": "Reduced activity ~30% (T/T) — possibly elevated homocysteine" }
     },
     "implications": [
-      { "drug": "méthotrexate", "drug_class": "anti-cancéreux / antirhumatismal", "effect": "Toxicité (mucite, cytopénies) possiblement accrue chez T/T.", "severity": "medium" },
-      { "drug": "acide folique", "drug_class": "vitamine", "effect": "Supplémentation en folates actifs (L-méthylfolate) parfois recommandée.", "severity": "low" }
+      { "drug": "méthotrexate", "drug_class": "anti-cancéreux / antirhumatismal", "drug_class_en": "anti-cancer agent / antirheumatic", "effect": "Toxicité (mucite, cytopénies) possiblement accrue chez T/T.", "effect_en": "Toxicity (mucositis, cytopenias) reported as possibly increased in T/T.", "severity": "medium" },
+      { "drug": "acide folique", "drug_class": "vitamine", "drug_class_en": "vitamin", "effect": "Supplémentation en folates actifs (L-méthylfolate) parfois recommandée.", "effect_en": "Active folate supplementation (L-methylfolate) is sometimes described in the literature.", "severity": "low" }
     ]
   },
   {
@@ -427,13 +427,13 @@
     "ref_allele": "G",
     "alt_allele": "A",
     "call": {
-      "ref/ref": { "phenotype": "Prothrombine normale" },
-      "ref/alt": { "phenotype": "Prothrombine G20210A hétérozygote — risque thrombotique ×2–3" },
-      "alt/alt": { "phenotype": "Prothrombine G20210A homozygote — risque élevé" }
+      "ref/ref": { "phenotype": "Prothrombine normale", "phenotype_en": "Normal prothrombin" },
+      "ref/alt": { "phenotype": "Prothrombine G20210A hétérozygote — risque thrombotique ×2–3", "phenotype_en": "Prothrombin G20210A heterozygous — thrombotic risk ×2–3" },
+      "alt/alt": { "phenotype": "Prothrombine G20210A homozygote — risque élevé", "phenotype_en": "Prothrombin G20210A homozygous — high risk" }
     },
     "implications": [
-      { "drug": "contraceptifs œstroprogestatifs", "drug_class": "hormonal", "effect": "Risque thromboembolique accru; privilégier alternatives non-œstrogéniques.", "severity": "high" },
-      { "drug": "traitement hormonal ménopause", "drug_class": "hormonal", "effect": "Risque thrombotique majoré; évaluer rapport bénéfice/risque.", "severity": "medium" }
+      { "drug": "contraceptifs œstroprogestatifs", "drug_class": "hormonal", "drug_class_en": "hormonal", "effect": "Risque thromboembolique accru; privilégier alternatives non-œstrogéniques.", "effect_en": "Increased thromboembolic risk reported; non-estrogenic alternatives are mentioned in the literature.", "severity": "high" },
+      { "drug": "traitement hormonal ménopause", "drug_class": "hormonal", "drug_class_en": "hormonal", "effect": "Risque thrombotique majoré; évaluer rapport bénéfice/risque.", "effect_en": "Increased thrombotic risk reported; benefit/risk assessment is described in the literature.", "severity": "medium" }
     ]
   },
   {
@@ -443,13 +443,13 @@
     "ref_allele": "C",
     "alt_allele": "T",
     "call": {
-      "ref/ref": { "phenotype": "Facteur V normal" },
-      "ref/alt": { "phenotype": "Facteur V Leiden hétérozygote — risque thrombotique ×4–7" },
-      "alt/alt": { "phenotype": "Facteur V Leiden homozygote — risque thrombotique ×30–80" }
+      "ref/ref": { "phenotype": "Facteur V normal", "phenotype_en": "Normal Factor V" },
+      "ref/alt": { "phenotype": "Facteur V Leiden hétérozygote — risque thrombotique ×4–7", "phenotype_en": "Factor V Leiden heterozygous — thrombotic risk ×4–7" },
+      "alt/alt": { "phenotype": "Facteur V Leiden homozygote — risque thrombotique ×30–80", "phenotype_en": "Factor V Leiden homozygous — thrombotic risk ×30–80" }
     },
     "implications": [
-      { "drug": "contraceptifs œstroprogestatifs", "drug_class": "hormonal", "effect": "Risque TVP/EP majoré; contre-indication relative.", "severity": "high" },
-      { "drug": "traitement hormonal ménopause", "drug_class": "hormonal", "effect": "Risque thrombotique élevé; éviter voie orale.", "severity": "high" }
+      { "drug": "contraceptifs œstroprogestatifs", "drug_class": "hormonal", "drug_class_en": "hormonal", "effect": "Risque TVP/EP majoré; contre-indication relative.", "effect_en": "Increased DVT/PE risk reported; relative contraindication is described in the literature.", "severity": "high" },
+      { "drug": "traitement hormonal ménopause", "drug_class": "hormonal", "drug_class_en": "hormonal", "effect": "Risque thrombotique élevé; éviter voie orale.", "effect_en": "High thrombotic risk reported; avoidance of the oral route is described in the literature.", "severity": "high" }
     ]
   },
   {
@@ -459,12 +459,12 @@
     "ref_allele": "C",
     "alt_allele": "T",
     "call": {
-      "ref/ref": { "phenotype": "Activité normale (*1/*1)", "star": "*1/*1" },
-      "ref/alt": { "phenotype": "Activité réduite (*1/*3)", "star": "*1/*3" },
-      "alt/alt": { "phenotype": "Activité réduite (*3/*3)", "star": "*3/*3" }
+      "ref/ref": { "phenotype": "Activité normale (*1/*1)", "phenotype_en": "Normal activity (*1/*1)", "star": "*1/*1" },
+      "ref/alt": { "phenotype": "Activité réduite (*1/*3)", "phenotype_en": "Reduced activity (*1/*3)", "star": "*1/*3" },
+      "alt/alt": { "phenotype": "Activité réduite (*3/*3)", "phenotype_en": "Reduced activity (*3/*3)", "star": "*3/*3" }
     },
     "implications": [
-      { "drug": "warfarine", "drug_class": "anticoagulant", "effect": "Porteurs T : dose d'entretien légèrement augmentée (composante de l'algorithme IWPC).", "severity": "medium" }
+      { "drug": "warfarine", "drug_class": "anticoagulant", "drug_class_en": "anticoagulant", "effect": "Porteurs T : dose d'entretien légèrement augmentée (composante de l'algorithme IWPC).", "effect_en": "T carriers: a slightly increased maintenance dose is described in the literature (component of the IWPC algorithm).", "severity": "medium" }
     ]
   },
   {
@@ -474,13 +474,13 @@
     "ref_allele": "G",
     "alt_allele": "A",
     "call": {
-      "ref/ref": { "phenotype": "Pas d'allèle *6 (acétyleur rapide probable)" },
-      "ref/alt": { "phenotype": "Porteur *6 (acétyleur intermédiaire)" },
-      "alt/alt": { "phenotype": "*6/*6 (acétyleur lent)" }
+      "ref/ref": { "phenotype": "Pas d'allèle *6 (acétyleur rapide probable)", "phenotype_en": "No *6 allele (likely rapid acetylator)" },
+      "ref/alt": { "phenotype": "Porteur *6 (acétyleur intermédiaire)", "phenotype_en": "*6 carrier (intermediate acetylator)" },
+      "alt/alt": { "phenotype": "*6/*6 (acétyleur lent)", "phenotype_en": "*6/*6 (slow acetylator)" }
     },
     "implications": [
-      { "drug": "isoniazide", "drug_class": "antituberculeux", "effect": "Acétyleurs lents : hépatotoxicité et neuropathie accrues.", "severity": "medium" },
-      { "drug": "sulfasalazine", "drug_class": "anti-inflammatoire", "effect": "Toxicité hématologique accrue chez acétyleurs lents.", "severity": "medium" }
+      { "drug": "isoniazide", "drug_class": "antituberculeux", "drug_class_en": "antitubercular", "effect": "Acétyleurs lents : hépatotoxicité et neuropathie accrues.", "effect_en": "Slow acetylators: increased hepatotoxicity and neuropathy reported.", "severity": "medium" },
+      { "drug": "sulfasalazine", "drug_class": "anti-inflammatoire", "drug_class_en": "anti-inflammatory", "effect": "Toxicité hématologique accrue chez acétyleurs lents.", "effect_en": "Increased hematological toxicity reported in slow acetylators.", "severity": "medium" }
     ]
   }
 ]

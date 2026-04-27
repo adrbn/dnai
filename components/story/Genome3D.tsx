@@ -277,8 +277,15 @@ function CameraRig({
       desiredTarget.current.copy(tp);
       desiredFov.current = 34;
     } else {
-      desiredPos.current.set(pose.position[0], pose.position[1], pose.position[2]);
-      desiredTarget.current.set(pose.target[0], pose.target[1], pose.target[2]);
+      // On narrow viewports the ActPanel sits below the helix instead of
+      // beside it, so the HELIX_X_OFFSET (-4) that keeps the helix off the
+      // panel on desktop just shoves it to the left edge or off-screen on
+      // mobile. Re-center the static-pose camera on the helix when the
+      // viewport is too narrow to host a side-by-side layout.
+      const isNarrow = typeof window !== "undefined" && window.innerWidth < 640;
+      const xShift = isNarrow ? HELIX_X_OFFSET : 0;
+      desiredPos.current.set(pose.position[0] + xShift, pose.position[1], pose.position[2]);
+      desiredTarget.current.set(pose.target[0] + xShift, pose.target[1], pose.target[2]);
       desiredFov.current = pose.fov;
     }
 
@@ -333,8 +340,15 @@ export function Genome3D(props: Genome3DProps) {
     <Canvas
       className="!absolute inset-0"
       dpr={[1, 1.75]}
-      gl={{ antialias: true, powerPreference: "high-performance" }}
+      frameloop="always"
+      gl={{ antialias: true, powerPreference: "high-performance", failIfMajorPerformanceCaveat: false }}
       camera={{ position: props.pose.position, fov: props.pose.fov, near: 0.1, far: 200 }}
+      onCreated={({ gl }) => {
+        const canvas = gl.domElement;
+        canvas.addEventListener("webglcontextlost", (e) => {
+          e.preventDefault();
+        });
+      }}
     >
       <color attach="background" args={["#05060c"]} />
       <Scene {...props} />

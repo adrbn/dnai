@@ -13,20 +13,29 @@ import { DnaMark } from "@/components/ui/DnaMark";
 import type { HighlightPoint } from "@/components/story/Genome3D";
 import { Paywall, useUnlockGate } from "@/components/Paywall";
 import { MedicalDisclaimerBanner } from "@/components/MedicalDisclaimerBanner";
+import { useLang, type Lang } from "@/lib/i18n/lang";
 
 export default function StoryPage() {
-  const { result, positions } = useAnalysis();
+  const { result, positions, hydrated: analysisHydrated, hydrate: hydrateAnalysis } = useAnalysis();
   const router = useRouter();
   const { unlocked, hydrated } = useUnlockGate();
   const { accepted: apoeOptIn, hydrate: hydrateApoe } = useApoeConsent();
+  const [lang, setLang, langHydrated] = useLang();
 
   useEffect(() => {
     hydrateApoe();
   }, [hydrateApoe]);
 
   useEffect(() => {
-    if (!result) router.replace("/");
-  }, [result, router]);
+    void hydrateAnalysis();
+  }, [hydrateAnalysis]);
+
+  useEffect(() => {
+    // Wait for the IDB hydration check before redirecting — otherwise refresh
+    // bounces the user back to the upload page even when their report is
+    // persisted locally.
+    if (analysisHydrated && !result) router.replace("/");
+  }, [analysisHydrated, result, router]);
 
   const acts: Act[] = useMemo(
     () => (result ? buildStory(result, positions, { apoeOptIn }) : []),
@@ -41,7 +50,7 @@ export default function StoryPage() {
   // <main> isn't mounted so containerRef.current is null. Without these deps
   // the effect runs once (container null), bails, and is never re-run —
   // active stays stuck at 0, timeline frozen, camera pose frozen.
-  const storyMounted = hydrated && unlocked && acts.length > 0;
+  const storyMounted = hydrated && langHydrated && unlocked && acts.length > 0;
   useEffect(() => {
     if (!storyMounted) return;
     const root = containerRef.current;
@@ -73,12 +82,24 @@ export default function StoryPage() {
       raf = requestAnimationFrame(update);
     };
     update();
-    window.addEventListener("scroll", onScroll, { passive: true });
+    // Capture phase on document catches scroll events from any scrolling
+    // element (window, body, or inner scrollers). The plain window listener
+    // sometimes misses events when a covering canvas/fixed layer is involved.
+    document.addEventListener("scroll", onScroll, { capture: true, passive: true });
     window.addEventListener("resize", onScroll);
+    // Fallback ticker — guarantees `active` tracks scroll even if no scroll
+    // event ever reaches us. Cheap: just reads boundingClientRects.
+    let tickerId = 0;
+    const tick = () => {
+      update();
+      tickerId = window.setTimeout(tick, 200);
+    };
+    tickerId = window.setTimeout(tick, 200);
     return () => {
-      window.removeEventListener("scroll", onScroll);
+      document.removeEventListener("scroll", onScroll, { capture: true } as EventListenerOptions);
       window.removeEventListener("resize", onScroll);
       if (raf) cancelAnimationFrame(raf);
+      if (tickerId) clearTimeout(tickerId);
     };
   }, [storyMounted]);
 
@@ -115,41 +136,46 @@ export default function StoryPage() {
     return () => window.removeEventListener("keydown", onKey);
   }, [storyMounted, acts.length, active]);
 
+  // Block render until we know whether IDB has a persisted analysis. Without
+  // this, refresh shows a flash of "no result" before hydration completes.
+  if (!analysisHydrated) return null;
   if (!result) return null;
-  if (hydrated && !unlocked) return <Paywall eyebrow="Récit" />;
-  // While waiting for hydration, avoid flashing gated content
-  if (!hydrated) return null;
+  if (hydrated && !unlocked) return <Paywall eyebrow={lang === "en" ? "Story" : "Récit"} />;
+  // While waiting for hydration, avoid flashing gated content / wrong language.
+  if (!hydrated || !langHydrated) return null;
 
   return (
     <main className="relative min-h-screen bg-[#1a1613] text-paper">
-      <MedicalDisclaimerBanner tone="ink" />
       <div className="fixed inset-0 z-0">
         <GenomeStage {...frame} />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#1a1613]/55 via-transparent to-[#1a1613]/75" />
       </div>
 
-      <header className="fixed top-[34px] left-0 right-0 z-30 border-b border-paper/10 bg-[#1a1613]/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-          <Link href="/" className="group flex items-baseline gap-2 rounded-sm px-2 py-1 hover:bg-paper/5">
-            <span className="font-serif text-[20px] font-medium tracking-[-0.02em] text-paper">
-              dnai<span className="text-oxblood">.</span>
-            </span>
-            <span className="ml-1 text-[10px] uppercase tracking-[0.22em] text-paper/55">
-              Récit
-            </span>
-          </Link>
-          <div className="flex items-center gap-2">
-            <Link
-              href="/report"
-              className="inline-block rounded-sm border border-paper/20 bg-paper/5 px-3 py-2 text-xs font-medium tracking-[0.04em] text-paper/85 transition hover:border-paper/40 hover:bg-paper/10 hover:text-paper"
-            >
-              Rapport détaillé →
+      <div className="fixed top-0 left-0 right-0 z-30">
+        <MedicalDisclaimerBanner tone="ink" lang={lang} />
+        <header className="border-b border-paper/10 bg-[#1a1613]/80 backdrop-blur-md">
+          <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
+            <Link href="/" className="group flex items-baseline gap-2 rounded-sm px-2 py-1 hover:bg-paper/5">
+              <span className="font-serif text-[20px] font-medium tracking-[-0.02em] text-paper">
+                dnai<span className="text-oxblood">.</span>
+              </span>
+              <span className="ml-1 text-[10px] uppercase tracking-[0.22em] text-paper/55">
+                {lang === "en" ? "Story" : "Récit"}
+              </span>
             </Link>
+            <div className="flex items-center gap-2">
+              <StoryLangToggle lang={lang} onChange={setLang} />
+              <Link
+                href="/report"
+                className="inline-block rounded-sm border border-paper/20 bg-paper/5 px-3 py-2 text-xs font-medium tracking-[0.04em] text-paper/85 transition hover:border-paper/40 hover:bg-paper/10 hover:text-paper"
+              >
+                {lang === "en" ? "Detailed report →" : "Rapport détaillé →"}
+              </Link>
+            </div>
           </div>
-        </div>
-      </header>
-
-      <Progress total={acts.length} active={active} />
+        </header>
+        <Progress total={acts.length} active={active} />
+      </div>
 
       <div ref={containerRef} className="relative z-10">
         {acts.map((act, i) => (
@@ -160,7 +186,7 @@ export default function StoryPage() {
           >
             <div className="mx-auto w-full max-w-6xl">
               <div className="flex justify-start sm:justify-end">
-                <ActPanel act={act} />
+                <ActPanel act={act} lang={lang} />
               </div>
             </div>
           </section>
@@ -170,10 +196,32 @@ export default function StoryPage() {
   );
 }
 
+function StoryLangToggle({ lang, onChange }: { lang: Lang; onChange: (l: Lang) => void }) {
+  return (
+    <div className="inline-flex items-center rounded-sm border border-paper/15 bg-paper/5 text-[10px] font-semibold uppercase tracking-[0.22em]">
+      {(["fr", "en"] as const).map((l) => (
+        <button
+          key={l}
+          type="button"
+          onClick={() => onChange(l)}
+          aria-pressed={lang === l}
+          className={`px-2 py-1.5 transition ${
+            lang === l
+              ? "bg-paper text-ink"
+              : "text-paper/55 hover:text-paper"
+          }`}
+        >
+          {l}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function Progress({ total, active }: { total: number; active: number }) {
   const pct = total > 1 ? (active / (total - 1)) * 100 : 0;
   return (
-    <div className="fixed top-[86px] left-0 right-0 z-20 h-0.5 bg-white/5">
+    <div className="relative h-0.5 bg-white/5">
       <div
         className="h-0.5 bg-gradient-to-r from-[#7c9cff] to-[#c7b2ff] transition-[width] duration-500 ease-out"
         style={{ width: `${pct}%` }}
