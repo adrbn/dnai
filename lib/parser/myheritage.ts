@@ -55,6 +55,14 @@ function detectSource(lines: string[], filename?: string): DnaSource {
     return "livingdna";
   if (headerBlob.includes("familytreedna") || headerBlob.includes("family tree dna") || fn.includes("ftdna"))
     return "ftdna";
+  if (
+    headerBlob.includes("genes for good") ||
+    headerBlob.includes("genesforgood") ||
+    fn.includes("genesforgood") ||
+    fn.includes("genes_for_good")
+  )
+    return "genesforgood";
+  if (headerBlob.includes("nebula") || fn.includes("nebula")) return "nebula";
   return "unknown";
 }
 

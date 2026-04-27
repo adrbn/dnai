@@ -166,13 +166,13 @@ If you want a diagnosis, see a geneticist. If you want a second look at the file
 
 ## Roadmap
 
-- [ ] Genes for Good & Nebula CSV parsers
-- [ ] Extended PGS panel (Alzheimer, osteoporosis, autoimmune)
-- [ ] Carrier-status report (recessive variants — CFTR, HEXA, etc.)
-- [ ] WGS VCF: multi-allelic + indel annotation
+- [x] Genes for Good & Nebula source detection
+- [x] Extended PGS panel — Alzheimer, osteoporosis, rheumatoid arthritis, celiac
+- [x] Carrier-status report (recessive variants — CFTR, HEXA, etc.)
+- [ ] WGS VCF: multi-allelic + indel annotation (parser in, annotation pending)
 - [ ] Sub-continental ancestry (K≥12 panel)
-- [ ] Imputation for missing positions (BRCA1/2 high-impact SNVs)
-- [ ] Full i18n (currently: French + English copy)
+- [x] Imputation for missing positions (LD proxies)
+- [x] Full i18n (French + English)
 
 ## Contributing
 

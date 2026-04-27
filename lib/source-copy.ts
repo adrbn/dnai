@@ -14,6 +14,8 @@ const SOURCE_INFO: Record<DnaSource, SourceDescriptor> = {
   ancestrydna: { label: { fr: "AncestryDNA", en: "AncestryDNA" }, kind: "chip", typicalSnps: "~700 000" },
   livingdna: { label: { fr: "Living DNA", en: "Living DNA" }, kind: "chip", typicalSnps: "~650 000" },
   ftdna: { label: { fr: "FamilyTreeDNA", en: "FamilyTreeDNA" }, kind: "chip", typicalSnps: "~700 000" },
+  genesforgood: { label: { fr: "Genes for Good", en: "Genes for Good" }, kind: "chip", typicalSnps: "~600 000" },
+  nebula: { label: { fr: "Nebula Genomics (WGS)", en: "Nebula Genomics (WGS)" }, kind: "wgs", typicalSnps: "3–5 M" },
   wgs: {
     label: { fr: "Séquençage génome complet (WGS)", en: "Whole-genome sequencing (WGS)" },
     kind: "wgs",

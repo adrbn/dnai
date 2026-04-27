@@ -142,6 +142,8 @@ export type DnaSource =
   | "ancestrydna"
   | "livingdna"
   | "ftdna"
+  | "genesforgood"
+  | "nebula"
   | "wgs"
   | "unknown";
 
@@ -170,7 +172,7 @@ export type PRSRule = {
   trait: string;
   /** Optional English trait name (falls back to `trait` if absent). */
   traitEn?: string;
-  category: "metabolic" | "cardio" | "neuro" | "cancer" | "anthropometric" | "longevity";
+  category: "metabolic" | "cardio" | "neuro" | "cancer" | "anthropometric" | "longevity" | "bone" | "autoimmune";
   description: string;
   /** Optional English description (falls back to `description` if absent). */
   descriptionEn?: string;

@@ -444,6 +444,8 @@ export const S = {
       cancer: { fr: "Cancer", en: "Cancer" },
       anthropometric: { fr: "Morpho", en: "Morpho" },
       longevity: { fr: "Longévité", en: "Longevity" },
+      bone: { fr: "Os", en: "Bone" },
+      autoimmune: { fr: "Auto-immun", en: "Autoimmune" },
     },
     bucketVeryHigh: { fr: "Très élevé", en: "Very high" },
     bucketAboveMean: { fr: "Au-dessus moy.", en: "Above avg." },

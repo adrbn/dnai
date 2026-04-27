@@ -100,6 +100,51 @@
     ]
   },
   {
+    "id": "prs-osteoporosis",
+    "trait": "Ostéoporose",
+    "traitEn": "Osteoporosis",
+    "category": "bone",
+    "description": "Densité minérale osseuse — variants WNT16 / LRP5 (rs3736228, R-allele) et RANKL.",
+    "descriptionEn": "Bone mineral density — WNT16 / LRP5 variants (rs3736228, R-allele) and RANKL.",
+    "source": "Estrada 2012, Morris 2019 (lead SNPs GSA)",
+    "units": "log-OR (fracture)",
+    "emoji": "🦴",
+    "snps": [
+      { "rsid": "rs3736228", "effect": "T", "weight": 0.180, "af": 0.15 },
+      { "rsid": "rs1373004", "effect": "T", "weight": 0.110, "af": 0.55 },
+      { "rsid": "rs9594738", "effect": "T", "weight": 0.130, "af": 0.45 }
+    ]
+  },
+  {
+    "id": "prs-ra",
+    "trait": "Polyarthrite rhumatoïde",
+    "traitEn": "Rheumatoid arthritis",
+    "category": "autoimmune",
+    "description": "PTPN22 R620W (rs2476601) + TNFAIP3 (rs6920220) — hors HLA-DRB1, non couvert sur chip.",
+    "descriptionEn": "PTPN22 R620W (rs2476601) + TNFAIP3 (rs6920220) — excluding HLA-DRB1, not covered on chip.",
+    "source": "Okada 2014 (lead non-HLA SNPs)",
+    "units": "log-OR",
+    "emoji": "🦴",
+    "snps": [
+      { "rsid": "rs2476601", "effect": "A", "weight": 0.560, "af": 0.10 },
+      { "rsid": "rs6920220", "effect": "A", "weight": 0.190, "af": 0.21 }
+    ]
+  },
+  {
+    "id": "prs-celiac",
+    "trait": "Maladie cœliaque",
+    "traitEn": "Celiac disease",
+    "category": "autoimmune",
+    "description": "Tag HLA-DQ2.5 (rs2187668) — proxie majeur ; absence ≈ exclut quasiment la maladie.",
+    "descriptionEn": "HLA-DQ2.5 tag (rs2187668) — major proxy; absence ≈ near-rules out disease.",
+    "source": "Monsuur 2008, Trynka 2011",
+    "units": "log-OR",
+    "emoji": "🌾",
+    "snps": [
+      { "rsid": "rs2187668", "effect": "T", "weight": 2.300, "af": 0.06 }
+    ]
+  },
+  {
     "id": "prs-longevity",
     "trait": "Longévité exceptionnelle",
     "traitEn": "Exceptional longevity",

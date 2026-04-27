@@ -17,6 +17,8 @@ const CATEGORY_COLOR: Record<PRSFinding["rule"]["category"], string> = {
   cancer: "rgb(255 140 180)",
   anthropometric: "rgb(120 180 255)",
   longevity: "rgb(120 220 160)",
+  bone: "rgb(200 180 140)",
+  autoimmune: "rgb(255 170 110)",
 };
 
 /**

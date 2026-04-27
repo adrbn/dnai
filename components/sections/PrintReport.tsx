@@ -836,6 +836,8 @@ function categoryLabel(c: PRSFinding["rule"]["category"]): string {
     cancer: "Cancer",
     anthropometric: "Morpho",
     longevity: "Longévité",
+    bone: "Os",
+    autoimmune: "Auto-immun",
   }[c];
 }
 
