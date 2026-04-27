@@ -37,7 +37,13 @@ export default function PrivacyEnPage() {
         <li>Acceptance of the legal disclaimer (key <code>dnai.consent.v1</code>);</li>
         <li>If applicable, a token confirming report unlock (key <code>dnai.unlocked.v1</code>);</li>
         <li>
-          No genetic data is persisted: the file and results are discarded when the tab is closed.
+          The structured report (annotations, percentiles, narrative inputs) is cached locally in
+          <code> IndexedDB</code> on your device so refresh, tab close or a return visit don&apos;t force
+          a re-import. The raw DNA file itself is freed as soon as parsing finishes and is never persisted.
+        </li>
+        <li>
+          Nothing is transmitted to a server. Clearing site data (or pressing the in-app
+          &ldquo;Reset&rdquo; button) wipes the cached report entirely.
         </li>
       </ul>
 

@@ -61,6 +61,11 @@ const CHROME: Record<Lang, {
   en: { eyebrow: "Report", story: "Story →", reset: "Reset", disclaimer: "For information only — not a diagnosis." },
 };
 
+const RESET_CONFIRM: Record<Lang, string> = {
+  fr: "Cela supprime le rapport sauvegardé localement sur cet appareil. Vous devrez ré-importer votre fichier ADN pour le reconstituer. Continuer ?",
+  en: "This deletes the report saved locally on this device. You'll need to re-import your DNA file to rebuild it. Continue?",
+};
+
 export default function ReportPage() {
   const { result, positions, genotypes, hydrated: analysisHydrated, hydrate: hydrateAnalysis } = useAnalysis();
   const router = useRouter();
@@ -142,6 +147,7 @@ export default function ReportPage() {
               <button
                 type="button"
                 onClick={() => {
+                  if (!window.confirm(RESET_CONFIRM[lang])) return;
                   fullReset();
                   router.push("/");
                 }}

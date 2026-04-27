@@ -40,8 +40,14 @@ export default function PrivacyPage() {
           Le cas échéant, un jeton confirmant le déverrouillage du rapport (clé <code>dnai.unlocked.v1</code>) ;
         </li>
         <li>
-          Aucune donnée génétique n&apos;est persistée : le fichier et les résultats sont effacés à la fermeture
-          de l&apos;onglet.
+          Le rapport structuré (annotations, percentiles, données du récit) est mis en cache localement
+          dans <code>IndexedDB</code> sur votre appareil afin qu&apos;un rafraîchissement, une fermeture
+          d&apos;onglet ou un retour ultérieur ne vous oblige pas à ré-importer votre fichier. Le fichier
+          ADN brut, lui, est libéré dès la fin du parsing et n&apos;est jamais persisté.
+        </li>
+        <li>
+          Rien n&apos;est transmis à un serveur. Vider les données du site (ou utiliser le bouton
+          « Effacer » de l&apos;application) supprime intégralement le rapport en cache.
         </li>
       </ul>
 
