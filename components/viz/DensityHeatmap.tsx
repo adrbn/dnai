@@ -50,23 +50,25 @@ export function DensityHeatmap({ density, binSizeMb = 1, lang = "fr" }: DensityH
   const rightPad = 8;
   const viewW = 820;
   const cellW = (viewW - labelW - rightPad) / maxBins;
-  const viewH = rows.length * (rowH + 2) + 22;
 
   const colorFor = (v: number) => {
     if (!v) return "rgb(22 24 33)";
     const t = Math.log1p(v) / Math.log1p(maxCount);
-    // accent-ish gradient
     const r = Math.round(40 + t * 180);
     const g = Math.round(50 + t * 160);
     const b = Math.round(80 + t * 175);
     return `rgb(${r} ${g} ${b})`;
   };
 
-  return (
-    <div>
-      <svg viewBox={`0 0 ${viewW} ${viewH}`} className="w-full">
-        {rows.map((row, i) => {
-          const y = i * (rowH + 2) + 4;
+  const halfIdx = Math.ceil(rows.length / 2);
+  const columns = [rows.slice(0, halfIdx), rows.slice(halfIdx)];
+
+  const renderColumn = (col: typeof rows, key: string) => {
+    const colH = col.length * (rowH + 2) + 4;
+    return (
+      <svg key={key} viewBox={`0 0 ${viewW} ${colH}`} className="w-full">
+        {col.map((row, i) => {
+          const y = i * (rowH + 2) + 2;
           return (
             <g key={row.chr}>
               <text
@@ -93,6 +95,15 @@ export function DensityHeatmap({ density, binSizeMb = 1, lang = "fr" }: DensityH
           );
         })}
       </svg>
+    );
+  };
+
+  return (
+    <div>
+      <div className="grid grid-cols-1 gap-x-4 gap-y-2 md:grid-cols-2">
+        {renderColumn(columns[0], "left")}
+        {renderColumn(columns[1], "right")}
+      </div>
       <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-fg-muted">
         <span className="whitespace-nowrap">
           {lang === "en" ? `SNP density / ${binSizeMb} Mb` : `Densité / ${binSizeMb} Mb`}
