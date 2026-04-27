@@ -289,7 +289,7 @@ const SAMPLE_CLINVAR: {
   position: number;
   genotype: string;
   zygosity: string;
-  clinsig: string;
+  clinsig: Record<Lang, string>;
   freq: number;
   consequence: string;
   condition: Record<Lang, string>;
@@ -302,7 +302,7 @@ const SAMPLE_CLINVAR: {
     position: 169519049,
     genotype: "A/G",
     zygosity: "het",
-    clinsig: "Pathogenic",
+    clinsig: { fr: "Pathogène", en: "Pathogenic" },
     freq: 0.025,
     consequence: "missense_variant · R506Q (Leiden)",
     condition: {
@@ -321,7 +321,7 @@ const SAMPLE_CLINVAR: {
     position: 11856378,
     genotype: "C/T",
     zygosity: "het",
-    clinsig: "Risk factor",
+    clinsig: { fr: "Facteur de risque", en: "Risk factor" },
     freq: 0.312,
     consequence: "missense_variant · A222V (C677T)",
     condition: {
@@ -1206,11 +1206,11 @@ function SampleSpread({ strings, lang }: { strings: Strings["sample"]; lang: Lan
               <div
                 className="text-[10px] font-bold uppercase tracking-[0.16em]"
                 style={{
-                  color: v.clinsig.toLowerCase().includes("likely") ? CL.amber : CL.oxblood,
+                  color: v.clinsig[lang].toLowerCase().includes("likely") || v.clinsig[lang].toLowerCase().includes("probable") ? CL.amber : CL.oxblood,
                   fontFamily: "var(--font-sans)",
                 }}
               >
-                {v.clinsig}
+                {v.clinsig[lang]}
               </div>
               <div
                 className="mt-1.5"
